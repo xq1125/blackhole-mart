@@ -1337,6 +1337,8 @@ const RARE_PRODUCTS = [
   },
 ];
 
+// Legacy sample products are kept only so old collections can still resolve them.
+// New accounts start with an empty community shelf.
 const COMMUNITY_SEEDS = [
   {
     id: "seed-idle-tank",
@@ -1594,7 +1596,7 @@ function priceOf(product) {
 }
 
 function getCommunityProducts() {
-  return [...state.userProducts, ...COMMUNITY_SEEDS];
+  return [...state.userProducts];
 }
 
 function findProduct(id) {
@@ -2202,6 +2204,14 @@ async function handleLogin(event) {
   } finally {
     setAuthBusy(false);
   }
+}
+
+function removeLegacyAuthCopy() {
+  document.querySelectorAll(".auth-hint").forEach((node) => {
+    if (node.textContent.includes("作者账号")) {
+      node.remove();
+    }
+  });
 }
 
 function bindAuthEvents() {
@@ -2982,6 +2992,32 @@ function makeCommunityCard(product, isOwn, newId) {
   return button;
 }
 
+function makeCommunityEmpty() {
+  const empty = document.createElement("div");
+  empty.className = "community-empty";
+
+  const emoji = document.createElement("span");
+  emoji.className = "community-empty-emoji";
+  emoji.setAttribute("aria-hidden", "true");
+  emoji.textContent = "📦";
+
+  const copy = document.createElement("div");
+  copy.className = "community-empty-copy";
+  const title = document.createElement("strong");
+  title.textContent = "货架还空着。";
+  const text = document.createElement("p");
+  text.textContent = "写第一件好物，上架后就会出现在这里。";
+  const action = document.createElement("button");
+  action.type = "button";
+  action.className = "community-empty-action";
+  action.dataset.openSubmit = "true";
+  action.textContent = "写一件好物 ↗";
+
+  copy.append(title, text, action);
+  empty.append(emoji, copy);
+  return empty;
+}
+
 function renderCommunity(newId = null) {
   if (!el.communityGrid) {
     return;
@@ -2989,6 +3025,14 @@ function renderCommunity(newId = null) {
 
   const items = getCommunityProducts();
   const previousScroll = el.communityGrid.scrollLeft;
+  if (items.length === 0) {
+    el.communityGrid.replaceChildren(makeCommunityEmpty());
+    el.communityGrid.scrollLeft = 0;
+    el.communityCount.textContent = "0";
+    updateCommunityFeed();
+    return;
+  }
+
   const fragment = document.createDocumentFragment();
   items.forEach((product) => {
     const isOwn = state.userProducts.some((entry) => entry.id === product.id);
@@ -3659,6 +3703,10 @@ function bindEvents() {
   });
 
   el.communityGrid.addEventListener("click", (event) => {
+    if (event.target.closest("[data-open-submit]")) {
+      openSubmitDialog();
+      return;
+    }
     const card = event.target.closest(".community-card");
     if (!card) {
       return;
@@ -3684,6 +3732,7 @@ function bindEvents() {
 function boot() {
   cacheElements();
   copyDialogHintMarkup = el.copyDialogHint.innerHTML;
+  removeLegacyAuthCopy();
   bindAuthEvents();
 
   const account = getSessionAccount(ensureAuthorAccount());
