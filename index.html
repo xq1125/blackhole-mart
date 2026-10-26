@@ -19,6 +19,72 @@
     <span class="spark spark-5">✧</span>
   </div>
 
+  <section class="auth-gate" id="authGate" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth-shell">
+      <div class="auth-poster">
+        <p class="auth-kicker"><span aria-hidden="true"></span>黑洞便利店 · RESIDENT CHECK-IN</p>
+        <h1 id="authTitle">先登记，<br><span>再进店。</span></h1>
+        <p class="auth-lede">每个名字，一间自己的仓库。<br>余额、图鉴、投稿，互不串门。</p>
+        <div class="auth-poster-stamp" aria-hidden="true">
+          一人一号
+          <small>ONE NAME<br>ONE SHELF</small>
+        </div>
+        <ul class="auth-perks">
+          <li><b>01</b><span>新住客送 66 宇宙币</span></li>
+          <li><b>02</b><span>每天签到 +30</span></li>
+          <li><b>03</b><span>写商品，赚稿费和分成</span></li>
+        </ul>
+        <p class="auth-poster-note">本机账号 · 不上传、不同步 · 只在这台设备生效</p>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-card-head">
+          <span class="auth-brand-mark" aria-hidden="true"></span>
+          <span><strong>BLACK HOLE MART</strong><small>RESIDENT ACCESS</small></span>
+        </div>
+
+        <div class="auth-tabs" role="group" aria-label="登录或注册">
+          <button class="auth-tab is-active" id="registerTab" type="button" aria-pressed="true">新住客注册</button>
+          <button class="auth-tab" id="loginTab" type="button" aria-pressed="false">已有账号登录</button>
+        </div>
+
+        <form class="auth-form" id="registerForm" novalidate>
+          <label class="auth-field">
+            <span>住客名 <small>2–12 个字</small></span>
+            <input id="registerName" name="registerName" type="text" maxlength="12" autocomplete="username" placeholder="给自己起一个名字" required>
+          </label>
+          <label class="auth-field">
+            <span>密码 <small>至少 6 位</small></span>
+            <input id="registerPassword" name="registerPassword" type="password" maxlength="64" autocomplete="new-password" placeholder="给这间仓库上把锁" required>
+          </label>
+          <label class="auth-field">
+            <span>确认密码 <small>再输一次</small></span>
+            <input id="registerConfirm" name="registerConfirm" type="password" maxlength="64" autocomplete="new-password" placeholder="确认刚才的密码" required>
+          </label>
+          <p class="auth-hint">「夏习清」是作者账号，已经被注册，不能重复使用。</p>
+          <p class="auth-error" id="registerError" role="alert"></p>
+          <button class="auth-submit" id="registerButton" type="submit">登记并进店 <span aria-hidden="true">↗</span></button>
+        </form>
+
+        <form class="auth-form" id="loginForm" novalidate hidden>
+          <label class="auth-field">
+            <span>住客名</span>
+            <input id="loginName" name="loginName" type="text" maxlength="12" autocomplete="username" placeholder="输入已经注册的名字" required>
+          </label>
+          <label class="auth-field">
+            <span>密码</span>
+            <input id="loginPassword" name="loginPassword" type="password" maxlength="64" autocomplete="current-password" placeholder="打开自己的仓库" required>
+          </label>
+          <p class="auth-hint">作者账号：<button id="fillAuthorName" type="button">夏习清</button> · 已注册</p>
+          <p class="auth-error" id="loginError" role="alert"></p>
+          <button class="auth-submit" id="loginButton" type="submit">进店 <span aria-hidden="true">↗</span></button>
+        </form>
+
+        <p class="auth-legal">本地账号 · 密码只以哈希形式保存在此浏览器 · 请勿使用真实密码 · 换设备不同步</p>
+      </div>
+    </div>
+  </section>
+
   <header class="site-header">
     <a class="brand" href="#top" aria-label="黑洞便利店首页">
       <span class="brand-mark" aria-hidden="true"><span class="brand-orbit"></span></span>
@@ -29,6 +95,10 @@
     </a>
     <div class="header-side">
       <span class="open-badge"><i aria-hidden="true"></i>24 小时营业中</span>
+      <button class="account-pill" id="accountButton" type="button" aria-label="我的账号">
+        <span class="account-avatar" id="accountAvatar" aria-hidden="true">住</span>
+        <span class="account-name" id="accountName">住客</span>
+      </button>
       <a class="wallet-pill" id="walletPill" href="#community" aria-label="我的宇宙币余额，前往共创货架赚币">
         <span class="wallet-coin" aria-hidden="true"></span>
         <span class="wallet-amount"><strong id="walletBalance">66.0</strong><small>币</small></span>
@@ -241,7 +311,7 @@
         </div>
         <div class="community-panel">
           <div class="wallet-panel">
-            <p class="wallet-panel-label">我的宇宙币</p>
+            <p class="wallet-panel-label" id="walletPanelLabel">我的宇宙币</p>
             <p class="wallet-panel-value"><strong id="walletPanelBalance">66.0</strong><small>币</small></p>
             <p class="wallet-earnings" id="todayEarnings">今日进账 +0.0</p>
             <button class="checkin-button" id="checkinButton" type="button">
@@ -435,6 +505,56 @@
         <button class="form-submit" id="writeAnother" type="button">再写一件 <span aria-hidden="true">↗</span></button>
         <button class="ghost-button" id="backToShelf" type="button">去货架看看</button>
       </div>
+    </div>
+  </dialog>
+
+  <dialog class="copy-dialog account-dialog" id="accountDialog" aria-labelledby="accountDialogTitle">
+    <div class="copy-dialog-bar">
+      <span>RESIDENT FILE / 住客档案</span>
+      <button class="copy-dialog-close" id="closeAccountDialog" type="button" aria-label="关闭账号窗口">×</button>
+    </div>
+    <div class="account-body">
+      <div class="account-head">
+        <span class="account-big-avatar" id="accountBigAvatar" aria-hidden="true">住</span>
+        <div class="account-head-copy">
+          <p class="section-kicker">SIGNED IN AS</p>
+          <h2 id="accountDialogTitle">住客</h2>
+          <p class="account-role" id="accountRole">住客</p>
+          <p class="account-meta" id="accountMeta">本机账号</p>
+        </div>
+      </div>
+
+      <p class="account-note" id="accountNote">每个名字只能注册一次。</p>
+
+      <form class="password-form" id="passwordForm" novalidate>
+        <div class="password-head">
+          <strong>换一把锁</strong>
+          <span>修改密码</span>
+        </div>
+        <div class="password-grid">
+          <label class="form-field form-field-full">
+            <span class="form-label">当前密码</span>
+            <input id="currentPassword" type="password" maxlength="64" autocomplete="current-password" placeholder="先确认是你本人" required>
+          </label>
+          <label class="form-field">
+            <span class="form-label">新密码 <small>至少 6 位</small></span>
+            <input id="newPassword" type="password" maxlength="64" autocomplete="new-password" placeholder="新的密码" required>
+          </label>
+          <label class="form-field">
+            <span class="form-label">确认新密码</span>
+            <input id="confirmNewPassword" type="password" maxlength="64" autocomplete="new-password" placeholder="再输一次" required>
+          </label>
+        </div>
+        <p class="form-error" id="passwordError" role="alert"></p>
+        <p class="password-success" id="passwordSuccess" role="status"></p>
+        <button class="ghost-button password-submit" id="changePasswordButton" type="submit">更新密码</button>
+      </form>
+
+      <div class="account-actions">
+        <button class="form-submit account-logout" id="logoutButton" type="button">退出登录</button>
+        <button class="ghost-button" id="closeAccountButton" type="button">继续逛店</button>
+      </div>
+      <p class="account-fineprint">账号与存档只保存在此浏览器。忘记密码无法找回，除非清除本站数据重新注册。请勿使用真实密码。</p>
     </div>
   </dialog>
 

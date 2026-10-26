@@ -1487,7 +1487,26 @@ const COMMUNITY_SEEDS = [
 const ALL_PRODUCTS = [...PRODUCTS, ...RARE_PRODUCTS];
 const PRODUCT_MAP = new Map(ALL_PRODUCTS.map((product) => [product.id, product]));
 const COMMUNITY_SEED_MAP = new Map(COMMUNITY_SEEDS.map((product) => [product.id, product]));
-const STORAGE_KEY = "blackhole-mart.v1";
+const LEGACY_STORAGE_KEY = "blackhole-mart.v1";
+const ACCOUNT_STORE_KEY = "blackhole-mart.accounts.v1";
+const SESSION_KEY = "blackhole-mart.session.v1";
+const GAME_STORAGE_PREFIX = "blackhole-mart.game.v2.";
+const AUTH_ITERATIONS = 120000;
+const AUTHOR_NAME = "夏习清";
+const AUTHOR_NAME_KEY = "夏习清";
+// The author credential is pre-hashed. The initial password is delivered privately;
+// change it from the account panel after the first login.
+const AUTHOR_SEED = {
+  id: "u_author_xiaxiqing",
+  username: AUTHOR_NAME,
+  nameKey: AUTHOR_NAME_KEY,
+  role: "author",
+  salt: "K00rbBVRCcb7MH3C3Dtx9w==",
+  hash: "e+NuZKd9MPm4DkjRHnxUO3/2Ihz0NsCIdwHTGB1PjBk=",
+  iterations: AUTH_ITERATIONS,
+  createdAt: "2026-10-26T00:00:00.000Z",
+};
+const RESERVED_NAME_KEYS = new Set([AUTHOR_NAME_KEY, "xiaxiqing", "xq1125", "admin"]);
 const RARE_CHANCE = 0.075;
 const COMMUNITY_DRAW_CHANCE = 0.18;
 const DRAW_COST = 8.8;
@@ -1498,6 +1517,7 @@ const STARTING_WALLET = 66;
 const PRODUCT_COLORS = ["#ffe45c", "#c9d2ff", "#ffc5b2", "#bde3f2", "#f4bdde", "#ffd3a1", "#b9e7cd", "#d9d1ff"];
 
 const state = {
+  account: null,
   collection: [],
   soundOn: true,
   day: "",
@@ -1524,6 +1544,9 @@ let toastTimer = null;
 let printTimer = null;
 let catBubbleTimer = null;
 let copyDialogHintMarkup = "";
+let authBusy = false;
+let passwordBusy = false;
+let authMode = "register";
 
 function $(id) {
   return document.getElementById(id);
@@ -1634,6 +1657,218 @@ function ensureFreshDay() {
   }
 }
 
+/* ---------- local resident accounts ---------- */
+
+function safeStorageGet(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch (error) {
+    return null;
+  }
+}
+
+function safeStorageSet(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function safeStorageRemove(key) {
+  try {
+    window.localStorage.removeItem(key);
+  } catch (error) {
+    /* ignore */
+  }
+}
+
+function nameKeyOf(value) {
+  return String(value || "").trim().normalize("NFKC").toLocaleLowerCase("zh-CN");
+}
+
+function readAccountStore() {
+  try {
+    const raw = safeStorageGet(ACCOUNT_STORE_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    if (!parsed || !Array.isArray(parsed.users)) {
+      return { version: 1, users: [] };
+    }
+    return {
+      version: 1,
+      users: parsed.users.filter(
+        (user) =>
+          user &&
+          typeof user.id === "string" &&
+          typeof user.username === "string" &&
+          typeof user.nameKey === "string" &&
+          typeof user.salt === "string" &&
+          typeof user.hash === "string",
+      ),
+    };
+  } catch (error) {
+    return { version: 1, users: [] };
+  }
+}
+
+function writeAccountStore(store) {
+  return safeStorageSet(ACCOUNT_STORE_KEY, JSON.stringify({ version: 1, users: store.users }));
+}
+
+function ensureAuthorAccount() {
+  const store = readAccountStore();
+  const author = store.users.find((user) => user.nameKey === AUTHOR_NAME_KEY);
+  if (!author) {
+    store.users.unshift({ ...AUTHOR_SEED });
+    writeAccountStore(store);
+    return store;
+  }
+  let changed = false;
+  if (author.role !== "author") {
+    author.role = "author";
+    changed = true;
+  }
+  if (!author.salt || !author.hash) {
+    author.salt = AUTHOR_SEED.salt;
+    author.hash = AUTHOR_SEED.hash;
+    author.iterations = AUTH_ITERATIONS;
+    changed = true;
+  }
+  if (changed) {
+    writeAccountStore(store);
+  }
+  return store;
+}
+
+function makeAccountId() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return `u_${window.crypto.randomUUID()}`;
+  }
+  return `u_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function validateResidentName(value) {
+  const name = String(value || "").trim().normalize("NFKC");
+  if (!name) {
+    return { error: "先给自己起一个名字。" };
+  }
+  if (name.length < 2 || name.length > 12) {
+    return { error: "住客名需要 2–12 个字。" };
+  }
+  if (!/^[\u3400-\u9fffA-Za-z0-9_-]+$/.test(name)) {
+    return { error: "住客名只能用中英文、数字、_ 或 -，不能有空格。" };
+  }
+  const key = nameKeyOf(name);
+  if (key === AUTHOR_NAME_KEY || key === "xiaxiqing" || key === "xq1125") {
+    return { error: "「夏习清」是作者账号，已经被注册了，换一个名字吧。" };
+  }
+  if (RESERVED_NAME_KEYS.has(key)) {
+    return { error: "这个名字是保留名，不能注册。" };
+  }
+  return { name, key };
+}
+
+function validatePassword(password) {
+  if (typeof password !== "string" || password.length < 6) {
+    return "密码至少写 6 位。";
+  }
+  if (password.length > 64) {
+    return "密码最多 64 位。";
+  }
+  return "";
+}
+
+function supportsLocalCrypto() {
+  return Boolean(window.crypto && window.crypto.subtle && window.crypto.getRandomValues);
+}
+
+function bytesToBase64(bytes) {
+  let binary = "";
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+  return window.btoa(binary);
+}
+
+function base64ToBytes(value) {
+  const binary = window.atob(value);
+  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+}
+
+function randomSalt() {
+  const bytes = new Uint8Array(16);
+  window.crypto.getRandomValues(bytes);
+  return bytesToBase64(bytes);
+}
+
+async function hashPassword(password, salt, iterations = AUTH_ITERATIONS) {
+  if (!supportsLocalCrypto()) {
+    throw new Error("当前浏览器不支持本地加密登录，请换用最新版 Chrome、Edge 或 Safari。");
+  }
+  const key = await window.crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits"],
+  );
+  const bits = await window.crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt: base64ToBytes(salt),
+      iterations: Number(iterations) || AUTH_ITERATIONS,
+      hash: "SHA-256",
+    },
+    key,
+    256,
+  );
+  return bytesToBase64(new Uint8Array(bits));
+}
+
+function hashesMatch(left, right) {
+  if (left.length !== right.length) {
+    return false;
+  }
+  let difference = 0;
+  for (let index = 0; index < left.length; index += 1) {
+    difference |= left.charCodeAt(index) ^ right.charCodeAt(index);
+  }
+  return difference === 0;
+}
+
+function getSessionUserId() {
+  return safeStorageGet(SESSION_KEY) || "";
+}
+
+function setSession(userId) {
+  return safeStorageSet(SESSION_KEY, userId);
+}
+
+function clearSession() {
+  safeStorageRemove(SESSION_KEY);
+}
+
+function getSessionAccount(store = readAccountStore()) {
+  const userId = getSessionUserId();
+  if (!userId) {
+    return null;
+  }
+  return store.users.find((user) => user.id === userId) || null;
+}
+
+function gameStorageKey() {
+  return state.account ? `${GAME_STORAGE_PREFIX}${state.account.id}` : "";
+}
+
+function formatAccountDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "未知日期";
+  }
+  return `${date.getFullYear()}.${pad(date.getMonth() + 1)}.${pad(date.getDate())}`;
+}
+
 function cacheElements() {
   el.machine = $("machine");
   el.drawButton = $("drawButton");
@@ -1721,14 +1956,451 @@ function cacheElements() {
   el.successTotal = $("successTotal");
   el.writeAnother = $("writeAnother");
   el.backToShelf = $("backToShelf");
+  el.walletPanelLabel = $("walletPanelLabel");
+  el.accountButton = $("accountButton");
+  el.accountAvatar = $("accountAvatar");
+  el.accountName = $("accountName");
+  el.accountDialog = $("accountDialog");
+  el.closeAccountDialog = $("closeAccountDialog");
+  el.accountBigAvatar = $("accountBigAvatar");
+  el.accountDialogTitle = $("accountDialogTitle");
+  el.accountRole = $("accountRole");
+  el.accountMeta = $("accountMeta");
+  el.accountNote = $("accountNote");
+  el.passwordForm = $("passwordForm");
+  el.currentPassword = $("currentPassword");
+  el.newPassword = $("newPassword");
+  el.confirmNewPassword = $("confirmNewPassword");
+  el.passwordError = $("passwordError");
+  el.passwordSuccess = $("passwordSuccess");
+  el.changePasswordButton = $("changePasswordButton");
+  el.logoutButton = $("logoutButton");
+  el.closeAccountButton = $("closeAccountButton");
+  el.authGate = $("authGate");
+  el.registerTab = $("registerTab");
+  el.loginTab = $("loginTab");
+  el.registerForm = $("registerForm");
+  el.loginForm = $("loginForm");
+  el.registerName = $("registerName");
+  el.registerPassword = $("registerPassword");
+  el.registerConfirm = $("registerConfirm");
+  el.registerError = $("registerError");
+  el.registerButton = $("registerButton");
+  el.loginName = $("loginName");
+  el.loginPassword = $("loginPassword");
+  el.loginError = $("loginError");
+  el.loginButton = $("loginButton");
+  el.fillAuthorName = $("fillAuthorName");
+}
+
+/* ---------- resident gate ---------- */
+
+function setAuthError(scope, message) {
+  const node = scope === "login" ? el.loginError : el.registerError;
+  if (node) {
+    node.textContent = message || "";
+  }
+}
+
+function setAuthBusy(busy) {
+  authBusy = busy;
+  [el.registerButton, el.loginButton, el.registerTab, el.loginTab].forEach((node) => {
+    if (node) {
+      node.disabled = busy;
+    }
+  });
+  if (el.authGate) {
+    el.authGate.classList.toggle("is-busy", busy);
+  }
+}
+
+function setPasswordBusy(busy) {
+  passwordBusy = busy;
+  if (el.changePasswordButton) {
+    el.changePasswordButton.disabled = busy;
+    el.changePasswordButton.textContent = busy ? "更新中…" : "更新密码";
+  }
+}
+
+function setAuthMode(mode, shouldFocus = true) {
+  authMode = mode === "login" ? "login" : "register";
+  const isLogin = authMode === "login";
+  if (!el.registerTab || !el.loginTab) {
+    return;
+  }
+  el.registerTab.classList.toggle("is-active", !isLogin);
+  el.loginTab.classList.toggle("is-active", isLogin);
+  el.registerTab.setAttribute("aria-pressed", String(!isLogin));
+  el.loginTab.setAttribute("aria-pressed", String(isLogin));
+  el.registerForm.hidden = isLogin;
+  el.loginForm.hidden = !isLogin;
+  setAuthError("register", "");
+  setAuthError("login", "");
+  if (shouldFocus) {
+    window.setTimeout(() => {
+      const target = isLogin ? el.loginName : el.registerName;
+      if (target) {
+        target.focus({ preventScroll: true });
+      }
+    }, 20);
+  }
+}
+
+function lockAppShell(locked) {
+  const shells = [
+    document.querySelector(".site-header"),
+    document.querySelector("main"),
+    document.querySelector(".site-footer"),
+  ];
+  shells.forEach((node) => {
+    if (node) {
+      if ("inert" in node) {
+        node.inert = locked;
+      } else {
+        node.setAttribute("aria-hidden", String(locked));
+      }
+    }
+  });
+}
+
+function showAuthGate() {
+  if (!el.authGate) {
+    return;
+  }
+  el.authGate.hidden = false;
+  document.body.classList.add("auth-locked");
+  lockAppShell(true);
+  setAuthMode(authMode, false);
+  window.setTimeout(() => {
+    const target = authMode === "login" ? el.loginName : el.registerName;
+    if (target) {
+      target.focus({ preventScroll: true });
+    }
+  }, 80);
+}
+
+function hideAuthGate() {
+  if (!el.authGate) {
+    return;
+  }
+  el.authGate.hidden = true;
+  document.body.classList.remove("auth-locked");
+  lockAppShell(false);
+}
+
+async function handleRegister(event) {
+  event.preventDefault();
+  if (authBusy) {
+    return;
+  }
+  setAuthError("register", "");
+
+  const nameResult = validateResidentName(el.registerName.value);
+  if (nameResult.error) {
+    setAuthError("register", nameResult.error);
+    el.registerName.focus();
+    return;
+  }
+
+  const password = el.registerPassword.value;
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    setAuthError("register", passwordError);
+    el.registerPassword.focus();
+    return;
+  }
+  if (password !== el.registerConfirm.value) {
+    setAuthError("register", "两次输入的密码不一样。");
+    el.registerConfirm.focus();
+    return;
+  }
+  if (!supportsLocalCrypto()) {
+    setAuthError("register", "当前浏览器不支持本地加密登录，请换用最新版 Chrome、Edge 或 Safari。");
+    return;
+  }
+
+  setAuthBusy(true);
+  try {
+    const store = ensureAuthorAccount();
+    if (store.users.some((user) => nameKeyOf(user.username) === nameResult.key)) {
+      setAuthError("register", "这个名字已经有人用了，换一个吧。");
+      return;
+    }
+
+    const salt = randomSalt();
+    const hash = await hashPassword(password, salt, AUTH_ITERATIONS);
+    const user = {
+      id: makeAccountId(),
+      username: nameResult.name,
+      nameKey: nameResult.key,
+      role: "resident",
+      salt,
+      hash,
+      iterations: AUTH_ITERATIONS,
+      createdAt: new Date().toISOString(),
+      passwordUpdatedAt: Date.now(),
+    };
+
+    store.users.push(user);
+    if (!writeAccountStore(store)) {
+      setAuthError("register", "浏览器不允许保存账号，请检查隐私模式或站点存储权限。");
+      return;
+    }
+    if (!setSession(user.id)) {
+      setAuthError("register", "账号建好了，但登录状态保存失败，请重试。");
+      return;
+    }
+    window.location.reload();
+  } catch (error) {
+    setAuthError("register", error?.message || "登记失败，请再试一次。");
+  } finally {
+    setAuthBusy(false);
+  }
+}
+
+async function handleLogin(event) {
+  event.preventDefault();
+  if (authBusy) {
+    return;
+  }
+  setAuthError("login", "");
+
+  const username = el.loginName.value.trim();
+  if (!username) {
+    setAuthError("login", "先输入住客名。");
+    el.loginName.focus();
+    return;
+  }
+  const password = el.loginPassword.value;
+  if (!password) {
+    setAuthError("login", "再输入密码。");
+    el.loginPassword.focus();
+    return;
+  }
+
+  setAuthBusy(true);
+  try {
+    const store = ensureAuthorAccount();
+    const user = store.users.find((entry) => entry.nameKey === nameKeyOf(username));
+    if (!user) {
+      setAuthError("login", "没有找到这个名字，先去注册一个吧。");
+      return;
+    }
+    const hash = await hashPassword(password, user.salt, user.iterations || AUTH_ITERATIONS);
+    if (!hashesMatch(hash, user.hash)) {
+      setAuthError("login", "名字或密码不对，再检查一下。");
+      return;
+    }
+    if (!setSession(user.id)) {
+      setAuthError("login", "登录状态保存失败，请重试。");
+      return;
+    }
+    window.location.reload();
+  } catch (error) {
+    setAuthError("login", error?.message || "进店失败，请再试一次。");
+  } finally {
+    setAuthBusy(false);
+  }
+}
+
+function bindAuthEvents() {
+  el.registerTab.addEventListener("click", () => setAuthMode("register"));
+  el.loginTab.addEventListener("click", () => setAuthMode("login"));
+  el.registerForm.addEventListener("submit", handleRegister);
+  el.loginForm.addEventListener("submit", handleLogin);
+  el.fillAuthorName.addEventListener("click", () => {
+    setAuthMode("login", false);
+    el.loginName.value = AUTHOR_NAME;
+    el.loginPassword.focus();
+  });
+
+  [
+    [el.registerName, "register"],
+    [el.registerPassword, "register"],
+    [el.registerConfirm, "register"],
+    [el.loginName, "login"],
+    [el.loginPassword, "login"],
+  ].forEach(([node, scope]) => {
+    node.addEventListener("input", () => setAuthError(scope, ""));
+  });
+}
+
+/* ---------- account panel ---------- */
+
+function accountInitial(name) {
+  return Array.from(String(name || "住"))[0] || "住";
+}
+
+function updateAccountDialog() {
+  if (!state.account) {
+    return;
+  }
+  const isAuthor = state.account.role === "author";
+  const name = state.account.username;
+
+  el.accountBigAvatar.textContent = accountInitial(name);
+  el.accountDialogTitle.textContent = name;
+  el.accountRole.textContent = isAuthor ? "作者 · 店长" : "住客 · 本机账号";
+  el.accountRole.classList.toggle("is-author", isAuthor);
+  el.accountDialog.classList.toggle("is-author", isAuthor);
+  el.accountMeta.textContent = `本机账号 · 注册于 ${formatAccountDate(state.account.createdAt)}`;
+  el.accountNote.textContent = isAuthor
+    ? "「夏习清」是作者账号，已经被注册。其他住客不能重复使用这个名字。"
+    : "这个名字已经注册。同一台设备上的其他住客不能重复使用它。";
+  el.passwordError.textContent = "";
+  el.passwordSuccess.textContent = "";
+  el.currentPassword.value = "";
+  el.newPassword.value = "";
+  el.confirmNewPassword.value = "";
+}
+
+function updateProfileUi() {
+  if (!state.account) {
+    return;
+  }
+  const name = state.account.username;
+  const initial = accountInitial(name);
+  const isAuthor = state.account.role === "author";
+
+  el.accountName.textContent = name;
+  el.accountAvatar.textContent = initial;
+  el.accountButton.setAttribute("aria-label", `我的账号：${name}`);
+  el.accountButton.title = `账号：${name}`;
+  el.accountButton.classList.toggle("is-author", isAuthor);
+  el.walletPanelLabel.textContent = `${name}的宇宙币`;
+  updateAccountDialog();
+}
+
+function openAccountDialog() {
+  if (!state.account) {
+    return;
+  }
+  updateAccountDialog();
+  if (!el.accountDialog.open) {
+    el.accountDialog.showModal();
+  }
+  document.body.classList.add("has-dialog");
+}
+
+function closeAccountDialog() {
+  if (el.accountDialog.open) {
+    el.accountDialog.close();
+  }
+}
+
+function logoutAccount() {
+  persistState();
+  clearSession();
+  window.location.reload();
+}
+
+async function handlePasswordChange(event) {
+  event.preventDefault();
+  if (passwordBusy || !state.account) {
+    return;
+  }
+  el.passwordError.textContent = "";
+  el.passwordSuccess.textContent = "";
+
+  const current = el.currentPassword.value;
+  const next = el.newPassword.value;
+  const confirm = el.confirmNewPassword.value;
+  if (!current) {
+    el.passwordError.textContent = "先输入当前密码。";
+    el.currentPassword.focus();
+    return;
+  }
+  const passwordError = validatePassword(next);
+  if (passwordError) {
+    el.passwordError.textContent = passwordError;
+    el.newPassword.focus();
+    return;
+  }
+  if (next !== confirm) {
+    el.passwordError.textContent = "两次输入的新密码不一样。";
+    el.confirmNewPassword.focus();
+    return;
+  }
+  if (next === current) {
+    el.passwordError.textContent = "新密码不要和当前密码一样。";
+    el.newPassword.focus();
+    return;
+  }
+
+  setPasswordBusy(true);
+  try {
+    const store = readAccountStore();
+    const user = store.users.find((entry) => entry.id === state.account.id);
+    if (!user) {
+      el.passwordError.textContent = "账号档案找不到了，请重新登录。";
+      return;
+    }
+    const currentHash = await hashPassword(current, user.salt, user.iterations || AUTH_ITERATIONS);
+    if (!hashesMatch(currentHash, user.hash)) {
+      el.passwordError.textContent = "当前密码不对。";
+      el.currentPassword.focus();
+      return;
+    }
+    const salt = randomSalt();
+    const hash = await hashPassword(next, salt, AUTH_ITERATIONS);
+    user.salt = salt;
+    user.hash = hash;
+    user.iterations = AUTH_ITERATIONS;
+    user.passwordUpdatedAt = Date.now();
+    if (!writeAccountStore(store)) {
+      el.passwordError.textContent = "浏览器不允许保存新密码，请检查站点存储权限。";
+      return;
+    }
+    state.account = user;
+    el.currentPassword.value = "";
+    el.newPassword.value = "";
+    el.confirmNewPassword.value = "";
+    el.passwordSuccess.textContent = "密码已更新，下次用新密码进店。";
+  } catch (error) {
+    el.passwordError.textContent = error?.message || "密码更新失败，请再试一次。";
+  } finally {
+    setPasswordBusy(false);
+  }
+}
+
+function bindAccountEvents() {
+  el.accountButton.addEventListener("click", openAccountDialog);
+  el.closeAccountDialog.addEventListener("click", closeAccountDialog);
+  el.closeAccountButton.addEventListener("click", closeAccountDialog);
+  el.logoutButton.addEventListener("click", logoutAccount);
+  el.passwordForm.addEventListener("submit", handlePasswordChange);
+  [el.currentPassword, el.newPassword, el.confirmNewPassword].forEach((input) => {
+    input.addEventListener("input", () => {
+      el.passwordError.textContent = "";
+      el.passwordSuccess.textContent = "";
+    });
+  });
+  el.accountDialog.addEventListener("click", (event) => {
+    if (event.target === el.accountDialog) {
+      closeAccountDialog();
+    }
+  });
+  el.accountDialog.addEventListener("close", () => {
+    syncDialogLock();
+    el.accountButton.focus({ preventScroll: true });
+  });
 }
 
 /* ---------- persistence ---------- */
 
 function loadState() {
   let saved = null;
+  let migratedLegacy = false;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const storageKey = gameStorageKey();
+    let raw = storageKey ? safeStorageGet(storageKey) : null;
+    if (!raw && state.account?.role === "author") {
+      const legacy = safeStorageGet(LEGACY_STORAGE_KEY);
+      if (legacy) {
+        raw = legacy;
+        migratedLegacy = true;
+      }
+    }
     saved = raw ? JSON.parse(raw) : null;
   } catch (error) {
     saved = null;
@@ -1752,7 +2424,10 @@ function loadState() {
   state.soundOn = saved?.soundOn !== false;
   state.catPets = Number.isFinite(saved?.catPets) ? saved.catPets : 0;
   state.wallet = Number.isFinite(saved?.wallet) ? Math.max(0, roundCoins(saved.wallet)) : STARTING_WALLET;
-  state.nickname = typeof saved?.nickname === "string" ? saved.nickname.slice(0, 12) : "";
+  state.nickname =
+    typeof saved?.nickname === "string" && saved.nickname.trim()
+      ? saved.nickname.slice(0, 12)
+      : state.account?.username || "";
   state.lastCheckin = typeof saved?.lastCheckin === "string" ? saved.lastCheckin : "";
   state.day = today;
   state.todayCount = saved?.day === today && Number.isFinite(saved?.todayCount) ? saved.todayCount : 0;
@@ -1774,18 +2449,26 @@ function loadState() {
     state.current = savedProduct;
     state.isRare = Boolean(savedProduct.rare);
     state.mode = "restore";
-    return;
+  } else {
+    state.current = dailyProduct();
+    state.isRare = Boolean(state.current.rare);
+    state.mode = "daily";
   }
 
-  state.current = dailyProduct();
-  state.isRare = Boolean(state.current.rare);
-  state.mode = "daily";
+  if (migratedLegacy) {
+    persistState();
+    safeStorageRemove(LEGACY_STORAGE_KEY);
+  }
 }
 
 function persistState() {
+  const storageKey = gameStorageKey();
+  if (!storageKey) {
+    return;
+  }
   try {
     window.localStorage.setItem(
-      STORAGE_KEY,
+      storageKey,
       JSON.stringify({
         collection: state.collection,
         soundOn: state.soundOn,
@@ -3009,11 +3692,27 @@ function bindEvents() {
   });
 }
 
-function init() {
+function boot() {
   cacheElements();
   copyDialogHintMarkup = el.copyDialogHint.innerHTML;
+  bindAuthEvents();
+
+  const account = getSessionAccount(ensureAuthorAccount());
+  if (!account) {
+    clearSession();
+    showAuthGate();
+    window.setTimeout(() => {
+      document.body.classList.add("is-ready");
+    }, 60);
+    return;
+  }
+
+  state.account = account;
+  hideAuthGate();
   loadState();
   bindEvents();
+  bindAccountEvents();
+  updateProfileUi();
 
   el.soundToggle.setAttribute("aria-pressed", String(state.soundOn));
   el.soundLabel.textContent = state.soundOn ? "音效 开" : "音效 关";
@@ -3035,6 +3734,11 @@ function init() {
   window.setTimeout(() => {
     document.body.classList.add("is-ready");
   }, 60);
+
+  window.setTimeout(() => {
+    const isAuthor = state.account.role === "author";
+    showToast(isAuthor ? `店长 @${state.account.username}，欢迎回店。` : `住客 @${state.account.username}，欢迎回来。`);
+  }, 700);
 }
 
-init();
+boot();
