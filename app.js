@@ -606,6 +606,681 @@ const PRODUCTS = [
     color: "#ffd3a1",
     stars: 4.2,
   },
+  {
+    id: "anti-gravity-noodles",
+    emoji: "🍜",
+    name: "反重力泡面",
+    en: "ANTI-GRAVITY NOODLES",
+    tag: "居家玄学",
+    desc: "吃一口，整个人轻到可以飘去下班。汤底是自由的，面是弹的。",
+    effect: "让身体短暂忽略地心引力，也忽略 KPI。",
+    side: "可能飘到天花板上下不来，外卖得往上送。",
+    crowd: "体重焦虑者、下班冲刺选手、想原地起飞的人。",
+    review: "“飘起来那一刻，我看到了工位的全貌，也看到了自由。”",
+    price: "12.0",
+    color: "#ffd3a1",
+    stars: 4.8,
+  },
+  {
+    id: "mood-umbrella",
+    emoji: "☂️",
+    name: "情绪折叠伞",
+    en: "MOOD UMBRELLA",
+    tag: "情绪补给",
+    desc: "把突然的委屈折成小雨，撑开就是晴天。伞骨是用“没关系”做的。",
+    effect: "在小崩溃落下前，撑起一小块干燥的地方。",
+    side: "伞面只挡情绪，不挡雨；雨天请另备一把。",
+    crowd: "通勤路上想哭的人、被消息击中的下午、需要一点遮蔽的人。",
+    review: "“撑开以后没下雨，但我确实没那么想哭了。”",
+    price: "7.7",
+    color: "#c9d2ff",
+    stars: 4.9,
+  },
+  {
+    id: "delete-monday",
+    emoji: "⌫",
+    name: "周一删除键",
+    en: "DELETE MONDAY",
+    tag: "周一特供",
+    desc: "只删周一，不删工资。按下去，日历会空出一格，像生活偷偷眨了个眼。",
+    effect: "把周一从这周的记忆里轻轻抠掉。",
+    side: "周二会变成新的周一，并带着一点起床气。",
+    crowd: "周一恐惧症、周末延长派、开工困难户。",
+    review: "“删了，但老板的闹钟好像没删。”",
+    price: "6.6",
+    color: "#ffe45c",
+    stars: 4.7,
+  },
+  {
+    id: "shutdown-key",
+    emoji: "⏻",
+    name: "打工人关机键",
+    en: "SHUTDOWN KEY",
+    tag: "职场续命",
+    desc: "让大脑蓝屏三分钟，自动重启。重启后缓存清空，会议纪要还在。",
+    effect: "强行结束 37 个后台运行的焦虑进程。",
+    side: "可能把“好的收到”也一起关掉，需要手动补回。",
+    crowd: "多线程打工人、消息爆炸选手、工位过热患者。",
+    review: "“重启之后还是我，但风扇声小了一点。”",
+    price: "8.8",
+    color: "#b9e7cd",
+    stars: 4.8,
+  },
+  {
+    id: "social-patch",
+    emoji: "🩹",
+    name: "社交回血贴",
+    en: "SOCIAL PATCH",
+    tag: "社交糊弄",
+    desc: "贴上一小时，能多聊五句。撕下来后，你还是那个想回家的人。",
+    effect: "在饭局和电梯间缓慢回复社交电量。",
+    side: "可能对最亲的人失效，因为在他们面前你本来就藏不住。",
+    crowd: "内向星人、聚会边缘人、电梯寒暄过敏者。",
+    review: "“多聊了五句，回家充了一整晚，但不算亏。”",
+    price: "5.5",
+    color: "#ffc5b2",
+    stars: 4.6,
+  },
+  {
+    id: "client-translator",
+    emoji: "🗜️",
+    name: "甲方翻译器",
+    en: "CLIENT TRANSLATOR",
+    tag: "乙方专用",
+    desc: "把“随便”翻译成“按第一版来”，把“再大气一点”翻译成“字再大一点”。",
+    effect: "让你在开口前听懂 80% 的潜台词。",
+    side: "剩下 20% 会在改到第 18 版时突然出现。",
+    crowd: "乙方设计师、方案型选手、深夜改稿人。",
+    review: "“终于知道‘不要那种感觉’是哪种感觉了，虽然还是要改。”",
+    price: "19.9",
+    color: "#ffd3a1",
+    stars: 4.7,
+  },
+  {
+    id: "slack-mimosa",
+    emoji: "🌿",
+    name: "摸鱼隐身草",
+    en: "SLACK MIMOSA",
+    tag: "摸鱼装备",
+    desc: "工位上一放，路过的人自动看不见你。它也会假装自己是一盆普通绿植。",
+    effect: "在领导经过的 30 秒里，让你和屏幕融为一体。",
+    side: "可能让同事也看不见你，包括午饭叫你的那个人。",
+    crowd: "摸鱼特工、开放式工位难民、需要静音的人。",
+    review: "“它确实有用，连外卖小哥都找了我半天。”",
+    price: "9.9",
+    color: "#b9e7cd",
+    stars: 4.8,
+  },
+  {
+    id: "reverse-pomodoro",
+    emoji: "🍅",
+    name: "反向番茄钟",
+    en: "REVERSE POMODORO",
+    tag: "时间管理",
+    desc: "每工作 5 分钟，奖励自己 25 分钟。时间管理大师看了会沉默。",
+    effect: "把“再坚持一下”变成“已经可以休息了”。",
+    side: "工作进度将以肉眼可见的速度原地踏步。",
+    crowd: "拖延症晚期、自由职业者、需要一点甜头的人。",
+    review: "“用了三天，工作没做完，但心情很好。”",
+    price: "3.3",
+    color: "#ffc5b2",
+    stars: 4.4,
+  },
+  {
+    id: "eight-am-regret",
+    emoji: "💊",
+    name: "早八后悔药",
+    en: "8AM REGRET",
+    tag: "时间管理",
+    desc: "昨晚熬夜专用，今早自动装死。药效包括多睡十分钟和一句“我马上到”。",
+    effect: "把早八的痛感调成静音。",
+    side: "迟到记录不会消失，只会被药效暂时盖住。",
+    crowd: "早八幸存者、报复性熬夜党、踩点艺术家。",
+    review: "“吃了，迟到了，但心态平和，甚至想再睡五分钟。”",
+    price: "2.2",
+    color: "#c9d2ff",
+    stars: 4.3,
+  },
+  {
+    id: "clock-out-horn",
+    emoji: "📯",
+    name: "下班冲锋号",
+    en: "CLOCK-OUT HORN",
+    tag: "职场续命",
+    desc: "17:59 响起，全公司一起收拾包。号声落下，电梯口自动排队。",
+    effect: "把“再弄一下”变成“明天再说”。",
+    side: "可能被老板听见，并临时召开一个“简单碰头会”。",
+    crowd: "准点下班派、电梯竞速选手、工位起义者。",
+    review: "“响了，我站起来了，老板也站起来了，他去倒水，我跑了。”",
+    price: "16.6",
+    color: "#ffe45c",
+    stars: 4.9,
+  },
+  {
+    id: "weekly-report",
+    emoji: "🖨️",
+    name: "周报自动生成器",
+    en: "WEEKLY REPORT-O-MATIC",
+    tag: "职场续命",
+    desc: "把“忙”写成 800 字有逻辑的忙，自动加上“持续跟进”“闭环”“赋能”。",
+    effect: "五分钟交出一份看起来很重要的周报。",
+    side: "可能被追问细节，并因此多开一个会。",
+    crowd: "周报困难户、月末失忆者、需要体面交差的人。",
+    review: "“老板说我写得越来越有高度了，其实我什么都没多干。”",
+    price: "12.5",
+    color: "#d9d1ff",
+    stars: 4.8,
+  },
+  {
+    id: "meeting-pod",
+    emoji: "🚀",
+    name: "会议逃生舱",
+    en: "MEETING POD",
+    tag: "职场续命",
+    desc: "一键弹射，附赠“网络不好”音效。舱内提供热水、耳机和一整段不被打扰的时间。",
+    effect: "从任何一场超长会议中优雅脱离。",
+    side: "可能错过散会时发的那份奶茶，以及一个关键决定。",
+    crowd: "会议潜水员、无效讨论受害者、需要喘息的人。",
+    review: "“弹射成功，回来发现会已经开完了，完美。”",
+    price: "26.0",
+    color: "#bde3f2",
+    stars: 4.9,
+  },
+  {
+    id: "mood-bin",
+    emoji: "🗑️",
+    name: "情绪垃圾桶",
+    en: "MOOD BIN",
+    tag: "精神状态",
+    desc: "把内耗倒进去，自动分类可回收。盖子一合，世界清净三分钟。",
+    effect: "把反复回放的尴尬和烦躁压缩成一小团。",
+    side: "倒太满会溢出来，需要定期清空并分类。",
+    crowd: "高敏人群、睡前复盘师、内耗型选手。",
+    review: "“倒完轻了，第二天又满了，但说明它确实在工作。”",
+    price: "7.0",
+    color: "#b9e7cd",
+    stars: 4.7,
+  },
+  {
+    id: "seat-summoner",
+    emoji: "🪑",
+    name: "地铁座位召唤器",
+    en: "SEAT SUMMONER",
+    tag: "通勤必备",
+    desc: "下一站，总有一个座位为你空出来。召唤范围三节车厢，成功率看缘分。",
+    effect: "让站着的人流自动为你分出一条路。",
+    side: "可能召唤到爱心专座，引来全车人的目光。",
+    crowd: "跨城打工人、高跟鞋通勤者、站到腿麻的人。",
+    review: "“今天真的坐到了，虽然只有一站，但很感动。”",
+    price: "6.8",
+    color: "#c9d2ff",
+    stars: 4.6,
+  },
+  {
+    id: "night-mask",
+    emoji: "🎭",
+    name: "熬夜遮瑕膏",
+    en: "NIGHT MASK",
+    tag: "深夜限定",
+    desc: "遮住黑眼圈，也遮住“我又熬夜了”。卸妆时，真相和黑眼圈一起回来。",
+    effect: "让第二天的你看起来像睡满了八小时。",
+    side: "只遮脸，不遮疲惫；咖啡仍需另购。",
+    crowd: "熬夜冠军、早八演员、视频会议素颜党。",
+    review: "“同事问我最近是不是早睡了，我笑而不语。”",
+    price: "18.0",
+    color: "#f4bdde",
+    stars: 4.5,
+  },
+  {
+    id: "wishing-pool",
+    emoji: "⛲",
+    name: "打工人许愿池",
+    en: "WISHING POOL",
+    tag: "职场续命",
+    desc: "投一枚硬币，愿望是“今天准点下班”。池底已经堆满了同一个愿望。",
+    effect: "给每个工作日一个可以被听见的小心愿。",
+    side: "只负责许愿，不负责实现；偶尔会灵，但别声张。",
+    crowd: "加班常客、准点下班幻想家、需要一点盼头的人。",
+    review: "“许了七天，灵了一天，那天我激动得忘了打卡。”",
+    price: "1.0",
+    color: "#bde3f2",
+    stars: 4.6,
+  },
+  {
+    id: "caffeine-iv",
+    emoji: "💉",
+    name: "咖啡因续命针",
+    en: "CAFFEINE IV",
+    tag: "职场续命",
+    desc: "5 秒回血，2 小时后自动心慌。医生的建议是睡觉，你的选择是再撑一下。",
+    effect: "把困意暂时按进地毯下面。",
+    side: "可能手抖、心跳加速，并在凌晨三点思考人生。",
+    crowd: "咖啡续命人、赶方案选手、把冰美式当水喝的人。",
+    review: "“续上了，但续的是明天的疲惫。”",
+    price: "13.9",
+    color: "#ffd3a1",
+    stars: 4.4,
+  },
+  {
+    id: "eat-freely",
+    emoji: "🍕",
+    name: "饮食自由券",
+    en: "EAT FREELY",
+    tag: "居家玄学",
+    desc: "今天吃什么都不计算热量，但明天早上它会温柔地提醒你。",
+    effect: "让一顿饭只负责快乐，不负责数字。",
+    side: "明天体重秤的表情可能不太好看。",
+    crowd: "减脂期崩溃者、夜宵爱好者、需要一顿好饭的人。",
+    review: "“吃得很快乐，第二天也很快乐，只是裤子有点紧。”",
+    price: "0.5",
+    color: "#ffc5b2",
+    stars: 4.8,
+  },
+  {
+    id: "chore-begone",
+    emoji: "🧹",
+    name: "家务消失术",
+    en: "CHORE BEGONE",
+    tag: "居家玄学",
+    desc: "脏衣服自动隐身，直到你打开衣柜。地板会短暂地看起来像刚拖过。",
+    effect: "把家务从视野里挪走，给周末腾一点空。",
+    side: "衣服不会真的消失，只会在你需要出门时集体出现。",
+    crowd: "周末躺平党、租房青年、和灰尘和平共处的人。",
+    review: "“衣柜打开那一刻，我的周末结束了。”",
+    price: "8.0",
+    color: "#ffe45c",
+    stars: 4.5,
+  },
+  {
+    id: "boss-lip-reader",
+    emoji: "👄",
+    name: "老板口型翻译器",
+    en: "BOSS LIP READER",
+    tag: "职场续命",
+    desc: "隔着玻璃也能读出“这个再改改”。附带 3 秒预警，让你提前打开文档。",
+    effect: "在老板开口前进入工作状态。",
+    side: "也可能误读成“可以下班了”，后果自负。",
+    crowd: "工位敏感肌、摸鱼观察员、远程会议选手。",
+    review: "“读对了，真的要改，但我已经来不及难过了。”",
+    price: "14.0",
+    color: "#d9d1ff",
+    stars: 4.7,
+  },
+  {
+    id: "slack-noise",
+    emoji: "🎧",
+    name: "摸鱼白噪音",
+    en: "SLACK NOISE",
+    tag: "摸鱼装备",
+    desc: "键盘声、打印机声和“收到”组成海浪。戴上后，工位短暂变成海边。",
+    effect: "把办公室噪音调成一片适合发呆的海。",
+    side: "可能连同事叫你吃饭也没听见。",
+    crowd: "开放式工位难民、需要专注的人、下午三点犯困者。",
+    review: "“听见海了，也听见老板喊我名字了。”",
+    price: "7.2",
+    color: "#bde3f2",
+    stars: 4.8,
+  },
+  {
+    id: "vacation-pill",
+    emoji: "🏖️",
+    name: "年假幻觉剂",
+    en: "VACATION PILL",
+    tag: "职场续命",
+    desc: "服用后，工位短暂出现海风。药效两小时，足够你计划一次真正的出走。",
+    effect: "在工位和海边之间开一扇临时的窗。",
+    side: "回到现实时会有一点落差，请配合深呼吸服用。",
+    crowd: "年假余额不足者、想逃班的人、需要海的人。",
+    review: "“闻到了海风，也闻到了打印机，但心情好了一点。”",
+    price: "17.7",
+    color: "#b9e7cd",
+    stars: 4.7,
+  },
+  {
+    id: "vanish-spray",
+    emoji: "💨",
+    name: "人间蒸发喷雾",
+    en: "VANISH SPRAY",
+    tag: "社交糊弄",
+    desc: "仅限社交电量耗尽时使用，十分钟后自动回来。回来时，世界还在，但你没那么怕了。",
+    effect: "在人群里短暂隐身，给社交电量一个缓冲。",
+    side: "可能连你想见的人也找不到你。",
+    crowd: "社恐星人、聚会逃兵、需要独处的人。",
+    review: "“消失了十分钟，回来时大家没发现，太好了。”",
+    price: "11.0",
+    color: "#f4bdde",
+    stars: 4.6,
+  },
+  {
+    id: "praise-notes",
+    emoji: "🗒️",
+    name: "夸夸便签",
+    en: "PRAISE NOTES",
+    tag: "情绪补给",
+    desc: "每天一张，贴在电脑边，写着“你做得很好”。便签不会评价你的 KPI，只负责夸你。",
+    effect: "在自我怀疑时提供一张小小的证据。",
+    side: "用久了会开始相信，可能有点危险。",
+    crowd: "缺能量的人、被否定过的人、需要一点光的人。",
+    review: "“今天它写着‘你已经很努力了’，我贴在了工牌上。”",
+    price: "3.0",
+    color: "#ffe45c",
+    stars: 5.0,
+  },
+  {
+    id: "chill-raincoat",
+    emoji: "🧥",
+    name: "情绪稳定雨衣",
+    en: "CHILL RAINCOAT",
+    tag: "情绪补给",
+    desc: "挡住生活的酸雨，也会挡住一点阳光。但至少，里面的你可以慢慢走。",
+    effect: "让突如其来的坏消息顺着衣角滑下去。",
+    side: "穿太久会忘记怎么淋雨，也忘记怎么晒太阳。",
+    crowd: "成年人、情绪照护者、需要一层保护的人。",
+    review: "“雨没停，但我没湿，已经够了。”",
+    price: "22.0",
+    color: "#b9e7cd",
+    stars: 4.8,
+  },
+  {
+    id: "scope-clay",
+    emoji: "🫠",
+    name: "甲方需求橡皮泥",
+    en: "SCOPE CLAY",
+    tag: "乙方专用",
+    desc: "怎么捏都能成型，除了你的耐心。每改一版，它都会说“这次感觉对了”。",
+    effect: "把不断变化的需求揉成一个能交差的东西。",
+    side: "会粘在手上，甩也甩不掉，像某些项目。",
+    crowd: "乙方、项目经理、被需求追着跑的人。",
+    review: "“捏到最后，甲方说还是第一版好，我笑了。”",
+    price: "33.0",
+    color: "#ffd3a1",
+    stars: 4.5,
+  },
+  {
+    id: "sleep-warden",
+    emoji: "🌙",
+    name: "早睡监督员",
+    en: "SLEEP WARDEN",
+    tag: "睡眠专区",
+    desc: "23:00 准时没收手机，但会还你一个好觉。它不听解释，只认作息。",
+    effect: "在深夜把你从短视频的传送带上拽下来。",
+    side: "可能连你真的想看的消息也一起锁了。",
+    crowd: "熬夜惯犯、睡眠负债人、明早一定早睡者。",
+    review: "“被没收手机的那晚，我睡了八小时，梦都没做。”",
+    price: "9.0",
+    color: "#c9d2ff",
+    stars: 4.9,
+  },
+  {
+    id: "worker-time-capsule",
+    emoji: "⏳",
+    name: "打工人时间胶囊",
+    en: "TIME CAPSULE",
+    tag: "职场续命",
+    desc: "把今天的痛苦寄给明年，让他也感受一下。当然，也会寄去一点撑过来的自己。",
+    effect: "让当下的难熬变成未来的一个笑话。",
+    side: "明年打开时，可能已经换了工作，也可能还在。",
+    crowd: "正在熬的人、想留点证据的人、需要相信会过去的人。",
+    review: "“去年埋的，今年挖出来了，我还活着，甚至升职了。”",
+    price: "12.0",
+    color: "#d9d1ff",
+    stars: 4.9,
+  },
+  {
+    id: "anti-roll-band",
+    emoji: "🥋",
+    name: "反卷头巾",
+    en: "ANTI-ROLL BAND",
+    tag: "精神状态",
+    desc: "戴上后，别人卷你也不慌。头巾上绣着四个字：关我什么事。",
+    effect: "在全员加速的环境里，维持自己的速度。",
+    side: "可能错过一些机会，但也会错过一些内耗。",
+    crowd: "反卷先锋、准时下班派、被比较到麻木的人。",
+    review: "“别人卷生卷死，我午睡醒来，世界还在转。”",
+    price: "6.0",
+    color: "#ffc5b2",
+    stars: 4.8,
+  },
+  {
+    id: "monday-alert",
+    emoji: "🌧️",
+    name: "周一下雨警报",
+    en: "MONDAY ALERT",
+    tag: "周一特供",
+    desc: "提前 48 小时提醒你：周一要来了。警报声是雨声，适合在周日晚上抱着枕头听。",
+    effect: "让周日焦虑提前被看见，并有一点准备时间。",
+    side: "也可能让整个周末都笼罩在“周一要来”的阴影里。",
+    crowd: "周日恐惧症、周末珍惜者、需要心理准备的人。",
+    review: "“提前两天开始焦虑，焦虑得很充分，周一反而没那么糟。”",
+    price: "4.4",
+    color: "#bde3f2",
+    stars: 4.3,
+  },
+  {
+    id: "eight-am-blinds",
+    emoji: "😴",
+    name: "早八隐形眼罩",
+    en: "8AM BLINDS",
+    tag: "时间管理",
+    desc: "睁不开眼也能看起来在认真听。眼罩外侧印着“收到”，内侧是柔软的黑。",
+    effect: "在早八课堂或晨会上保留最后一点睡意。",
+    side: "可能真的睡着，并错过点名。",
+    crowd: "早八人、通勤补觉党、会议闭目养神者。",
+    review: "“老师以为我在思考，其实我在做梦。”",
+    price: "5.0",
+    color: "#c9d2ff",
+    stars: 4.4,
+  },
+  {
+    id: "delivery-charm",
+    emoji: "🥟",
+    name: "外卖准时符",
+    en: "DELIVERY CHARM",
+    tag: "居家玄学",
+    desc: "下单即到，前提是你不盯着进度条。越盯越慢，越佛越快，玄学莫测。",
+    effect: "让等待外卖的时间在感官上缩短一半。",
+    side: "可能准时到的是别人的外卖，你的还在路上。",
+    crowd: "深夜点单选手、饥饿难耐者、相信玄学的人。",
+    review: "“贴上后五分钟就到了，虽然送错了楼层，但至少到了。”",
+    price: "2.0",
+    color: "#ffe45c",
+    stars: 4.6,
+  },
+  {
+    id: "order-mask",
+    emoji: "🎭",
+    name: "社恐点单面具",
+    en: "ORDER MASK",
+    tag: "社交糊弄",
+    desc: "去前台点单不再需要心理建设。面具上写着“中杯，少冰，谢谢”，一目了然。",
+    effect: "把开口这件事变成一次简单的展示。",
+    side: "遇到熟人时，面具会让你看起来像在 cosplay。",
+    crowd: "社恐点单者、咖啡店犹豫选手、不想说话的人。",
+    review: "“顺利点完了，店员还夸我面具好看，值。”",
+    price: "9.9",
+    color: "#f4bdde",
+    stars: 4.7,
+  },
+  {
+    id: "mood-cable",
+    emoji: "🔋",
+    name: "情绪充电线",
+    en: "MOOD CABLE",
+    tag: "情绪补给",
+    desc: "一头连着朋友，一头连着你，慢慢充。充电时会发热，像有人认真听你说话。",
+    effect: "把一段好的对话变成可持续的能量。",
+    side: "线太长会打结，关系也是；请偶尔整理。",
+    crowd: "需要被听见的人、朋友充电宝、深夜聊天选手。",
+    review: "“聊了半小时，电量从 3% 到 40%，够撑到明天。”",
+    price: "15.0",
+    color: "#b9e7cd",
+    stars: 5.0,
+  },
+  {
+    id: "slack-credit",
+    emoji: "💳",
+    name: "摸鱼额度卡",
+    en: "SLACK CREDIT",
+    tag: "摸鱼装备",
+    desc: "每天 30 分钟合法发呆，超时自动续费。额度可累积，但不会过期。",
+    effect: "把摸鱼从偷偷摸摸变成一张有额度的卡。",
+    side: "额度用完后会自动产生“我该努力了”的幻觉。",
+    crowd: "工位摸鱼党、灵感工作者、需要留白的人。",
+    review: "“额度刷完了，但我发现发呆其实也在工作。”",
+    price: "10.0",
+    color: "#ffe45c",
+    stars: 4.8,
+  },
+  {
+    id: "reverse-alarm",
+    emoji: "🛏️",
+    name: "反向闹钟",
+    en: "REVERSE ALARM",
+    tag: "睡眠专区",
+    desc: "不叫你起床，只提醒你早点睡。到点会轻轻说：明天再刷也来得及。",
+    effect: "在下班后给你一个温柔的收尾。",
+    side: "可能被无视，并继续响到凌晨。",
+    crowd: "报复性熬夜党、睡前刷手机者、需要被温柔提醒的人。",
+    review: "“响了，我关了，又刷了一小时，但至少听见了。”",
+    price: "4.5",
+    color: "#c9d2ff",
+    stars: 4.6,
+  },
+  {
+    id: "fake-raise",
+    emoji: "📈",
+    name: "空气加薪通知",
+    en: "FAKE RAISE",
+    tag: "职场续命",
+    desc: "打印出来贴墙上，摸鱼时看一眼。金额自填，签名处写着“你值得”。",
+    effect: "在没有涨薪的日子里，提供一点体面的幻觉。",
+    side: "HR 看见会问你在干什么，请提前想好解释。",
+    crowd: "薪资沉默者、需要鼓励的打工人、工位装饰爱好者。",
+    review: "“贴了之后心情好了，直到看到工资条。”",
+    price: "0.8",
+    color: "#ffd3a1",
+    stars: 4.5,
+  },
+  {
+    id: "weekend-extender",
+    emoji: "🕰️",
+    name: "周末延长器",
+    en: "WEEKEND EXTENDER",
+    tag: "时间管理",
+    desc: "把周六下午调成 0.5 倍速，让一杯咖啡喝很久，让阳光在桌上多停一会儿。",
+    effect: "让周末的体感长度增加 40%。",
+    side: "周一早上的时间会报复性加速。",
+    crowd: "周末珍惜者、时间焦虑者、需要慢下来的人。",
+    review: "“周六下午像过了两天，晚上也不舍得睡。”",
+    price: "14.9",
+    color: "#b9e7cd",
+    stars: 4.9,
+  },
+  {
+    id: "overthink-calc",
+    emoji: "🧮",
+    name: "内耗计算器",
+    en: "OVERTHINK CALC",
+    tag: "精神状态",
+    desc: "输入你今天想了几遍，算到最后显示：“想这么多也没用”。附赠一次深呼吸。",
+    effect: "把抽象的焦虑变成一个具体且荒谬的数字。",
+    side: "算得太清楚，可能开始为思考本身内耗。",
+    crowd: "高敏人群、复盘成瘾者、睡前脑内小剧场。",
+    review: "“算了 47 遍，结论是我不该算。”",
+    price: "2.5",
+    color: "#d9d1ff",
+    stars: 4.8,
+  },
+  {
+    id: "sleep-limiter",
+    emoji: "💤",
+    name: "睡眠防沉迷系统",
+    en: "SLEEP LIMITER",
+    tag: "睡眠专区",
+    desc: "刷到第 88 个视频自动锁屏。你可以挣扎，但屏幕已经不给你机会了。",
+    effect: "在深夜替你按下那个按不下去的暂停键。",
+    side: "可能在你正看到关键剧情时锁屏，并让你惦记一整晚。",
+    crowd: "短视频成瘾者、报复性熬夜党、需要外力的人。",
+    review: "“锁了，我躺了十分钟就睡着了，剧情第二天没那么重要。”",
+    price: "8.8",
+    color: "#bde3f2",
+    stars: 4.7,
+  },
+  {
+    id: "monday-drip",
+    emoji: "☕",
+    name: "周一咖啡因吊瓶",
+    en: "MONDAY DRIP",
+    tag: "周一特供",
+    desc: "一滴唤醒灵魂，两滴开始写周报。三滴会让你觉得这个班还能再上一天。",
+    effect: "在周一早上以最快速度恢复基本人类功能。",
+    side: "可能晚上睡不着，并开始思考工作的意义。",
+    crowd: "周一断电人、早会发言者、周末作息紊乱者。",
+    review: "“挂了两滴，能说话了，但不想说。”",
+    price: "6.9",
+    color: "#ffd3a1",
+    stars: 4.8,
+  },
+  {
+    id: "revision-coin",
+    emoji: "🪙",
+    name: "甲方改稿复活币",
+    en: "REVISION COIN",
+    tag: "乙方专用",
+    desc: "每改一版，自动掉一枚，捡起来继续。集齐 18 枚，可以兑换一次“这版真的定了”的错觉。",
+    effect: "在无止境的修改中，给耐心续一格。",
+    side: "复活后仍需改稿，且可能掉落新的需求。",
+    crowd: "乙方设计、文案、项目经理、第 18 版选手。",
+    review: "“第 18 版交上去了，甲方说再回到第一版，我的币白攒了。”",
+    price: "3.8",
+    color: "#ffe45c",
+    stars: 4.7,
+  },
+  {
+    id: "power-nap",
+    emoji: "🛌",
+    name: "打盹十五分钟",
+    en: "POWER NAP",
+    tag: "睡眠专区",
+    desc: "午休一下，下午像换了个人。前提是你能在十五分钟内真正睡着，并准时醒。",
+    effect: "把午后的困倦折成一场小小的重启。",
+    side: "可能睡过头，醒来发现会议已经结束。",
+    crowd: "午休党、下午断电人、工位补觉选手。",
+    review: "“没睡着，但闭眼十五分钟也像充了电，值。”",
+    price: "5.5",
+    color: "#c9d2ff",
+    stars: 4.7,
+  },
+  {
+    id: "work-amnesia",
+    emoji: "🌫️",
+    name: "职场失忆喷雾",
+    en: "WORK AMNESIA",
+    tag: "职场续命",
+    desc: "忘掉早会内容，但记得下班时间。喷一喷，烦人的细节会暂时模糊。",
+    effect: "让重复的职场噪音从记忆里滑走。",
+    side: "可能连领导刚交代的任务也忘了，请谨慎使用。",
+    crowd: "会议失忆者、重复劳动选手、想清空缓存的人。",
+    review: "“忘了早会，也没记住午饭吃什么，但下班记得很清楚。”",
+    price: "7.0",
+    color: "#b9e7cd",
+    stars: 4.5,
+  },
+  {
+    id: "void-leave",
+    emoji: "📜",
+    name: "宇宙尽头请假条",
+    en: "VOID LEAVE",
+    tag: "宇宙特供",
+    desc: "目的地：无。理由：想休息。批准人：你自己。宇宙尽头不需要打卡。",
+    effect: "给疲惫一个不用解释的出口。",
+    side: "回到地球后仍需补班，但心态会轻一点。",
+    crowd: "需要停下来的人、年假不足者、宇宙尽头打工人。",
+    review: "“批了，我自己批的，走出公司那一刻风都是甜的。”",
+    price: "0",
+    color: "#ffc5b2",
+    stars: 5.0,
+  },
 ];
 
 const RARE_PRODUCTS = [
@@ -662,10 +1337,165 @@ const RARE_PRODUCTS = [
   },
 ];
 
+const COMMUNITY_SEEDS = [
+  {
+    id: "seed-idle-tank",
+    emoji: "🐠",
+    name: "电子放空鱼缸",
+    en: "IDLE TANK",
+    tag: "精神玄学",
+    desc: "盯着看三分钟，大脑自动清空。鱼会游，但什么也不解决。",
+    effect: "把待机的大脑放进一缸安静的水里。",
+    side: "看太久会想去买一个真的鱼缸，然后继续看。",
+    crowd: "脑内弹幕太多的人、需要放空的人、工位发呆选手。",
+    review: "“看了一会儿，想起自己还有呼吸。”",
+    price: "15.0",
+    color: "#bde3f2",
+    stars: 4.8,
+    community: true,
+    author: "发呆冠军",
+    sales: 7,
+  },
+  {
+    id: "seed-payday-sound",
+    emoji: "🔔",
+    name: "工资到账音效",
+    en: "PAYDAY SOUND",
+    tag: "情绪补给",
+    desc: "每次打开钱包都响一下，余额不变，但心情会好三秒。",
+    effect: "给贫穷的生活加一点仪式感。",
+    side: "响完之后看到余额，心情会掉回来。",
+    crowd: "等发薪日的人、月光族、需要一点幻觉的人。",
+    review: "“响得真好听，像钱真的来过。”",
+    price: "1.0",
+    color: "#ffe45c",
+    stars: 4.5,
+    community: true,
+    author: "空钱包",
+    sales: 18,
+  },
+  {
+    id: "seed-feed-cloak",
+    emoji: "🥷",
+    name: "朋友圈分组隐身衣",
+    en: "FEED CLOAK",
+    tag: "社交糊弄",
+    desc: "只让想看见的人看见，其余交给宇宙。",
+    effect: "让你放心做自己，不用给所有人看。",
+    side: "可能连关心你的人也一起隐身了。",
+    crowd: "朋友圈精装修业主、分组困难户、表达欲旺盛者。",
+    review: "“穿上了，发自拍都不纠结了，虽然没人点赞。”",
+    price: "20.0",
+    color: "#d9d1ff",
+    stars: 4.7,
+    community: true,
+    author: "仅自己可见",
+    sales: 3,
+  },
+  {
+    id: "seed-microwave",
+    emoji: "🍱",
+    name: "微波炉叮一下",
+    en: "MICROWAVE DING",
+    tag: "居家玄学",
+    desc: "把昨天的心情加热到刚好能吃。",
+    effect: "让冷掉的饭菜和冷掉的情绪重新有温度。",
+    side: "有些东西热两遍就不好吃了，比如隔夜炸鸡。",
+    crowd: "带饭党、深夜加餐者、舍不得扔剩饭的人。",
+    review: "“叮完以后，昨天的咖喱好像也原谅了我。”",
+    price: "3.3",
+    color: "#ffd3a1",
+    stars: 4.6,
+    community: true,
+    author: "剩饭诗人",
+    sales: 11,
+  },
+  {
+    id: "seed-goodnight-license",
+    emoji: "🌙",
+    name: "晚安许可证",
+    en: "GOODNIGHT LICENSE",
+    tag: "睡眠专区",
+    desc: "允许你今晚什么都不做，直接睡。",
+    effect: "把未读消息和未完成的事暂时挂在门外。",
+    side: "许可证只在今晚有效，明天要重新申请。",
+    crowd: "舍不得睡的人、报复性熬夜党、需要被允许休息的人。",
+    review: "“拿着它睡了，世界没有塌，消息也没有少。”",
+    price: "6.6",
+    color: "#c9d2ff",
+    stars: 4.9,
+    community: true,
+    author: "熬夜惯犯",
+    sales: 24,
+  },
+  {
+    id: "seed-escape-map",
+    emoji: "🗺️",
+    name: "工位逃跑计划",
+    en: "ESCAPE PLAN",
+    tag: "职场续命",
+    desc: "一张只有下班后才看得懂的地图。",
+    effect: "在脑子里规划一条从工位到自由的路线。",
+    side: "地图终点通常是楼下的便利店，不是远方。",
+    crowd: "工位幻想家、午休散步党、需要一点出口的人。",
+    review: "“按地图走到了楼下，买了瓶水，也算出发过。”",
+    price: "12.0",
+    color: "#b9e7cd",
+    stars: 4.8,
+    community: true,
+    author: "周一不起床",
+    sales: 5,
+  },
+  {
+    id: "seed-friday-wind",
+    emoji: "🍃",
+    name: "周五下午的风",
+    en: "FRIDAY BREEZE",
+    tag: "时间管理",
+    desc: "只在周五下午出现，带着一点周末的味道。",
+    effect: "让最后两个小时变得轻盈一点。",
+    side: "周六下午会想念它，但找不到同款。",
+    crowd: "周五期待者、准点下班派、需要一点风的人。",
+    review: "“吹到了，突然觉得这周也没有那么难熬。”",
+    price: "0",
+    color: "#bde3f2",
+    stars: 5.0,
+    community: true,
+    author: "摸鱼气象台",
+    sales: 31,
+  },
+  {
+    id: "seed-mute-sticker",
+    emoji: "🔇",
+    name: "会议静音贴",
+    en: "MEETING MUTE",
+    tag: "职场续命",
+    desc: "贴在额头上，发言自动变成点头。",
+    effect: "在不想说话的时候保持得体的参与感。",
+    side: "可能连真正想说的点子也一起静音。",
+    crowd: "会议社恐、远程会议潜水员、需要低调的人。",
+    review: "“点了一整场头，领导说我今天状态很稳。”",
+    price: "8.8",
+    color: "#ffc5b2",
+    stars: 4.7,
+    community: true,
+    author: "社恐小张",
+    sales: 9,
+  },
+];
+
 const ALL_PRODUCTS = [...PRODUCTS, ...RARE_PRODUCTS];
 const PRODUCT_MAP = new Map(ALL_PRODUCTS.map((product) => [product.id, product]));
+const COMMUNITY_SEED_MAP = new Map(COMMUNITY_SEEDS.map((product) => [product.id, product]));
 const STORAGE_KEY = "blackhole-mart.v1";
 const RARE_CHANCE = 0.075;
+const COMMUNITY_DRAW_CHANCE = 0.18;
+const DRAW_COST = 8.8;
+const CHECKIN_BONUS = 30;
+const DUPLICATE_RATE = 0.5;
+const ROYALTY_RATE = 0.3;
+const STARTING_WALLET = 66;
+const PRODUCT_COLORS = ["#ffe45c", "#c9d2ff", "#ffc5b2", "#bde3f2", "#f4bdde", "#ffd3a1", "#b9e7cd", "#d9d1ff"];
 
 const state = {
   collection: [],
@@ -677,6 +1507,15 @@ const state = {
   isRare: false,
   isDrawing: false,
   mode: "daily",
+  wallet: STARTING_WALLET,
+  todayEarnings: 0,
+  earningsDay: "",
+  lastCheckin: "",
+  nickname: "",
+  userProducts: [],
+  lastSale: null,
+  selectedEmoji: "🫧",
+  isSubmitting: false,
 };
 
 const el = {};
@@ -713,6 +1552,86 @@ function dailyProduct() {
     hash = (hash * 31 + key.charCodeAt(index)) >>> 0;
   }
   return PRODUCTS[hash % PRODUCTS.length];
+}
+
+function roundCoins(value) {
+  return Math.round((Number(value) || 0) * 10) / 10;
+}
+
+function formatCoins(value) {
+  return roundCoins(value).toFixed(1);
+}
+
+function priceOf(product) {
+  const value = Number.parseFloat(String(product?.price ?? 0).replace(/[^\d.]/g, ""));
+  return Number.isFinite(value) ? value : 0;
+}
+
+function getCommunityProducts() {
+  return [...state.userProducts, ...COMMUNITY_SEEDS];
+}
+
+function findProduct(id) {
+  return (
+    PRODUCT_MAP.get(id) ||
+    state.userProducts.find((product) => product.id === id) ||
+    COMMUNITY_SEED_MAP.get(id) ||
+    null
+  );
+}
+
+function normalizeStoredUserProduct(raw) {
+  if (!raw || typeof raw !== "object") {
+    return null;
+  }
+
+  const id = String(raw.id || "").trim();
+  const name = String(raw.name || "").trim().slice(0, 14);
+  if (!id || !/^[a-z0-9-]+$/i.test(id) || !name || PRODUCT_MAP.has(id) || COMMUNITY_SEED_MAP.has(id)) {
+    return null;
+  }
+
+  const price = Math.min(99, Math.max(1, roundCoins(raw.price)));
+  const author = String(raw.author || "匿名住客").trim().slice(0, 12) || "匿名住客";
+  const color = /^#[0-9a-f]{6}$/i.test(String(raw.color || "")) ? raw.color : PRODUCT_COLORS[0];
+  const stars = Number.isFinite(Number(raw.stars)) ? Math.min(5, Math.max(1, Number(raw.stars))) : 4.8;
+
+  return {
+    id,
+    emoji: String(raw.emoji || "✨").slice(0, 8),
+    name,
+    en: "COMMUNITY GOODS",
+    tag: String(raw.tag || "住客投稿").slice(0, 12),
+    desc: String(raw.desc || "一件由住客写下的平行宇宙好物。").slice(0, 60),
+    effect: String(raw.effect || `让「${name}」在需要的时候刚好派上用场。`).slice(0, 80),
+    side: String(raw.side || "用久了会开始相信，离谱的东西也有它的道理。").slice(0, 80),
+    crowd: String(raw.crowd || "所有需要一点想象力的人。").slice(0, 80),
+    review: String(raw.review || `“${raw.desc || name}”`).slice(0, 100),
+    price: price.toFixed(1),
+    unit: "宇宙币",
+    color,
+    stars,
+    rare: false,
+    community: true,
+    author,
+    sales: Math.max(0, Math.floor(Number(raw.sales) || 0)),
+    earnings: Math.max(0, roundCoins(raw.earnings)),
+    createdAt: Number(raw.createdAt) || Date.now(),
+  };
+}
+
+function ensureFreshDay() {
+  const today = dayKey();
+  if (state.day !== today) {
+    state.day = today;
+    state.todayCount = 0;
+    state.todayEarnings = 0;
+    state.earningsDay = today;
+  }
+  if (state.earningsDay !== today) {
+    state.earningsDay = today;
+    state.todayEarnings = 0;
+  }
 }
 
 function cacheElements() {
@@ -764,6 +1683,44 @@ function cacheElements() {
   el.heartLayer = $("heartLayer");
   el.liveRegion = $("liveRegion");
   el.machineTray = el.machine.querySelector(".machine-tray");
+  el.walletPill = $("walletPill");
+  el.walletBalance = $("walletBalance");
+  el.walletPanelBalance = $("walletPanelBalance");
+  el.todayEarnings = $("todayEarnings");
+  el.checkinButton = $("checkinButton");
+  el.checkinLabel = $("checkinLabel");
+  el.drawCost = $("drawCost");
+  el.earnLink = $("earnLink");
+  el.community = $("community");
+  el.communityGrid = $("communityGrid");
+  el.communityCount = $("communityCount");
+  el.communityFeed = $("communityFeed");
+  el.openSubmit = $("openSubmit");
+  el.submitDialog = $("submitDialog");
+  el.closeSubmitDialog = $("closeSubmitDialog");
+  el.cancelSubmit = $("cancelSubmit");
+  el.submitForm = $("submitForm");
+  el.submitFormView = $("submitFormView");
+  el.submitSuccessView = $("submitSuccessView");
+  el.itemName = $("itemName");
+  el.itemPrice = $("itemPrice");
+  el.itemDesc = $("itemDesc");
+  el.itemTag = $("itemTag");
+  el.itemSide = $("itemSide");
+  el.itemAuthor = $("itemAuthor");
+  el.emojiPicker = $("emojiPicker");
+  el.formFee = $("formFee");
+  el.formError = $("formError");
+  el.submitButton = $("submitButton");
+  el.successEmoji = $("successEmoji");
+  el.successName = $("successName");
+  el.successAuthor = $("successAuthor");
+  el.successPrice = $("successPrice");
+  el.successFee = $("successFee");
+  el.successRoyalty = $("successRoyalty");
+  el.successTotal = $("successTotal");
+  el.writeAnother = $("writeAnother");
+  el.backToShelf = $("backToShelf");
 }
 
 /* ---------- persistence ---------- */
@@ -778,14 +1735,41 @@ function loadState() {
   }
 
   const today = dayKey();
+  const storedUsers = Array.isArray(saved?.userProducts) ? saved.userProducts : [];
+  const seenUserIds = new Set();
+  state.userProducts = storedUsers
+    .map(normalizeStoredUserProduct)
+    .filter((product) => {
+      if (!product || seenUserIds.has(product.id)) {
+        return false;
+      }
+      seenUserIds.add(product.id);
+      return true;
+    });
+
   const storedCollection = Array.isArray(saved?.collection) ? saved.collection : [];
-  state.collection = [...new Set(storedCollection)].filter((id) => PRODUCT_MAP.has(id));
+  state.collection = [...new Set(storedCollection)].filter((id) => Boolean(findProduct(id)));
   state.soundOn = saved?.soundOn !== false;
   state.catPets = Number.isFinite(saved?.catPets) ? saved.catPets : 0;
+  state.wallet = Number.isFinite(saved?.wallet) ? Math.max(0, roundCoins(saved.wallet)) : STARTING_WALLET;
+  state.nickname = typeof saved?.nickname === "string" ? saved.nickname.slice(0, 12) : "";
+  state.lastCheckin = typeof saved?.lastCheckin === "string" ? saved.lastCheckin : "";
   state.day = today;
   state.todayCount = saved?.day === today && Number.isFinite(saved?.todayCount) ? saved.todayCount : 0;
+  state.earningsDay = today;
+  state.todayEarnings =
+    saved?.earningsDay === today && Number.isFinite(saved?.todayEarnings) ? roundCoins(saved.todayEarnings) : 0;
 
-  const savedProduct = typeof saved?.currentId === "string" ? PRODUCT_MAP.get(saved.currentId) : null;
+  if (saved?.lastSale && typeof saved.lastSale === "object" && saved.lastSale.name) {
+    state.lastSale = {
+      name: String(saved.lastSale.name).slice(0, 40),
+      revenue: roundCoins(saved.lastSale.revenue),
+      author: String(saved.lastSale.author || "").slice(0, 16),
+      at: Number(saved.lastSale.at) || Date.now(),
+    };
+  }
+
+  const savedProduct = typeof saved?.currentId === "string" ? findProduct(saved.currentId) : null;
   if (savedProduct) {
     state.current = savedProduct;
     state.isRare = Boolean(savedProduct.rare);
@@ -809,6 +1793,13 @@ function persistState() {
         todayCount: state.todayCount,
         catPets: state.catPets,
         currentId: state.current ? state.current.id : null,
+        wallet: state.wallet,
+        todayEarnings: state.todayEarnings,
+        earningsDay: state.earningsDay,
+        lastCheckin: state.lastCheckin,
+        nickname: state.nickname,
+        userProducts: state.userProducts,
+        lastSale: state.lastSale,
       }),
     );
   } catch (error) {
@@ -941,12 +1932,21 @@ function renderBarcode(seedText) {
   el.barcode.replaceChildren(fragment);
 }
 
-function stickerForMode(product, mode, fromVault) {
+function stickerForMode(product, mode, fromVault, customLabel) {
   if (product.rare) {
     return "隐藏款 · 恭喜";
   }
+  if (customLabel) {
+    return customLabel;
+  }
   if (fromVault) {
     return "仓库翻出";
+  }
+  if (mode === "community") {
+    return "共创货架";
+  }
+  if (product.community && mode === "draw") {
+    return "住客投稿";
   }
   if (mode === "draw") {
     return "新鲜出炉";
@@ -958,16 +1958,19 @@ function stickerForMode(product, mode, fromVault) {
 }
 
 function renderProduct(product, options = {}) {
-  const { mode = state.mode, print = false, fromVault = false } = options;
+  const { mode = state.mode, print = false, fromVault = false, sticker = "" } = options;
 
   state.current = product;
   state.isRare = Boolean(product.rare);
   state.mode = mode;
 
   const isRare = Boolean(product.rare);
+  const isCommunity = Boolean(product.community);
   el.receiptWrap.style.setProperty("--accent", product.color);
   el.receiptWrap.classList.toggle("is-rare", isRare);
+  el.receiptWrap.classList.toggle("is-community", isCommunity);
   el.receipt.classList.toggle("is-rare", isRare);
+  el.receipt.classList.toggle("is-community", isCommunity);
 
   const serial = currentSerial();
   const now = new Date();
@@ -975,11 +1978,13 @@ function renderProduct(product, options = {}) {
 
   el.receiptDate.textContent = formatTimestamp(now);
   el.receiptNo.textContent = `NO. 404-${shortDate}-${serial}${isRare ? "R" : ""}`;
-  el.receiptSticker.textContent = stickerForMode(product, mode, fromVault);
+  el.receiptSticker.textContent = stickerForMode(product, mode, fromVault, sticker);
   el.productEmoji.textContent = product.emoji;
   el.productTag.textContent = product.tag;
   el.productName.textContent = product.name;
-  el.productEn.textContent = product.en;
+  el.productEn.textContent = isCommunity
+    ? `COMMUNITY GOODS · @${product.author || "匿名住客"}`
+    : product.en;
   el.productPrice.textContent = product.price;
   el.productUnit.textContent = product.unit || "宇宙币";
   el.productDesc.textContent = product.desc;
@@ -987,7 +1992,7 @@ function renderProduct(product, options = {}) {
   el.productSide.textContent = product.side;
   el.productFor.textContent = product.crowd;
   el.productReview.textContent = product.review;
-  el.stars.innerHTML = `★★★★★ <b>${product.stars.toFixed(1)}</b>`;
+  el.stars.innerHTML = `★★★★★ <b>${Number(product.stars).toFixed(1)}</b>`;
   el.barcodeText.textContent = `404 ${shortDate} ${serial} · BHM`;
   renderBarcode(`${product.id}-${shortDate}-${serial}-${state.collection.length}`);
 
@@ -1029,16 +2034,16 @@ function updateActiveVaultItem() {
 
 function updateStats() {
   const total = ALL_PRODUCTS.length;
-  const found = state.collection.length;
-  const percent = total ? Math.round((found / total) * 100) : 0;
+  const officialFound = state.collection.filter((id) => PRODUCT_MAP.has(id)).length;
+  const percent = total ? Math.round((officialFound / total) * 100) : 0;
 
   el.todayCount.textContent = String(state.todayCount);
-  el.collectionStat.textContent = String(found);
+  el.collectionStat.textContent = String(officialFound);
   el.collectionTotal.textContent = String(total);
-  el.vaultCount.textContent = String(found).padStart(2, "0");
-  el.progressLabel.textContent = `${found} / ${total}`;
+  el.vaultCount.textContent = String(state.collection.length).padStart(2, "0");
+  el.progressLabel.textContent = `${officialFound} / ${total}`;
   el.progressBar.style.width = `${percent}%`;
-  el.progressBar.parentElement.setAttribute("aria-label", `收集进度 ${found} / ${total}`);
+  el.progressBar.parentElement.setAttribute("aria-label", `图鉴进度 ${officialFound} / ${total}`);
 }
 
 function makeVaultItem(product, index, newId) {
@@ -1052,6 +2057,9 @@ function makeVaultItem(product, index, newId) {
 
   if (product.rare) {
     button.classList.add("is-rare");
+  }
+  if (product.community) {
+    button.classList.add("is-community");
   }
   if (state.current && state.current.id === product.id) {
     button.classList.add("is-active");
@@ -1076,7 +2084,9 @@ function makeVaultItem(product, index, newId) {
 
   const meta = document.createElement("span");
   meta.className = "vault-price";
-  meta.textContent = `${product.price} ${product.unit || "宇宙币"} · ★ ${product.stars.toFixed(1)}`;
+  meta.textContent = product.community
+    ? `共创 · ${product.price} 币 · @${product.author || "住客"}`
+    : `${product.price} ${product.unit || "宇宙币"} · ★ ${Number(product.stars).toFixed(1)}`;
 
   button.append(indexLabel, emoji, name, meta);
   return button;
@@ -1085,7 +2095,7 @@ function makeVaultItem(product, index, newId) {
 function renderVault(newId = null) {
   const fragment = document.createDocumentFragment();
   state.collection.forEach((id, index) => {
-    const product = PRODUCT_MAP.get(id);
+    const product = findProduct(id);
     if (product) {
       fragment.appendChild(makeVaultItem(product, index, newId));
     }
@@ -1115,13 +2125,426 @@ function collectProduct(product) {
   return isNew;
 }
 
+/* ---------- economy ---------- */
+
+function pulseWallet(kind) {
+  if (el.walletPill) {
+    el.walletPill.classList.remove("is-crediting", "is-spending");
+    // Restart the tiny wallet animation on every credit or debit.
+    void el.walletPill.offsetWidth;
+    el.walletPill.classList.add(kind === "spend" ? "is-spending" : "is-crediting");
+    window.setTimeout(() => {
+      el.walletPill?.classList.remove("is-crediting", "is-spending");
+    }, 720);
+  }
+}
+
+function updateWalletUi(pulse = "") {
+  if (!el.walletBalance) {
+    return;
+  }
+
+  const balance = formatCoins(state.wallet);
+  const claimed = state.lastCheckin === dayKey();
+  const freeDraw = state.wallet + 0.001 < DRAW_COST;
+
+  el.walletBalance.textContent = balance;
+  el.walletPanelBalance.textContent = balance;
+  el.todayEarnings.textContent = `今日进账 +${formatCoins(state.todayEarnings)}`;
+  el.checkinButton.disabled = claimed;
+  el.checkinLabel.textContent = claimed ? "今日已签到" : `今日签到 +${CHECKIN_BONUS}`;
+  el.drawCost.textContent = freeDraw ? "店长请客" : `−${formatCoins(DRAW_COST)} 币`;
+  el.drawCost.classList.toggle("is-free", freeDraw);
+  el.walletPill.setAttribute(
+    "aria-label",
+    `我的宇宙币 ${balance}，前往共创货架赚币`,
+  );
+
+  if (pulse) {
+    pulseWallet(pulse);
+  }
+}
+
+function creditCoins(amount) {
+  const value = roundCoins(Math.max(0, amount));
+  state.wallet = roundCoins(state.wallet + value);
+  state.todayEarnings = roundCoins(state.todayEarnings + value);
+  updateWalletUi("credit");
+  return value;
+}
+
+function spendCoins(amount) {
+  const value = roundCoins(Math.max(0, amount));
+  state.wallet = Math.max(0, roundCoins(state.wallet - value));
+  updateWalletUi("spend");
+  return value;
+}
+
+function playCoinSound() {
+  tone(880, 0, 0.07, { type: "sine", volume: 0.02 });
+  tone(1174.66, 0.07, 0.12, { type: "sine", volume: 0.018 });
+  tone(1567.98, 0.16, 0.2, { type: "sine", volume: 0.014 });
+}
+
+function claimDailyBonus() {
+  ensureFreshDay();
+  if (state.lastCheckin === state.day) {
+    showToast("今天已经签到过了，明天再来领。");
+    return;
+  }
+
+  state.lastCheckin = state.day;
+  creditCoins(CHECKIN_BONUS);
+  persistState();
+  playCoinSound();
+  showToast(`签到成功，宇宙币 +${CHECKIN_BONUS}。今天也请多关照。`, 3000);
+}
+
+function maybeRunCommunitySale() {
+  if (state.userProducts.length === 0 || Math.random() > 0.42) {
+    return null;
+  }
+
+  const product = state.userProducts[Math.floor(Math.random() * state.userProducts.length)];
+  const revenue = Math.max(1, roundCoins(priceOf(product) * ROYALTY_RATE));
+  product.sales = (Number(product.sales) || 0) + 1;
+  product.earnings = roundCoins((Number(product.earnings) || 0) + revenue);
+  state.lastSale = {
+    name: product.name,
+    revenue,
+    author: product.author,
+    at: Date.now(),
+  };
+  creditCoins(revenue);
+  renderCommunity();
+  return { product, revenue };
+}
+
+function sellDuplicate(product) {
+  const credit = Math.max(1, roundCoins(priceOf(product) * DUPLICATE_RATE));
+  creditCoins(credit);
+  return credit;
+}
+
+/* ---------- community shelf ---------- */
+
+function updateCommunityFeed() {
+  if (!el.communityFeed) {
+    return;
+  }
+
+  if (state.lastSale && dayKey(new Date(state.lastSale.at)) === dayKey()) {
+    const author = state.lastSale.author ? `@${state.lastSale.author}` : "一位住客";
+    el.communityFeed.textContent = `小店动态：${author} 的《${state.lastSale.name}》刚被一位路过的宇航员买走，分成 +${formatCoins(state.lastSale.revenue)} 币。`;
+    return;
+  }
+
+  el.communityFeed.textContent = "小店动态：猫店长正在核对今天的账本，货架暂时很安静。";
+}
+
+function makeCommunityCard(product, isOwn, newId) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "community-card";
+  button.dataset.id = product.id;
+  button.style.setProperty("--accent", product.color);
+  button.setAttribute("aria-label", `查看住客投稿 ${product.name}，作者 ${product.author || "匿名住客"}`);
+  if (isOwn) {
+    button.classList.add("is-own");
+  }
+  if (product.id === newId) {
+    button.classList.add("is-new");
+  }
+
+  const top = document.createElement("span");
+  top.className = "community-card-top";
+
+  const authorWrap = document.createElement("span");
+  authorWrap.className = "community-author";
+  const avatar = document.createElement("span");
+  avatar.className = "community-avatar";
+  avatar.setAttribute("aria-hidden", "true");
+  avatar.textContent = (product.author || "匿").slice(0, 1);
+  const authorName = document.createElement("span");
+  authorName.className = "community-author-name";
+  authorName.textContent = `@${product.author || "匿名住客"}`;
+  const badge = document.createElement("span");
+  badge.className = "community-badge";
+  badge.textContent = isOwn ? "我的作品" : "住客投稿";
+  authorWrap.append(avatar, authorName, badge);
+
+  const price = document.createElement("span");
+  price.className = "community-price";
+  price.textContent = `${product.price} 币`;
+  top.append(authorWrap, price);
+
+  const body = document.createElement("span");
+  body.className = "community-body";
+  const emoji = document.createElement("span");
+  emoji.className = "community-emoji";
+  emoji.setAttribute("aria-hidden", "true");
+  emoji.textContent = product.emoji;
+
+  const copy = document.createElement("span");
+  copy.className = "community-copy";
+  const name = document.createElement("span");
+  name.className = "community-name";
+  name.textContent = product.name;
+  const desc = document.createElement("span");
+  desc.className = "community-desc";
+  desc.textContent = product.desc;
+  copy.append(name, desc);
+  body.append(emoji, copy);
+
+  const bottom = document.createElement("span");
+  bottom.className = "community-card-bottom";
+  const sales = document.createElement("span");
+  sales.className = "community-sales";
+  sales.textContent = `已售 ${Number(product.sales) || 0} 件`;
+  const royalty = document.createElement("span");
+  royalty.className = "community-royalty";
+  royalty.textContent = `分成 ${formatCoins(Math.max(1, priceOf(product) * ROYALTY_RATE))} 币/件`;
+  bottom.append(sales, royalty);
+
+  button.append(top, body, bottom);
+  return button;
+}
+
+function renderCommunity(newId = null) {
+  if (!el.communityGrid) {
+    return;
+  }
+
+  const items = getCommunityProducts();
+  const previousScroll = el.communityGrid.scrollLeft;
+  const fragment = document.createDocumentFragment();
+  items.forEach((product) => {
+    const isOwn = state.userProducts.some((entry) => entry.id === product.id);
+    fragment.appendChild(makeCommunityCard(product, isOwn, newId));
+  });
+
+  el.communityGrid.replaceChildren(fragment);
+  el.communityGrid.scrollLeft = newId ? 0 : previousScroll;
+  el.communityCount.textContent = String(items.length);
+  updateCommunityFeed();
+
+  if (newId) {
+    window.setTimeout(() => {
+      const node = el.communityGrid.querySelector(`[data-id="${newId}"]`);
+      node?.classList.remove("is-new");
+    }, 950);
+  }
+}
+
+function showCommunityProduct(product) {
+  if (!product) {
+    return;
+  }
+
+  renderProduct(product, { mode: "community", print: true });
+  if (window.matchMedia("(max-width: 930px)").matches) {
+    el.receiptWrap.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+/* ---------- submission form ---------- */
+
+function authorFeeFor(price) {
+  return Math.max(30, roundCoins(20 + price * 0.6));
+}
+
+function setSelectedEmoji(emoji) {
+  state.selectedEmoji = emoji;
+  el.emojiPicker.querySelectorAll("[data-emoji]").forEach((button) => {
+    const selected = button.dataset.emoji === emoji;
+    button.classList.toggle("is-selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+}
+
+function updateFeePreview() {
+  const price = roundCoins(el.itemPrice.value);
+  const fee = Number.isFinite(price) && price > 0 ? authorFeeFor(price) : 30;
+  el.formFee.textContent = `+${formatCoins(fee)} 币`;
+}
+
+function setSubmitError(message) {
+  el.formError.textContent = message || "";
+}
+
+function resetSubmitForm() {
+  el.submitForm.reset();
+  state.selectedEmoji = "🫧";
+  setSelectedEmoji("🫧");
+  el.itemPrice.value = "9.9";
+  el.itemAuthor.value = state.nickname || "";
+  setSubmitError("");
+  updateFeePreview();
+  el.submitFormView.hidden = false;
+  el.submitSuccessView.hidden = true;
+  state.isSubmitting = false;
+  if (el.submitDialog) {
+    el.submitDialog.setAttribute("aria-labelledby", "submitDialogTitle");
+    el.submitDialog.scrollTop = 0;
+  }
+}
+
+function syncDialogLock() {
+  const hasOpenDialog = Boolean(document.querySelector("dialog[open]"));
+  document.body.classList.toggle("has-dialog", hasOpenDialog);
+}
+
+function openSubmitDialog() {
+  if (!el.submitDialog) {
+    return;
+  }
+
+  ensureFreshDay();
+  updateWalletUi();
+  if (!el.submitSuccessView.hidden) {
+    resetSubmitForm();
+  }
+  if (!el.itemAuthor.value) {
+    el.itemAuthor.value = state.nickname || "";
+  }
+  el.submitFormView.hidden = false;
+  el.submitSuccessView.hidden = true;
+  el.submitDialog.setAttribute("aria-labelledby", "submitDialogTitle");
+  updateFeePreview();
+
+  document.body.classList.add("has-dialog");
+  if (!el.submitDialog.open) {
+    el.submitDialog.showModal();
+  }
+
+  window.requestAnimationFrame(() => {
+    el.itemName.focus();
+  });
+}
+
+function closeSubmitDialog() {
+  if (el.submitDialog?.open) {
+    el.submitDialog.close();
+  }
+}
+
+function showSubmitSuccess(product, fee, royalty) {
+  el.successEmoji.textContent = product.emoji;
+  el.successName.textContent = product.name;
+  el.successAuthor.textContent = `@${product.author} · 共创货架`;
+  el.successPrice.textContent = `${product.price} 币`;
+  el.successFee.textContent = `+${formatCoins(fee)} 币`;
+  el.successRoyalty.textContent = `+${formatCoins(royalty)} 币`;
+  el.successTotal.textContent = `+${formatCoins(fee + royalty)} 币`;
+  el.submitFormView.hidden = true;
+  el.submitSuccessView.hidden = false;
+  el.submitDialog.setAttribute("aria-labelledby", "submitSuccessTitle");
+  el.submitDialog.scrollTop = 0;
+  state.isSubmitting = false;
+
+  window.requestAnimationFrame(() => {
+    el.writeAnother.focus();
+  });
+}
+
+function submitProduct(event) {
+  event.preventDefault();
+  ensureFreshDay();
+  setSubmitError("");
+
+  const name = el.itemName.value.trim();
+  const desc = el.itemDesc.value.trim();
+  const side = el.itemSide.value.trim();
+  const author = el.itemAuthor.value.trim().slice(0, 12) || "匿名住客";
+  const tag = el.itemTag.value || "住客投稿";
+  const price = Number(el.itemPrice.value);
+  const emoji = state.selectedEmoji || "✨";
+
+  if (name.length < 2) {
+    setSubmitError("商品名至少写 2 个字，太短了容易被黑洞吞掉。");
+    el.itemName.focus();
+    return;
+  }
+  if (desc.length < 4) {
+    setSubmitError("卖点至少写 4 个字，不然顾客不知道它有什么用。");
+    el.itemDesc.focus();
+    return;
+  }
+  if (!Number.isFinite(price) || price < 1 || price > 99) {
+    setSubmitError("售价请填 1–99 宇宙币之间。");
+    el.itemPrice.focus();
+    return;
+  }
+  if (state.isSubmitting) {
+    return;
+  }
+
+  state.isSubmitting = true;
+  const normalizedPrice = roundCoins(price);
+  const fee = authorFeeFor(normalizedPrice);
+  const royalty = Math.max(1, roundCoins(normalizedPrice * ROYALTY_RATE));
+  const color = PRODUCT_COLORS[Math.floor(Math.random() * PRODUCT_COLORS.length)];
+  const product = {
+    id: `user-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+    emoji,
+    name,
+    en: "COMMUNITY GOODS",
+    tag,
+    desc,
+    effect: `让「${name}」在需要的时候，发挥一点不讲道理的作用。`,
+    side: side || "用久了会开始相信，离谱的东西也有它的道理。",
+    crowd: `需要一点${tag}的人，以及刚好路过本店的你。`,
+    review: `“${desc}” —— @${author}，住客自评。`,
+    price: normalizedPrice.toFixed(1),
+    unit: "宇宙币",
+    color,
+    stars: Math.round((4.5 + Math.random() * 0.5) * 10) / 10,
+    rare: false,
+    community: true,
+    author,
+    sales: 1,
+    earnings: royalty,
+    createdAt: Date.now(),
+  };
+
+  state.userProducts.unshift(product);
+  state.nickname = author;
+  state.lastSale = {
+    name: product.name,
+    revenue: royalty,
+    author,
+    at: Date.now(),
+  };
+
+  creditCoins(fee + royalty);
+  renderProduct(product, { mode: "community", print: true });
+  renderCommunity(product.id);
+  updateStats();
+  persistState();
+  showSubmitSuccess(product, fee, royalty);
+  playRevealSound(false);
+  window.setTimeout(playCoinSound, 220);
+}
+
 /* ---------- drawing ---------- */
 
 function pickProduct() {
   const rare = Math.random() < RARE_CHANCE;
-  const source = rare ? RARE_PRODUCTS : PRODUCTS;
-  const filtered = source.filter((product) => !state.current || product.id !== state.current.id);
-  const pool = filtered.length > 0 ? filtered : source;
+  if (rare) {
+    const filtered = RARE_PRODUCTS.filter((product) => !state.current || product.id !== state.current.id);
+    const pool = filtered.length > 0 ? filtered : RARE_PRODUCTS;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  const community = getCommunityProducts();
+  if (community.length > 0 && Math.random() < COMMUNITY_DRAW_CHANCE) {
+    const filtered = community.filter((product) => !state.current || product.id !== state.current.id);
+    const pool = filtered.length > 0 ? filtered : community;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  const filtered = PRODUCTS.filter((product) => !state.current || product.id !== state.current.id);
+  const pool = filtered.length > 0 ? filtered : PRODUCTS;
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -1141,35 +2564,60 @@ function drawProduct() {
     return;
   }
 
+  ensureFreshDay();
+  updateWalletUi();
   ensureAudio();
   playLeverSound();
   setDrawingUi(true);
+
+  const freeDraw = state.wallet + 0.001 < DRAW_COST;
+  if (!freeDraw) {
+    spendCoins(DRAW_COST);
+  }
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const delay = reducedMotion ? 260 : 690;
 
   window.setTimeout(() => {
     try {
-      const today = dayKey();
-      if (state.day !== today) {
-        state.day = today;
-        state.todayCount = 0;
-      }
-
       const product = pickProduct();
       state.todayCount += 1;
-      const isNew = collectProduct(product);
+      const alreadyOwned = state.collection.includes(product.id);
+      let duplicateCredit = 0;
+      let isNew = false;
 
-      renderProduct(product, { mode: "draw", print: true });
+      if (alreadyOwned) {
+        duplicateCredit = sellDuplicate(product);
+      } else {
+        isNew = collectProduct(product);
+      }
+
+      renderProduct(product, {
+        mode: "draw",
+        print: true,
+        sticker: alreadyOwned ? "重复款 · 已寄售" : "",
+      });
+      const sale = maybeRunCommunitySale();
       renderVault(isNew ? product.id : null);
       persistState();
       burstConfetti(Boolean(product.rare));
       playRevealSound(Boolean(product.rare));
 
+      const messages = [];
       if (product.rare) {
-        showToast(`隐藏款出现：${product.name}。店长睁开了一只眼。`, 3500);
-      } else if (isNew && state.collection.length === 1) {
-        showToast("第一件好物已入库，仓库有了一点生活痕迹。");
+        messages.push(`隐藏款出现：${product.name}。店长睁开了一只眼。`);
+      }
+      if (duplicateCredit > 0) {
+        messages.push(`重复款自动寄售，+${formatCoins(duplicateCredit)} 宇宙币。`);
+      }
+      if (sale) {
+        messages.push(`你的《${sale.product.name}》被买走，分成 +${formatCoins(sale.revenue)} 币。`);
+      }
+      if (messages.length === 0 && isNew && state.collection.length === 1 && !freeDraw) {
+        messages.push("第一件好物已入库，仓库有了一点生活痕迹。");
+      }
+      if (messages.length > 0) {
+        showToast(messages.join(" "), 3600);
       }
     } finally {
       setDrawingUi(false);
@@ -1186,16 +2634,21 @@ function buildReceiptText() {
   }
 
   const total = ALL_PRODUCTS.length;
+  const officialFound = state.collection.filter((id) => PRODUCT_MAP.has(id)).length;
+  const byline = product.community
+    ? `住客投稿 · @${product.author || "匿名住客"}`
+    : product.en;
   return [
     "【黑洞便利店 · 宇宙第 404 号分店】",
-    `${product.emoji} ${product.name} / ${product.en}`,
+    `${product.emoji} ${product.name} / ${byline}`,
     `“${product.desc}”`,
     "",
     `功效：${product.effect}`,
     `副作用：${product.side}`,
     `适用人群：${product.crowd}`,
     `售价：${product.price} ${product.unit || "宇宙币"}`,
-    `今日已拆：${state.todayCount} 件 · 仓库：${state.collection.length}/${total}`,
+    `今日已拆：${state.todayCount} 件 · 图鉴：${officialFound}/${total} · 仓库：${state.collection.length} 件`,
+    `我的宇宙币：${formatCoins(state.wallet)}`,
     "",
     "只收好奇心，不设找零。",
     "—— 店长正在收银台睡觉，自助结账，谢谢。",
@@ -1471,14 +2924,53 @@ function bindEvents() {
   el.closeCopyDialog.addEventListener("click", closeCopyDialog);
   el.dismissCopy.addEventListener("click", closeCopyDialog);
   el.copyDialog.addEventListener("close", () => {
-    document.body.classList.remove("has-dialog");
-    el.copyButton.focus({ preventScroll: true });
+    syncDialogLock();
+    if (!el.submitDialog.open) {
+      el.copyButton.focus({ preventScroll: true });
+    }
   });
   el.copyDialog.addEventListener("click", (event) => {
     if (event.target === el.copyDialog) {
       closeCopyDialog();
     }
   });
+
+  el.checkinButton.addEventListener("click", claimDailyBonus);
+  el.openSubmit.addEventListener("click", openSubmitDialog);
+  el.earnLink.addEventListener("click", openSubmitDialog);
+  el.closeSubmitDialog.addEventListener("click", closeSubmitDialog);
+  el.cancelSubmit.addEventListener("click", closeSubmitDialog);
+  el.writeAnother.addEventListener("click", () => {
+    resetSubmitForm();
+    el.itemName.focus();
+  });
+  el.backToShelf.addEventListener("click", () => {
+    closeSubmitDialog();
+    window.setTimeout(() => {
+      el.community.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 120);
+  });
+  el.submitForm.addEventListener("submit", submitProduct);
+  el.itemPrice.addEventListener("input", updateFeePreview);
+  [el.itemName, el.itemDesc, el.itemPrice].forEach((field) => {
+    field.addEventListener("input", () => setSubmitError(""));
+  });
+  el.emojiPicker.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-emoji]");
+    if (button) {
+      setSelectedEmoji(button.dataset.emoji);
+    }
+  });
+  el.submitDialog.addEventListener("close", () => {
+    syncDialogLock();
+    el.openSubmit.focus({ preventScroll: true });
+  });
+  el.submitDialog.addEventListener("click", (event) => {
+    if (event.target === el.submitDialog) {
+      closeSubmitDialog();
+    }
+  });
+
   el.soundToggle.addEventListener("click", toggleSound);
   el.shopCat.addEventListener("click", petCat);
   el.clearVault.addEventListener("click", clearVault);
@@ -1488,14 +2980,25 @@ function bindEvents() {
     if (!item) {
       return;
     }
-    const product = PRODUCT_MAP.get(item.dataset.id);
+    const product = findProduct(item.dataset.id);
     if (product) {
       showCollectedProduct(product);
     }
   });
 
+  el.communityGrid.addEventListener("click", (event) => {
+    const card = event.target.closest(".community-card");
+    if (!card) {
+      return;
+    }
+    showCommunityProduct(findProduct(card.dataset.id));
+  });
+
   document.addEventListener("keydown", (event) => {
     if (event.code !== "Space" || event.repeat || event.ctrlKey || event.metaKey || event.altKey) {
+      return;
+    }
+    if (document.querySelector("dialog[open]")) {
       return;
     }
     if (event.target.closest("button, a, input, textarea, select, [contenteditable='true']")) {
@@ -1516,6 +3019,9 @@ function init() {
   el.soundLabel.textContent = state.soundOn ? "音效 开" : "音效 关";
   el.collectionTotal.textContent = String(ALL_PRODUCTS.length);
 
+  resetSubmitForm();
+  updateWalletUi();
+  renderCommunity();
   renderProduct(state.current, { mode: state.mode });
   renderVault();
   updateStats();

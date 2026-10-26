@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f1eadb">
-  <meta name="description" content="黑洞便利店，一家开在宇宙尽头的便利店。投一枚好奇心，随机带走一件平行宇宙好物。">
+  <meta name="description" content="黑洞便利店，一家开在宇宙尽头的便利店。88 件平行宇宙好物，抽签、赚宇宙币，还可以写一件离谱商品上架售卖。">
   <title>黑洞便利店 · 宇宙第 404 号分店</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1eadb'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23171717'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff4b2b'/%3E%3Cellipse cx='32' cy='32' rx='27' ry='10' fill='none' stroke='%232946f5' stroke-width='3' transform='rotate(-25 32 32)'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
@@ -29,6 +29,10 @@
     </a>
     <div class="header-side">
       <span class="open-badge"><i aria-hidden="true"></i>24 小时营业中</span>
+      <a class="wallet-pill" id="walletPill" href="#community" aria-label="我的宇宙币余额，前往共创货架赚币">
+        <span class="wallet-coin" aria-hidden="true"></span>
+        <span class="wallet-amount"><strong id="walletBalance">66.0</strong><small>币</small></span>
+      </a>
       <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="true">
         <span class="sound-glyph" aria-hidden="true">♪</span>
         <span id="soundLabel">音效 开</span>
@@ -39,10 +43,10 @@
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track">
       <span class="marquee-group">
-        本店 24 小时营业 <b>✦</b> 只收好奇心，不设找零 <b>✦</b> 猫店长正在午睡，请勿投喂 <b>✦</b> 平行宇宙进口，概不退换 <b>✦</b> 今日汇率：1 个好奇心 = 1 件好物 <b>✦</b>
+        本店 24 小时营业 <b>✦</b> 只收好奇心，不设找零 <b>✦</b> 住客投稿上架，稿费 +30 起 <b>✦</b> 每卖出一件，作者分 30% <b>✦</b> 图鉴已扩充至 88 件 <b>✦</b>
       </span>
       <span class="marquee-group">
-        本店 24 小时营业 <b>✦</b> 只收好奇心，不设找零 <b>✦</b> 猫店长正在午睡，请勿投喂 <b>✦</b> 平行宇宙进口，概不退换 <b>✦</b> 今日汇率：1 个好奇心 = 1 件好物 <b>✦</b>
+        本店 24 小时营业 <b>✦</b> 只收好奇心，不设找零 <b>✦</b> 住客投稿上架，稿费 +30 起 <b>✦</b> 每卖出一件，作者分 30% <b>✦</b> 图鉴已扩充至 88 件 <b>✦</b>
       </span>
     </div>
   </div>
@@ -66,10 +70,15 @@
             <p><strong id="todayCount">0</strong><em>件</em></p>
           </div>
           <div class="stat">
-            <span>仓库收藏</span>
-            <p><strong id="collectionStat">0</strong><em>/ <span id="collectionTotal">43</span></em></p>
+            <span>图鉴收藏</span>
+            <p><strong id="collectionStat">0</strong><em>/ <span id="collectionTotal">88</span></em></p>
           </div>
         </div>
+        <a class="earn-note" href="#community">
+          <span class="earn-note-coin" aria-hidden="true">✦</span>
+          <span>宇宙币怎么赚？投稿 +30 起，签到 +30</span>
+          <span aria-hidden="true">↘</span>
+        </a>
       </div>
     </section>
 
@@ -137,9 +146,12 @@
 
         <button class="draw-button" id="drawButton" type="button">
           <span class="draw-label">拉一下 · 补货</span>
-          <span class="draw-arrow" aria-hidden="true">↘</span>
+          <span class="draw-meta">
+            <span class="draw-cost" id="drawCost">−8.8 币</span>
+            <span class="draw-arrow" aria-hidden="true">↘</span>
+          </span>
         </button>
-        <p class="draw-hint">每次消耗 1 枚好奇心 · 今日余额 <strong>∞</strong></p>
+        <p class="draw-hint">每次 8.8 宇宙币 · 余额不足时店长请客 · <button class="text-link" id="earnLink" type="button">写一件赚币 ↗</button></p>
       </div>
 
       <div class="receipt-column">
@@ -220,6 +232,44 @@
       </div>
     </section>
 
+    <section class="community" id="community" aria-labelledby="communityTitle">
+      <header class="community-head">
+        <div class="community-title">
+          <p class="section-kicker">COMMUNITY SHELF · 共创货架</p>
+          <h2 id="communityTitle">大家写的好物，<br><span>正在这里售卖。</span></h2>
+          <p class="community-lede">写一件自己的平行宇宙商品，上架到本店。过稿即得稿费，卖出一件再拿售价 30% 的分成。</p>
+        </div>
+        <div class="community-panel">
+          <div class="wallet-panel">
+            <p class="wallet-panel-label">我的宇宙币</p>
+            <p class="wallet-panel-value"><strong id="walletPanelBalance">66.0</strong><small>币</small></p>
+            <p class="wallet-earnings" id="todayEarnings">今日进账 +0.0</p>
+            <button class="checkin-button" id="checkinButton" type="button">
+              <span class="checkin-dot" aria-hidden="true"></span><span id="checkinLabel">今日签到 +30</span>
+            </button>
+          </div>
+          <button class="submit-cta" id="openSubmit" type="button">
+            <span class="submit-cta-kicker">OPEN CALL / 征稿中</span>
+            <strong>写一件好物 <span aria-hidden="true">↗</span></strong>
+            <small>稿费 +30 起 · 上架即售卖</small>
+          </button>
+        </div>
+      </header>
+
+      <div class="community-toolbar">
+        <p><span class="live-dot" aria-hidden="true"></span>本店已上架 <strong id="communityCount">8</strong> 件住客投稿</p>
+        <p>每售出一件，作者分成 30%</p>
+        <span class="community-scroll-hint">左右滑动查看更多 →</span>
+      </div>
+
+      <div class="community-grid" id="communityGrid"></div>
+
+      <div class="community-footer">
+        <p id="communityFeed">小店动态：猫店长正在核对今天的账本，货架暂时很安静。</p>
+        <span class="local-note">本地共创版 · 投稿只保存在这台设备</span>
+      </div>
+    </section>
+
     <section class="vault" aria-labelledby="vaultTitle">
       <header class="vault-head">
         <div>
@@ -228,8 +278,8 @@
         </div>
         <div class="vault-progress">
           <div class="progress-copy">
-            <span>收集进度</span>
-            <strong id="progressLabel">0 / 43</strong>
+            <span>图鉴进度</span>
+            <strong id="progressLabel">0 / 88</strong>
           </div>
           <div class="progress-bar" aria-hidden="true"><i id="progressBar"></i></div>
         </div>
@@ -270,6 +320,123 @@
       </div>
     </div>
   </footer>
+
+  <dialog class="copy-dialog submit-dialog" id="submitDialog" aria-labelledby="submitDialogTitle">
+    <div class="copy-dialog-bar">
+      <span>OPEN CALL / 住客投稿</span>
+      <button class="copy-dialog-close" id="closeSubmitDialog" type="button" aria-label="关闭投稿窗口">×</button>
+    </div>
+
+    <div class="submit-form-view" id="submitFormView">
+      <form class="submit-form" id="submitForm" novalidate>
+        <div class="submit-intro">
+          <p class="section-kicker">MAKE SOMETHING UP</p>
+          <h2 id="submitDialogTitle">写一件<br>宇宙好物。</h2>
+          <p>不用真实，越离谱越好。过稿立刻上架，领稿费，再拿销售分成。</p>
+        </div>
+
+        <div class="submit-form-grid">
+          <label class="form-field">
+            <span class="form-label">商品名 <small>2–14 字</small></span>
+            <input id="itemName" name="itemName" type="text" maxlength="14" required placeholder="例：周一消失喷雾" autocomplete="off">
+          </label>
+          <label class="form-field">
+            <span class="form-label">售价 <small>1–99 币</small></span>
+            <input id="itemPrice" name="itemPrice" type="number" min="1" max="99" step="0.1" value="9.9" required inputmode="decimal">
+          </label>
+
+          <div class="form-field form-field-full">
+            <span class="form-label">挑一个图标</span>
+            <div class="emoji-picker" id="emojiPicker" role="group" aria-label="选择商品图标">
+              <button type="button" data-emoji="🫧" aria-pressed="true">🫧</button>
+              <button type="button" data-emoji="🧦" aria-pressed="false">🧦</button>
+              <button type="button" data-emoji="🍜" aria-pressed="false">🍜</button>
+              <button type="button" data-emoji="🌙" aria-pressed="false">🌙</button>
+              <button type="button" data-emoji="🪄" aria-pressed="false">🪄</button>
+              <button type="button" data-emoji="🧿" aria-pressed="false">🧿</button>
+              <button type="button" data-emoji="🍭" aria-pressed="false">🍭</button>
+              <button type="button" data-emoji="🚀" aria-pressed="false">🚀</button>
+              <button type="button" data-emoji="🐈‍⬛" aria-pressed="false">🐈‍⬛</button>
+              <button type="button" data-emoji="✨" aria-pressed="false">✨</button>
+            </div>
+          </div>
+
+          <label class="form-field form-field-full">
+            <span class="form-label">一句话卖点 <small>4–60 字</small></span>
+            <textarea id="itemDesc" name="itemDesc" maxlength="60" rows="2" required placeholder="例：喷一下，周一自动变成周五。"></textarea>
+          </label>
+
+          <label class="form-field">
+            <span class="form-label">分类</span>
+            <select id="itemTag" name="itemTag">
+              <option>情绪补给</option>
+              <option>职场续命</option>
+              <option>居家玄学</option>
+              <option>社交糊弄</option>
+              <option>深夜限定</option>
+              <option>睡眠专区</option>
+              <option>时间管理</option>
+              <option>宇宙特供</option>
+            </select>
+          </label>
+
+          <label class="form-field">
+            <span class="form-label">副作用 <small>选填</small></span>
+            <input id="itemSide" name="itemSide" type="text" maxlength="50" placeholder="例：可能让同事也想买" autocomplete="off">
+          </label>
+
+          <label class="form-field form-field-full">
+            <span class="form-label">署名 <small>住客昵称</small></span>
+            <input id="itemAuthor" name="itemAuthor" type="text" maxlength="12" placeholder="匿名住客" autocomplete="nickname">
+          </label>
+        </div>
+
+        <div class="form-earnings">
+          <div>
+            <span>上架稿费</span>
+            <strong id="formFee">+30.0 币</strong>
+          </div>
+          <p>上架后每卖出 1 件，再获得售价 30% 的分成。</p>
+        </div>
+
+        <p class="form-error" id="formError" role="alert"></p>
+
+        <div class="submit-form-actions">
+          <button class="form-submit" id="submitButton" type="submit">投递并领取稿费 <span aria-hidden="true">↗</span></button>
+          <button class="ghost-button" id="cancelSubmit" type="button">再想想</button>
+        </div>
+        <p class="form-fineprint">本地共创版 · 投稿保存在此浏览器，不会同步给其他访客。</p>
+      </form>
+    </div>
+
+    <div class="submit-success" id="submitSuccessView" hidden>
+      <span class="success-stamp" aria-hidden="true">上架成功</span>
+      <p class="section-kicker">NOW OPEN FOR BUSINESS</p>
+      <h2 id="submitSuccessTitle">你的好物，<br><span>正式上架。</span></h2>
+
+      <div class="success-product">
+        <span class="success-emoji" id="successEmoji" aria-hidden="true">✨</span>
+        <span class="success-product-copy">
+          <strong id="successName">宇宙好物</strong>
+          <small id="successAuthor">@匿名住客 · 共创货架</small>
+        </span>
+        <span class="success-price" id="successPrice">9.9 币</span>
+      </div>
+
+      <div class="success-earnings">
+        <div><span>上架稿费</span><strong id="successFee">+30.0 币</strong></div>
+        <div><span>首位顾客分成</span><strong id="successRoyalty">+3.0 币</strong></div>
+        <div class="success-total"><span>本次入账</span><strong id="successTotal">+33.0 币</strong></div>
+      </div>
+
+      <p class="success-note">已加入「共创货架」。下次拉摇杆，也有机会在店里遇见它。</p>
+
+      <div class="submit-success-actions">
+        <button class="form-submit" id="writeAnother" type="button">再写一件 <span aria-hidden="true">↗</span></button>
+        <button class="ghost-button" id="backToShelf" type="button">去货架看看</button>
+      </div>
+    </div>
+  </dialog>
 
   <dialog class="copy-dialog" id="copyDialog" aria-labelledby="copyDialogTitle">
     <div class="copy-dialog-bar">
