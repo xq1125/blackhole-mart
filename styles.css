@@ -176,6 +176,14 @@ a {
   }
 }
 
+@supports not (align-items: safe center) {
+  @media (max-height: 760px) {
+    .auth-gate {
+      place-items: start center;
+    }
+  }
+}
+
 .auth-gate::before {
   content: "";
   position: fixed;
