@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1eadb">
+  <meta name="description" content="黑洞便利店，一家开在宇宙尽头的便利店。投一枚好奇心，随机带走一件平行宇宙好物。">
+  <title>黑洞便利店 · 宇宙第 404 号分店</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1eadb'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23171717'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff4b2b'/%3E%3Cellipse cx='32' cy='32' rx='27' ry='10' fill='none' stroke='%232946f5' stroke-width='3' transform='rotate(-25 32 32)'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-texture" aria-hidden="true"></div>
+  <div class="ambient-stars" aria-hidden="true">
+    <span class="spark spark-1">✦</span>
+    <span class="spark spark-2">✧</span>
+    <span class="spark spark-3">✦</span>
+    <span class="spark spark-4">·</span>
+    <span class="spark spark-5">✧</span>
+  </div>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="黑洞便利店首页">
+      <span class="brand-mark" aria-hidden="true"><span class="brand-orbit"></span></span>
+      <span class="brand-copy">
+        <strong>黑洞便利店</strong>
+        <small>BLACK HOLE MART</small>
+      </span>
+    </a>
+    <div class="header-side">
+      <span class="open-badge"><i aria-hidden="true"></i>24 小时营业中</span>
+      <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="true">
+        <span class="sound-glyph" aria-hidden="true">♪</span>
+        <span id="soundLabel">音效 开</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-group">
+        本店 24 小时营业 <b>✦</b> 只收好奇心，不设找零 <b>✦</b> 猫店长正在午睡，请勿投喂 <b>✦</b> 平行宇宙进口，概不退换 <b>✦</b> 今日汇率：1 个好奇心 = 1 件好物 <b>✦</b>
+      </span>
+      <span class="marquee-group">
+        本店 24 小时营业 <b>✦</b> 只收好奇心，不设找零 <b>✦</b> 猫店长正在午睡，请勿投喂 <b>✦</b> 平行宇宙进口，概不退换 <b>✦</b> 今日汇率：1 个好奇心 = 1 件好物 <b>✦</b>
+      </span>
+    </div>
+  </div>
+
+  <main id="top">
+    <section class="intro" aria-labelledby="pageTitle">
+      <div class="intro-title">
+        <p class="eyebrow"><span aria-hidden="true"></span>宇宙第 404 号分店 · 地球唯一分店</p>
+        <h1 id="pageTitle">欢迎光临，<br><span class="title-mark">黑洞</span>便利店<span class="title-dot">。</span></h1>
+        <div class="curiosity-stamp" aria-hidden="true">
+          <span>本店只收</span>
+          <strong>好奇心</strong>
+          <small>NO CASH · NO PLAN</small>
+        </div>
+      </div>
+      <div class="intro-side">
+        <p class="lede">本店开在宇宙尽头，只卖地球上买不到的东西。<br>投一枚好奇心，随机带走今天的平行宇宙好物。</p>
+        <div class="stats">
+          <div class="stat">
+            <span>今日已拆</span>
+            <p><strong id="todayCount">0</strong><em>件</em></p>
+          </div>
+          <div class="stat">
+            <span>仓库收藏</span>
+            <p><strong id="collectionStat">0</strong><em>/ <span id="collectionTotal">43</span></em></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="counter" aria-label="自助抽取平行宇宙好物">
+      <div class="machine-column">
+        <div class="orbit-lines" aria-hidden="true"></div>
+        <div class="machine-scene">
+          <div class="machine" id="machine">
+            <button class="shop-cat" id="shopCat" type="button" aria-label="摸摸正在睡觉的猫店长">
+              <span class="cat-sign">店长</span>
+              <span class="cat-tail" aria-hidden="true"></span>
+              <span class="cat-body" aria-hidden="true">
+                <span class="cat-ear cat-ear-left"></span>
+                <span class="cat-ear cat-ear-right"></span>
+                <span class="cat-face">
+                  <span class="cat-eye cat-eye-left"></span>
+                  <span class="cat-eye cat-eye-right"></span>
+                  <span class="cat-nose"></span>
+                </span>
+              </span>
+            </button>
+
+            <div class="machine-sign">
+              <span>黑洞自动贩售机</span>
+              <b>NO.404</b>
+            </div>
+
+            <div class="machine-window" aria-hidden="true">
+              <span class="float-item float-item-1">🪐</span>
+              <span class="float-item float-item-2">🥫</span>
+              <span class="float-item float-item-3">🧦</span>
+              <span class="float-item float-item-4">👽</span>
+              <span class="float-item float-item-5">✨</span>
+              <span class="black-hole">
+                <span class="black-hole-core"></span>
+                <span class="black-hole-ring black-hole-ring-one"></span>
+                <span class="black-hole-ring black-hole-ring-two"></span>
+              </span>
+              <span class="window-glare"></span>
+              <span class="window-label">PARALLEL GOODS</span>
+            </div>
+
+            <div class="machine-console">
+              <div class="console-screen">
+                <span>库存</span>
+                <strong>∞</strong>
+              </div>
+              <div class="coin-slot">
+                <span>投币口</span>
+                <i>5</i>
+              </div>
+              <button class="lever" id="lever" type="button" aria-label="拉下摇杆，抽取一件好物">
+                <span class="lever-arm"><span class="lever-knob">拉</span></span>
+              </button>
+            </div>
+
+            <div class="machine-tray">
+              <span class="tray-label">取货口</span>
+              <span class="tray-flap"></span>
+            </div>
+            <p class="machine-note">只收好奇心 · 不设找零</p>
+          </div>
+          <span class="price-sticker" aria-hidden="true"><small>PRICE</small>∞</span>
+        </div>
+
+        <button class="draw-button" id="drawButton" type="button">
+          <span class="draw-label">拉一下 · 补货</span>
+          <span class="draw-arrow" aria-hidden="true">↘</span>
+        </button>
+        <p class="draw-hint">每次消耗 1 枚好奇心 · 今日余额 <strong>∞</strong></p>
+      </div>
+
+      <div class="receipt-column">
+        <div class="receipt-wrap" id="receiptWrap">
+          <span class="receipt-sticker" id="receiptSticker">今日到货</span>
+          <article class="receipt" id="receipt" aria-labelledby="productName">
+            <div class="receipt-top">
+              <span>BLACK HOLE MART</span>
+              <span>第 404 号分店</span>
+            </div>
+            <div class="receipt-meta">
+              <span id="receiptDate">2026.10.26　16:08</span>
+              <span id="receiptNo">NO. 404-1026-0001</span>
+            </div>
+
+            <div class="receipt-hero">
+              <div class="product-badge" id="productEmoji" aria-hidden="true">🫧</div>
+              <div class="product-heading">
+                <span class="product-tag" id="productTag">情绪补给</span>
+                <h2 id="productName">情绪气泡水</h2>
+                <p id="productEn">MOOD SODA</p>
+              </div>
+              <div class="price">
+                <small>售价</small>
+                <strong id="productPrice">9.9</strong>
+                <span id="productUnit">宇宙币</span>
+              </div>
+            </div>
+
+            <p class="product-desc" id="productDesc">喝一口，把老板的话变成背景音。气泡在舌尖破裂的声音，像极了下班打卡。</p>
+
+            <div class="tear-line" aria-hidden="true"><span>✂</span></div>
+
+            <dl class="spec-list">
+              <div>
+                <dt>功效</dt>
+                <dd id="productEffect">将 90% 的阴阳怪气翻译成“咕噜咕噜”。</dd>
+              </div>
+              <div>
+                <dt>副作用</dt>
+                <dd id="productSide">打嗝会冒出粉色泡泡，持续到下一个会议结束。</dd>
+              </div>
+              <div>
+                <dt>适用人群</dt>
+                <dd id="productFor">职场忍者、会议潜水员、靠冰美式续命的人。</dd>
+              </div>
+            </dl>
+
+            <div class="review">
+              <div class="review-top">
+                <span>买家评价</span>
+                <span class="stars" id="stars">★★★★★ <b>4.8</b></span>
+              </div>
+              <p id="productReview">“现在开会像在水族馆，老板的声音很远，气泡很近。”</p>
+            </div>
+
+            <div class="barcode-wrap" aria-hidden="true">
+              <div class="barcode" id="barcode"></div>
+              <span id="barcodeText">404 1026 0001 · BHM</span>
+            </div>
+
+            <div class="receipt-footer">
+              <p>谢谢惠顾 · 欢迎下次光临</p>
+              <small>亲手抽到的，概不退换。</small>
+            </div>
+            <span class="receipt-stamp" id="receiptStamp" aria-hidden="true">宇宙认证<br>BHM-404</span>
+          </article>
+        </div>
+
+        <div class="receipt-actions">
+          <button class="ghost-button" id="copyButton" type="button">
+            <span aria-hidden="true">⧉</span> 复制这张小票
+          </button>
+          <button class="ghost-button" id="againButton" type="button">
+            再抽一件 <span aria-hidden="true">↻</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="vault" aria-labelledby="vaultTitle">
+      <header class="vault-head">
+        <div>
+          <p class="section-kicker">MY BLACK HOLE PANTRY</p>
+          <h2 id="vaultTitle">我的黑洞仓库 <sup id="vaultCount">00</sup></h2>
+        </div>
+        <div class="vault-progress">
+          <div class="progress-copy">
+            <span>收集进度</span>
+            <strong id="progressLabel">0 / 43</strong>
+          </div>
+          <div class="progress-bar" aria-hidden="true"><i id="progressBar"></i></div>
+        </div>
+      </header>
+
+      <div class="vault-body">
+        <div class="vault-empty" id="vaultEmpty">
+          <span class="empty-arrow" aria-hidden="true">↖</span>
+          <div>
+            <p>仓库空空如也。</p>
+            <small>拉一下摇杆，第一件平行宇宙好物就会出现在这里。</small>
+          </div>
+        </div>
+        <div class="vault-grid" id="vaultGrid" hidden></div>
+      </div>
+
+      <footer class="vault-footer">
+        <span>只保存你亲手抽到的好物 · 本地存档</span>
+        <button class="text-button" id="clearVault" type="button" hidden>清空仓库</button>
+      </footer>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-note">
+        <p class="section-kicker">NOTE FROM THE MANAGER</p>
+        <p class="footer-quote">世界很吵，<br>记得给自己留一格货架。</p>
+      </div>
+      <div class="footer-cat" aria-hidden="true">
+        <span>🐈‍⬛</span>
+        <small>店长已阅<br>并翻了个身</small>
+      </div>
+      <div class="footer-meta">
+        <span>BLACK HOLE MART © 2026</span>
+        <span>本店位于事件视界附近，导航可能失效。</span>
+        <span>营业时间：00:00 — 24:00</span>
+      </div>
+    </div>
+  </footer>
+
+  <dialog class="copy-dialog" id="copyDialog" aria-labelledby="copyDialogTitle">
+    <div class="copy-dialog-bar">
+      <span>MANUAL COPY / 手动带走</span>
+      <button class="copy-dialog-close" id="closeCopyDialog" type="button" aria-label="关闭复制窗口">×</button>
+    </div>
+    <div class="copy-dialog-body">
+      <p class="section-kicker">COPY PROTECTION</p>
+      <h2 id="copyDialogTitle">这张小票，<br>请手动带走。</h2>
+      <p class="copy-dialog-hint" id="copyDialogHint">浏览器没给小票复制权限。文字已经全选，按 <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>C</kbd> 即可。</p>
+      <textarea class="copy-dialog-text" id="copyDialogText" readonly spellcheck="false" aria-label="小票文字"></textarea>
+      <div class="copy-dialog-actions">
+        <button class="ghost-button" id="retryCopy" type="button">再试一次复制</button>
+        <button class="ghost-button" id="dismissCopy" type="button">算了，我看看就好</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+  <div class="heart-layer" id="heartLayer" aria-hidden="true"></div>
+  <p class="sr-only" id="liveRegion" aria-live="polite"></p>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
