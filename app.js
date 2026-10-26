@@ -1494,16 +1494,19 @@ const GAME_STORAGE_PREFIX = "blackhole-mart.game.v2.";
 const AUTH_ITERATIONS = 120000;
 const AUTHOR_NAME = "夏习清";
 const AUTHOR_NAME_KEY = "夏习清";
+const AUTHOR_CREDENTIAL_VERSION = 2;
 // The author credential is pre-hashed. The initial password is delivered privately;
-// change it from the account panel after the first login.
+// change it from the account panel after the first login. Bump the version if the
+// seeded password ever needs a one-time reset on existing browsers.
 const AUTHOR_SEED = {
   id: "u_author_xiaxiqing",
   username: AUTHOR_NAME,
   nameKey: AUTHOR_NAME_KEY,
   role: "author",
-  salt: "K00rbBVRCcb7MH3C3Dtx9w==",
-  hash: "e+NuZKd9MPm4DkjRHnxUO3/2Ihz0NsCIdwHTGB1PjBk=",
+  salt: "MCFCMckLaciuu00DF8YSzw==",
+  hash: "6jZj0Ii4Fp9iA31sWRWkJnXkw8Y3uB7tUwQiuawsEHY=",
   iterations: AUTH_ITERATIONS,
+  credentialVersion: AUTHOR_CREDENTIAL_VERSION,
   createdAt: "2026-10-26T00:00:00.000Z",
 };
 const RESERVED_NAME_KEYS = new Set([AUTHOR_NAME_KEY, "xiaxiqing", "xq1125", "admin"]);
@@ -1729,10 +1732,12 @@ function ensureAuthorAccount() {
     author.role = "author";
     changed = true;
   }
-  if (!author.salt || !author.hash) {
+  if (author.credentialVersion !== AUTHOR_CREDENTIAL_VERSION || !author.salt || !author.hash) {
     author.salt = AUTHOR_SEED.salt;
     author.hash = AUTHOR_SEED.hash;
     author.iterations = AUTH_ITERATIONS;
+    author.credentialVersion = AUTHOR_CREDENTIAL_VERSION;
+    author.passwordUpdatedAt = Date.now();
     changed = true;
   }
   if (changed) {
