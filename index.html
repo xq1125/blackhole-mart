@@ -7,7 +7,7 @@
   <meta name="description" content="黑洞便利店，一家开在宇宙尽头的便利店。88 件平行宇宙好物，抽签、赚宇宙币，还可以写一件离谱商品上架售卖。">
   <title>黑洞便利店 · 宇宙第 404 号分店</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1eadb'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23171717'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff4b2b'/%3E%3Cellipse cx='32' cy='32' rx='27' ry='10' fill='none' stroke='%232946f5' stroke-width='3' transform='rotate(-25 32 32)'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261026-2">
+  <link rel="stylesheet" href="styles.css?v=20261026-3">
 </head>
 <body>
   <div class="page-texture" aria-hidden="true"></div>
@@ -61,7 +61,7 @@
             <span>确认密码 <small>再输一次</small></span>
             <input id="registerConfirm" name="registerConfirm" type="password" maxlength="64" autocomplete="new-password" placeholder="确认刚才的密码" required>
           </label>
-          <p class="auth-hint">「夏习清」是作者账号，已经被注册，不能重复使用。</p>
+          <p class="auth-hint">名字不能重复。已经有人注册过的名字，换一个就好。</p>
           <p class="auth-error" id="registerError" role="alert"></p>
           <button class="auth-submit" id="registerButton" type="submit">登记并进店 <span aria-hidden="true">↗</span></button>
         </form>
@@ -75,7 +75,6 @@
             <span>密码</span>
             <input id="loginPassword" name="loginPassword" type="password" maxlength="64" autocomplete="current-password" placeholder="打开自己的仓库" required>
           </label>
-          <p class="auth-hint">作者账号：<button id="fillAuthorName" type="button">夏习清</button> · 已注册</p>
           <p class="auth-error" id="loginError" role="alert"></p>
           <button class="auth-submit" id="loginButton" type="submit">进店 <span aria-hidden="true">↗</span></button>
         </form>
@@ -580,6 +579,6 @@
   <div class="heart-layer" id="heartLayer" aria-hidden="true"></div>
   <p class="sr-only" id="liveRegion" aria-live="polite"></p>
 
-  <script src="app.js?v=20261026-2" defer></script>
+  <script src="app.js?v=20261026-3" defer></script>
 </body>
 </html>

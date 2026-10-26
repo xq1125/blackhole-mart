@@ -752,12 +752,6 @@ a {
   line-height: 1;
 }
 
-.account-pill.is-author .account-avatar {
-  background: var(--yellow);
-  border: 1px solid var(--ink);
-  color: var(--ink);
-}
-
 .account-name {
   overflow: hidden;
   font-size: 8px;
@@ -3298,11 +3292,6 @@ main {
   line-height: 1;
 }
 
-.account-dialog.is-author .account-big-avatar {
-  background: var(--yellow);
-  color: var(--ink);
-}
-
 .account-head-copy {
   min-width: 0;
 }
@@ -3334,12 +3323,6 @@ main {
   font-size: 6.5px;
   letter-spacing: 0.04em;
   line-height: 1.4;
-}
-
-.account-role.is-author {
-  background: var(--red);
-  border-color: var(--red);
-  color: var(--card);
 }
 
 .account-meta {

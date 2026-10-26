@@ -1495,7 +1495,7 @@ const AUTH_ITERATIONS = 120000;
 const AUTHOR_NAME = "夏习清";
 const AUTHOR_NAME_KEY = "夏习清";
 const AUTHOR_CREDENTIAL_VERSION = 2;
-// The author credential is pre-hashed. The initial password is delivered privately;
+// The preset credential is pre-hashed. The initial password is delivered privately;
 // change it from the account panel after the first login. Bump the version if the
 // seeded password ever needs a one-time reset on existing browsers.
 const AUTHOR_SEED = {
@@ -1765,11 +1765,8 @@ function validateResidentName(value) {
     return { error: "住客名只能用中英文、数字、_ 或 -，不能有空格。" };
   }
   const key = nameKeyOf(name);
-  if (key === AUTHOR_NAME_KEY || key === "xiaxiqing" || key === "xq1125") {
-    return { error: "「夏习清」是作者账号，已经被注册了，换一个名字吧。" };
-  }
   if (RESERVED_NAME_KEYS.has(key)) {
-    return { error: "这个名字是保留名，不能注册。" };
+    return { error: "这个名字已经有人注册了，换一个名字吧。" };
   }
   return { name, key };
 }
@@ -1995,7 +1992,6 @@ function cacheElements() {
   el.loginPassword = $("loginPassword");
   el.loginError = $("loginError");
   el.loginButton = $("loginButton");
-  el.fillAuthorName = $("fillAuthorName");
 }
 
 /* ---------- resident gate ---------- */
@@ -2128,7 +2124,7 @@ async function handleRegister(event) {
   try {
     const store = ensureAuthorAccount();
     if (store.users.some((user) => nameKeyOf(user.username) === nameResult.key)) {
-      setAuthError("register", "这个名字已经有人用了，换一个吧。");
+      setAuthError("register", "这个名字已经有人注册了，换一个名字吧。");
       return;
     }
 
@@ -2213,11 +2209,6 @@ function bindAuthEvents() {
   el.loginTab.addEventListener("click", () => setAuthMode("login"));
   el.registerForm.addEventListener("submit", handleRegister);
   el.loginForm.addEventListener("submit", handleLogin);
-  el.fillAuthorName.addEventListener("click", () => {
-    setAuthMode("login", false);
-    el.loginName.value = AUTHOR_NAME;
-    el.loginPassword.focus();
-  });
 
   [
     [el.registerName, "register"],
@@ -2240,18 +2231,13 @@ function updateAccountDialog() {
   if (!state.account) {
     return;
   }
-  const isAuthor = state.account.role === "author";
   const name = state.account.username;
 
   el.accountBigAvatar.textContent = accountInitial(name);
   el.accountDialogTitle.textContent = name;
-  el.accountRole.textContent = isAuthor ? "作者 · 店长" : "住客 · 本机账号";
-  el.accountRole.classList.toggle("is-author", isAuthor);
-  el.accountDialog.classList.toggle("is-author", isAuthor);
+  el.accountRole.textContent = "住客 · 本机账号";
   el.accountMeta.textContent = `本机账号 · 注册于 ${formatAccountDate(state.account.createdAt)}`;
-  el.accountNote.textContent = isAuthor
-    ? "「夏习清」是作者账号，已经被注册。其他住客不能重复使用这个名字。"
-    : "这个名字已经注册。同一台设备上的其他住客不能重复使用它。";
+  el.accountNote.textContent = "这个名字已经注册。同一台设备上的其他住客不能重复使用它。";
   el.passwordError.textContent = "";
   el.passwordSuccess.textContent = "";
   el.currentPassword.value = "";
@@ -2265,13 +2251,11 @@ function updateProfileUi() {
   }
   const name = state.account.username;
   const initial = accountInitial(name);
-  const isAuthor = state.account.role === "author";
 
   el.accountName.textContent = name;
   el.accountAvatar.textContent = initial;
   el.accountButton.setAttribute("aria-label", `我的账号：${name}`);
   el.accountButton.title = `账号：${name}`;
-  el.accountButton.classList.toggle("is-author", isAuthor);
   el.walletPanelLabel.textContent = `${name}的宇宙币`;
   updateAccountDialog();
 }
@@ -3741,8 +3725,7 @@ function boot() {
   }, 60);
 
   window.setTimeout(() => {
-    const isAuthor = state.account.role === "author";
-    showToast(isAuthor ? `店长 @${state.account.username}，欢迎回店。` : `住客 @${state.account.username}，欢迎回来。`);
+    showToast(`住客 @${state.account.username}，欢迎回来。`);
   }, 700);
 }
 
