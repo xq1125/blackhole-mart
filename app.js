@@ -2992,30 +2992,70 @@ function makeCommunityCard(product, isOwn, newId) {
   return button;
 }
 
-function makeCommunityEmpty() {
-  const empty = document.createElement("div");
-  empty.className = "community-empty";
+function makeMaskedCommunitySample(color) {
+  const card = document.createElement("div");
+  card.className = "community-card is-masked";
+  card.setAttribute("aria-hidden", "true");
+  card.style.setProperty("--accent", color);
 
-  const emoji = document.createElement("span");
-  emoji.className = "community-empty-emoji";
-  emoji.setAttribute("aria-hidden", "true");
-  emoji.textContent = "📦";
+  const top = document.createElement("span");
+  top.className = "community-card-top";
+  const author = document.createElement("span");
+  author.className = "community-author";
+  const avatar = document.createElement("span");
+  avatar.className = "community-avatar";
+  avatar.textContent = "?";
+  const name = document.createElement("span");
+  name.className = "community-author-name";
+  name.textContent = "@匿名住客";
+  const badge = document.createElement("span");
+  badge.className = "community-badge";
+  badge.textContent = "打码样品";
+  const price = document.createElement("span");
+  price.className = "community-price";
+  price.textContent = "?? 币";
+  author.append(avatar, name, badge);
+  top.append(author, price);
 
-  const copy = document.createElement("div");
-  copy.className = "community-empty-copy";
+  const body = document.createElement("span");
+  body.className = "community-body";
+  const icon = document.createElement("span");
+  icon.className = "community-emoji";
+  icon.textContent = "?";
+  const copy = document.createElement("span");
+  copy.className = "community-copy";
   const title = document.createElement("strong");
-  title.textContent = "货架还空着。";
-  const text = document.createElement("p");
-  text.textContent = "写第一件好物，上架后就会出现在这里。";
-  const action = document.createElement("button");
-  action.type = "button";
-  action.className = "community-empty-action";
-  action.dataset.openSubmit = "true";
-  action.textContent = "写一件好物 ↗";
+  title.className = "community-name";
+  title.textContent = "██████";
+  const desc = document.createElement("span");
+  desc.className = "community-desc";
+  desc.textContent = "████ ██████ ███ ████。";
+  copy.append(title, desc);
+  body.append(icon, copy);
 
-  copy.append(title, text, action);
-  empty.append(emoji, copy);
-  return empty;
+  const bottom = document.createElement("span");
+  bottom.className = "community-card-bottom";
+  const redacted = document.createElement("span");
+  redacted.textContent = "已打码";
+  const note = document.createElement("span");
+  note.className = "community-royalty";
+  note.textContent = "不参与售卖";
+  bottom.append(redacted, note);
+
+  card.append(top, body, bottom);
+  return card;
+}
+
+function makeCommunitySamples() {
+  const fragment = document.createDocumentFragment();
+  const note = document.createElement("p");
+  note.className = "community-sample-note";
+  note.textContent = "货架还空着。先放 4 件打码样品；写下第一件，就会替换它们。";
+  fragment.append(note);
+  ["#ffe45c", "#c9d2ff", "#ffc5b2", "#b9e7cd"].forEach((color) => {
+    fragment.append(makeMaskedCommunitySample(color));
+  });
+  return fragment;
 }
 
 function renderCommunity(newId = null) {
@@ -3026,12 +3066,15 @@ function renderCommunity(newId = null) {
   const items = getCommunityProducts();
   const previousScroll = el.communityGrid.scrollLeft;
   if (items.length === 0) {
-    el.communityGrid.replaceChildren(makeCommunityEmpty());
+    el.communityGrid.classList.add("is-samples");
+    el.communityGrid.replaceChildren(makeCommunitySamples());
     el.communityGrid.scrollLeft = 0;
     el.communityCount.textContent = "0";
     updateCommunityFeed();
     return;
   }
+
+  el.communityGrid.classList.remove("is-samples");
 
   const fragment = document.createDocumentFragment();
   items.forEach((product) => {
@@ -3708,7 +3751,7 @@ function bindEvents() {
       return;
     }
     const card = event.target.closest(".community-card");
-    if (!card) {
+    if (!card || card.classList.contains("is-masked") || !card.dataset.id) {
       return;
     }
     showCommunityProduct(findProduct(card.dataset.id));
