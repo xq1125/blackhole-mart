@@ -3066,7 +3066,7 @@ function showCommunityProduct(product) {
 /* ---------- submission form ---------- */
 
 function authorFeeFor(price) {
-  return Math.max(30, roundCoins(20 + price * 0.6));
+  return Math.max(60, roundCoins(30 + price * 0.6));
 }
 
 function setSelectedEmoji(emoji) {
@@ -3080,7 +3080,7 @@ function setSelectedEmoji(emoji) {
 
 function updateFeePreview() {
   const price = roundCoins(el.itemPrice.value);
-  const fee = Number.isFinite(price) && price > 0 ? authorFeeFor(price) : 30;
+  const fee = Number.isFinite(price) && price > 0 ? authorFeeFor(price) : 60;
   el.formFee.textContent = `+${formatCoins(fee)} 币`;
 }
 
