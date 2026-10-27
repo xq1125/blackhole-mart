@@ -1635,6 +1635,7 @@ const state = {
   day: "",
   todayCount: 0,
   stock: MACHINE_STOCK,
+  freeTreatDay: "",
   catPets: 0,
   current: null,
   isRare: false,
@@ -1788,6 +1789,7 @@ function ensureFreshDay() {
     state.day = today;
     state.todayCount = 0;
     state.stock = MACHINE_STOCK;
+    state.freeTreatDay = "";
     state.todayEarnings = 0;
     state.earningsDay = today;
   }
@@ -2609,6 +2611,7 @@ function loadState() {
     saved?.day === today && Number.isFinite(saved?.stock)
       ? Math.min(MACHINE_STOCK, Math.max(0, Math.floor(saved.stock)))
       : MACHINE_STOCK;
+  state.freeTreatDay = typeof saved?.freeTreatDay === "string" ? saved.freeTreatDay : "";
   state.earningsDay = today;
   state.todayEarnings =
     saved?.earningsDay === today && Number.isFinite(saved?.todayEarnings) ? roundCoins(saved.todayEarnings) : 0;
@@ -2664,6 +2667,7 @@ function persistState() {
         day: state.day,
         todayCount: state.todayCount,
         stock: state.stock,
+        freeTreatDay: state.freeTreatDay,
         catPets: state.catPets,
         currentId: state.current ? state.current.id : null,
         wallet: state.wallet,
@@ -3229,9 +3233,11 @@ function updateWalletUi(pulse = "") {
 
   const balance = formatCoins(state.wallet);
   const claimed = state.lastCheckin === dayKey();
-  const freeDraw = state.wallet + 0.001 < DRAW_COST;
+  const lowFunds = state.wallet + 0.001 < DRAW_COST;
+  const treatAvailable = state.freeTreatDay !== dayKey();
   const vaultFull = state.collection.length >= state.capacity;
   const emptyStock = state.stock <= 0;
+  const freeRestock = emptyStock && lowFunds && treatAvailable;
 
   el.walletBalance.textContent = balance;
   el.walletPanelBalance.textContent = balance;
@@ -3241,13 +3247,22 @@ function updateWalletUi(pulse = "") {
   el.drawCost.textContent = vaultFull
     ? "仓库已满"
     : emptyStock
-      ? `补货 ${formatCoins(RESTOCK_COST)} 币`
-      : freeDraw
-        ? "店长请客"
+      ? freeRestock
+        ? "店长请客 · 补货"
+        : lowFunds
+          ? "余额不足"
+          : `补货 ${formatCoins(RESTOCK_COST)} 币`
+      : lowFunds
+        ? treatAvailable
+          ? "店长请客"
+          : "余额不足"
         : `−${formatCoins(DRAW_COST)} 币`;
-  el.drawCost.classList.toggle("is-free", freeDraw && !vaultFull && !emptyStock);
-  el.drawCost.classList.toggle("is-full", vaultFull);
-  el.drawCost.classList.toggle("is-restock", emptyStock && !vaultFull);
+  el.drawCost.classList.toggle(
+    "is-free",
+    (emptyStock && freeRestock) || (!emptyStock && lowFunds && treatAvailable),
+  );
+  el.drawCost.classList.toggle("is-full", vaultFull || (lowFunds && !treatAvailable));
+  el.drawCost.classList.toggle("is-restock", emptyStock && !vaultFull && !freeRestock && !lowFunds);
   updateCapacityUi();
   el.walletPill.setAttribute(
     "aria-label",
@@ -3796,15 +3811,21 @@ function setDrawingUi(isDrawing) {
   el.drawButton.classList.toggle("is-pulling", isDrawing);
   el.drawButton.setAttribute("aria-busy", String(isDrawing));
   const vaultFull = state.collection.length >= state.capacity;
+  const freeRestock =
+    state.stock <= 0 &&
+    state.wallet + 0.001 < RESTOCK_COST &&
+    state.freeTreatDay !== dayKey();
   el.drawLabel.textContent = isDrawing
     ? "正在补货…"
     : vaultFull
       ? "仓库已满 · 先腾位置"
       : state.stock <= 0
-        ? `补货 8 件 · ${formatCoins(RESTOCK_COST)} 币`
+        ? freeRestock
+          ? "店长请客 · 补货 8 件"
+          : `补货 8 件 · ${formatCoins(RESTOCK_COST)} 币`
         : state.collection.length === 0
-          ? "拉一下 · 补货"
-          : "再拉一下 · 补货";
+          ? "拉一下"
+          : "再拉一下";
 }
 
 function restockMachine() {
@@ -3817,22 +3838,30 @@ function restockMachine() {
     return;
   }
 
-  if (state.wallet + 0.001 < RESTOCK_COST) {
-    showToast(
-      `补货要 ${formatCoins(RESTOCK_COST)} 币，还差 ${formatCoins(RESTOCK_COST - state.wallet)}。签到或投稿赚一点。`,
-      3600,
-    );
+  const treatAvailable = state.freeTreatDay !== dayKey();
+  const lowFunds = state.wallet + 0.001 < RESTOCK_COST;
+  if (lowFunds && !treatAvailable) {
+    showToast("今天的店长请客已经用过了，补货要 8.8 币，先签到或投稿赚一点。", 3600);
     return;
   }
 
-  spendCoins(RESTOCK_COST);
+  if (lowFunds) {
+    state.freeTreatDay = dayKey();
+  } else {
+    spendCoins(RESTOCK_COST);
+  }
   state.stock = MACHINE_STOCK;
   updateWalletUi();
   updateStats();
   setDrawingUi(false);
   persistState();
   playCoinSound();
-  showToast(`补货完成：${MACHINE_STOCK} 件新货，−${formatCoins(RESTOCK_COST)} 币。`, 3200);
+  showToast(
+    lowFunds
+      ? `店长请客：补货 ${MACHINE_STOCK} 件，今天的机会用掉了。`
+      : `补货完成：${MACHINE_STOCK} 件新货，−${formatCoins(RESTOCK_COST)} 币。`,
+    3200,
+  );
 }
 
 function drawProduct() {
@@ -3862,6 +3891,13 @@ function drawProduct() {
     return;
   }
 
+  const treatAvailable = state.freeTreatDay !== dayKey();
+  const freeDraw = state.wallet + 0.001 < DRAW_COST;
+  if (freeDraw && !treatAvailable) {
+    showToast("今天的店长请客已经用过了，签到或投稿赚点币再来。", 3600);
+    return;
+  }
+
   let discardedProduct = null;
   if (state.pendingId) {
     discardedProduct = findProduct(state.pendingId);
@@ -3872,8 +3908,9 @@ function drawProduct() {
   playLeverSound();
   setDrawingUi(true);
 
-  const freeDraw = state.wallet + 0.001 < DRAW_COST;
-  if (!freeDraw) {
+  if (freeDraw) {
+    state.freeTreatDay = dayKey();
+  } else {
     spendCoins(DRAW_COST);
   }
 
@@ -4581,11 +4618,16 @@ function boot() {
   if (state.collection.length >= state.capacity) {
     el.drawLabel.textContent = "仓库已满 · 先腾位置";
   } else if (state.stock <= 0) {
-    el.drawLabel.textContent = `补货 8 件 · ${formatCoins(RESTOCK_COST)} 币`;
+    const freeRestock =
+      state.wallet + 0.001 < RESTOCK_COST &&
+      state.freeTreatDay !== dayKey();
+    el.drawLabel.textContent = freeRestock
+      ? "店长请客 · 补货 8 件"
+      : `补货 8 件 · ${formatCoins(RESTOCK_COST)} 币`;
   } else if (state.collection.length === 0) {
-    el.drawLabel.textContent = "拉一下 · 补货";
+    el.drawLabel.textContent = "拉一下";
   } else {
-    el.drawLabel.textContent = "再拉一下 · 补货";
+    el.drawLabel.textContent = "再拉一下";
   }
 
   window.setTimeout(() => {
