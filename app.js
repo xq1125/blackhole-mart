@@ -3419,9 +3419,18 @@ function showCommunityProduct(product) {
 /* ---------- submission form ---------- */
 
 const PRICE_TIERS = [3.3, 6.6, 9.9, 12.9, 19.9];
+const AUTHOR_FEE_TIERS = new Map([
+  [3.3, 10.0],
+  [6.6, 11.6],
+  [9.9, 13.3],
+  [12.9, 14.9],
+  [19.9, 16.6],
+]);
 
 function authorFeeFor(price) {
-  return Math.max(60, roundCoins(30 + price * 0.6));
+  const normalized = roundCoins(price);
+  return AUTHOR_FEE_TIERS.get(normalized) ??
+    Math.max(10, Math.min(16.6, roundCoins(8.7 + normalized * 0.4)));
 }
 
 function setSelectedEmoji(emoji) {
@@ -3449,7 +3458,7 @@ function setSelectedPrice(value) {
 
 function updateFeePreview() {
   const price = roundCoins(el.itemPrice.value);
-  const fee = Number.isFinite(price) && price > 0 ? authorFeeFor(price) : 60;
+  const fee = Number.isFinite(price) && price > 0 ? authorFeeFor(price) : 10;
   el.formFee.textContent = `+${formatCoins(fee)} 币`;
 }
 
