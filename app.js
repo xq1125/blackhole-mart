@@ -1515,7 +1515,8 @@ const RESERVED_NAME_KEYS = new Set([AUTHOR_NAME_KEY, "xiaxiqing", "xq1125", "adm
 const RARE_CHANCE = 0.075;
 const COMMUNITY_DRAW_CHANCE = 0.18;
 const DRAW_COST = 8.8;
-const DAILY_DRAW_LIMIT = 8;
+const MACHINE_STOCK = 8;
+const RESTOCK_COST = 8.8;
 const CHECKIN_BONUS = 30;
 const DUPLICATE_RATE = 0.5;
 const ROYALTY_RATE = 0.3;
@@ -1536,6 +1537,7 @@ const state = {
   soundOn: true,
   day: "",
   todayCount: 0,
+  stock: MACHINE_STOCK,
   catPets: 0,
   current: null,
   isRare: false,
@@ -1683,6 +1685,7 @@ function ensureFreshDay() {
   if (state.day !== today) {
     state.day = today;
     state.todayCount = 0;
+    state.stock = MACHINE_STOCK;
     state.todayEarnings = 0;
     state.earningsDay = today;
   }
@@ -1927,6 +1930,7 @@ function cacheElements() {
   el.soundLabel = $("soundLabel");
   el.shopCat = $("shopCat");
   el.todayCount = $("todayCount");
+  el.machineStock = $("machineStock");
   el.collectionStat = $("collectionStat");
   el.collectionTotal = $("collectionTotal");
   el.vaultCount = $("vaultCount");
@@ -2496,6 +2500,10 @@ function loadState() {
   state.lastCheckin = typeof saved?.lastCheckin === "string" ? saved.lastCheckin : "";
   state.day = today;
   state.todayCount = saved?.day === today && Number.isFinite(saved?.todayCount) ? saved.todayCount : 0;
+  state.stock =
+    saved?.day === today && Number.isFinite(saved?.stock)
+      ? Math.min(MACHINE_STOCK, Math.max(0, Math.floor(saved.stock)))
+      : MACHINE_STOCK;
   state.earningsDay = today;
   state.todayEarnings =
     saved?.earningsDay === today && Number.isFinite(saved?.todayEarnings) ? roundCoins(saved.todayEarnings) : 0;
@@ -2550,6 +2558,7 @@ function persistState() {
         soundOn: state.soundOn,
         day: state.day,
         todayCount: state.todayCount,
+        stock: state.stock,
         catPets: state.catPets,
         currentId: state.current ? state.current.id : null,
         wallet: state.wallet,
@@ -2809,7 +2818,9 @@ function updateStats() {
   const total = ALL_PRODUCTS.length;
   const officialFound = state.codex.length;
 
-  el.todayCount.textContent = `${state.todayCount} / ${DAILY_DRAW_LIMIT}`;
+  el.todayCount.textContent = String(state.todayCount);
+  el.machineStock.textContent = String(state.stock);
+  el.machineStock.classList.toggle("is-empty", state.stock <= 0);
   el.collectionStat.textContent = String(officialFound);
   el.collectionTotal.textContent = String(total);
   const vaultLength = state.collection.length;
@@ -3110,7 +3121,7 @@ function updateWalletUi(pulse = "") {
   const freeDraw = state.wallet + 0.001 < DRAW_COST;
   const vaultFull = state.collection.length >= state.capacity;
   const pending = Boolean(state.pendingId);
-  const dailyFull = state.todayCount >= DAILY_DRAW_LIMIT;
+  const emptyStock = state.stock <= 0;
 
   el.walletBalance.textContent = balance;
   el.walletPanelBalance.textContent = balance;
@@ -3119,17 +3130,17 @@ function updateWalletUi(pulse = "") {
   el.checkinLabel.textContent = claimed ? "今日已签到" : `今日签到 +${CHECKIN_BONUS}`;
   el.drawCost.textContent = pending
     ? "先复制小票"
-    : dailyFull
-      ? "明天补货"
-      : vaultFull
-        ? "仓库已满"
+    : vaultFull
+      ? "仓库已满"
+      : emptyStock
+        ? `补货 ${formatCoins(RESTOCK_COST)} 币`
         : freeDraw
           ? "店长请客"
           : `−${formatCoins(DRAW_COST)} 币`;
-  el.drawCost.classList.toggle("is-free", freeDraw && !vaultFull && !pending && !dailyFull);
-  el.drawCost.classList.toggle("is-full", vaultFull && !pending && !dailyFull);
+  el.drawCost.classList.toggle("is-free", freeDraw && !vaultFull && !pending && !emptyStock);
+  el.drawCost.classList.toggle("is-full", vaultFull && !pending);
   el.drawCost.classList.toggle("is-pending", pending);
-  el.drawCost.classList.toggle("is-limit", dailyFull && !pending);
+  el.drawCost.classList.toggle("is-restock", emptyStock && !pending && !vaultFull);
   updateCapacityUi();
   el.walletPill.setAttribute(
     "aria-label",
@@ -3629,12 +3640,47 @@ function setDrawingUi(isDrawing) {
   el.machine.classList.toggle("is-pulling", isDrawing);
   el.drawButton.classList.toggle("is-pulling", isDrawing);
   el.drawButton.setAttribute("aria-busy", String(isDrawing));
-  const dailyFull = state.todayCount >= DAILY_DRAW_LIMIT;
+  const vaultFull = state.collection.length >= state.capacity;
+  const pending = Boolean(state.pendingId);
   el.drawLabel.textContent = isDrawing
     ? "正在补货…"
-    : dailyFull
-      ? "今日已补满 · 明天补货"
-      : "再拉一下 · 补货";
+    : pending
+      ? "先复制小票 · 入仓"
+      : vaultFull
+        ? "仓库已满 · 先腾位置"
+        : state.stock <= 0
+          ? `补货 8 件 · ${formatCoins(RESTOCK_COST)} 币`
+          : state.collection.length === 0
+            ? "拉一下 · 补货"
+            : "再拉一下 · 补货";
+}
+
+function restockMachine() {
+  if (state.isDrawing) {
+    return;
+  }
+
+  if (state.collection.length >= state.capacity) {
+    showToast("仓库满了，先移除一件或扩容，再花钱补货。", 3600);
+    return;
+  }
+
+  if (state.wallet + 0.001 < RESTOCK_COST) {
+    showToast(
+      `补货要 ${formatCoins(RESTOCK_COST)} 币，还差 ${formatCoins(RESTOCK_COST - state.wallet)}。签到或投稿赚一点。`,
+      3600,
+    );
+    return;
+  }
+
+  spendCoins(RESTOCK_COST);
+  state.stock = MACHINE_STOCK;
+  updateWalletUi();
+  updateStats();
+  setDrawingUi(false);
+  persistState();
+  playCoinSound();
+  showToast(`补货完成：${MACHINE_STOCK} 件新货，−${formatCoins(RESTOCK_COST)} 币。`, 3200);
 }
 
 function drawProduct() {
@@ -3651,11 +3697,6 @@ function drawProduct() {
     return;
   }
 
-  if (state.todayCount >= DAILY_DRAW_LIMIT) {
-    showToast("今天已经拉满 8 次了，明天补货后再来。", 4200);
-    return;
-  }
-
   if (state.collection.length >= state.capacity) {
     const overflow = state.collection.length - state.capacity;
     showToast(
@@ -3667,6 +3708,11 @@ function drawProduct() {
     if (window.matchMedia("(max-width: 930px)").matches) {
       el.vault.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    return;
+  }
+
+  if (state.stock <= 0) {
+    restockMachine();
     return;
   }
 
@@ -3686,6 +3732,7 @@ function drawProduct() {
     try {
       const product = pickProduct();
       state.todayCount += 1;
+      state.stock = Math.max(0, state.stock - 1);
       const alreadyOwned = state.collection.includes(product.id);
       let duplicateCredit = 0;
       let isNew = false;
@@ -3760,7 +3807,7 @@ function buildReceiptText(product = state.current) {
     `副作用：${product.side}`,
     `适用人群：${product.crowd}`,
     `售价：${product.price} ${product.unit || "宇宙币"}`,
-    `今日已拆：${state.todayCount}/${DAILY_DRAW_LIMIT} 件 · 图鉴：${officialFound}/${total} · 仓库：${state.collection.length} 件`,
+    `今日已拆：${state.todayCount} 件 · 库存：${state.stock}/${MACHINE_STOCK} 件 · 图鉴：${officialFound}/${total} · 仓库：${state.collection.length} 件`,
     `我的宇宙币：${formatCoins(state.wallet)}`,
     "",
     "只收好奇心，不设找零。",
@@ -3844,6 +3891,7 @@ function claimPendingProduct() {
   renderVault(isNew ? product.id : null);
   updateWalletUi();
   updateClaimUi();
+  setDrawingUi(false);
   persistState();
 
   if (state.current && state.current.id === product.id) {
@@ -4350,8 +4398,12 @@ function boot() {
   renderVault();
   updateStats();
 
-  if (state.todayCount >= DAILY_DRAW_LIMIT) {
-    el.drawLabel.textContent = "今日已补满 · 明天补货";
+  if (state.pendingId) {
+    el.drawLabel.textContent = "先复制小票 · 入仓";
+  } else if (state.collection.length >= state.capacity) {
+    el.drawLabel.textContent = "仓库已满 · 先腾位置";
+  } else if (state.stock <= 0) {
+    el.drawLabel.textContent = `补货 8 件 · ${formatCoins(RESTOCK_COST)} 币`;
   } else if (state.collection.length === 0) {
     el.drawLabel.textContent = "拉一下 · 补货";
   } else {

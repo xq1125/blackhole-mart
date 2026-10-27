@@ -1378,6 +1378,10 @@ main {
   line-height: 0.95;
 }
 
+.console-screen strong.is-empty {
+  color: #ff9a86;
+}
+
 .coin-slot {
   display: flex;
   flex-direction: column;
@@ -1818,7 +1822,7 @@ main {
 }
 
 .draw-cost.is-pending,
-.draw-cost.is-limit {
+.draw-cost.is-restock {
   color: var(--yellow);
   border-color: rgba(255, 228, 92, 0.8);
 }
