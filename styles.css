@@ -3411,6 +3411,13 @@ main {
   letter-spacing: 0.08em;
 }
 
+.footer-meta .footer-manager {
+  color: var(--yellow);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
 /* ---------- Feedback / layers ---------- */
 
 .copy-dialog {
