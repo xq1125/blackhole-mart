@@ -3045,7 +3045,7 @@ function renderDriftBottles() {
       bottle.classList.add("is-lit");
       bottle.style.setProperty("--accent", product.color || "var(--yellow)");
       name.textContent = product.name;
-      status.textContent = "已收进仓库";
+      status.textContent = "已捞到";
       bottle.title = product.name;
       bottle.setAttribute("aria-label", `已捞到：${product.name}`);
     } else {
