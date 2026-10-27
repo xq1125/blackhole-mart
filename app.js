@@ -1556,6 +1556,8 @@ let toastTimer = null;
 let printTimer = null;
 let catBubbleTimer = null;
 let copyDialogHintMarkup = "";
+let confirmResolver = null;
+let confirmReturnFocus = null;
 let authBusy = false;
 let passwordBusy = false;
 let authMode = "register";
@@ -1907,6 +1909,12 @@ function cacheElements() {
   el.againButton = $("againButton");
   el.copyButton = $("copyButton");
   el.copyButtonLabel = $("copyButtonLabel");
+  el.confirmDialog = $("confirmDialog");
+  el.confirmTitle = $("confirmTitle");
+  el.confirmMessage = $("confirmMessage");
+  el.confirmAccept = $("confirmAccept");
+  el.confirmCancel = $("confirmCancel");
+  el.closeConfirmDialog = $("closeConfirmDialog");
   el.copyDialog = $("copyDialog");
   el.copyDialogText = $("copyDialogText");
   el.copyDialogHint = $("copyDialogHint");
@@ -3739,12 +3747,51 @@ async function retryCopyFromDialog() {
   el.copyDialogText.scrollTop = 0;
 }
 
-function clearVault() {
+function settleConfirm(value) {
+  const resolve = confirmResolver;
+  confirmResolver = null;
+  if (el.confirmDialog && el.confirmDialog.open) {
+    el.confirmDialog.close();
+  }
+  if (resolve) {
+    resolve(value);
+  }
+}
+
+function askConfirm({ title, message, acceptLabel = "确定", cancelLabel = "取消" }) {
+  if (!el.confirmDialog || typeof el.confirmDialog.showModal !== "function") {
+    return Promise.resolve(window.confirm(message));
+  }
+
+  if (confirmResolver) {
+    settleConfirm(false);
+  }
+  confirmReturnFocus = document.activeElement;
+  el.confirmTitle.textContent = title;
+  el.confirmMessage.textContent = message;
+  el.confirmAccept.textContent = acceptLabel;
+  el.confirmCancel.textContent = cancelLabel;
+  document.body.classList.add("has-dialog");
+  if (!el.confirmDialog.open) {
+    el.confirmDialog.showModal();
+  }
+  window.requestAnimationFrame(() => el.confirmCancel.focus({ preventScroll: true }));
+  return new Promise((resolve) => {
+    confirmResolver = resolve;
+  });
+}
+
+async function clearVault() {
   if (state.collection.length === 0) {
     return;
   }
 
-  const confirmed = window.confirm("清空仓库？抽到的好物会消失，但猫店长不会。");
+  const confirmed = await askConfirm({
+    title: "清空仓库？",
+    message: "仓库里的好物会全部消失，但猫店长不会。",
+    acceptLabel: "全部清空",
+    cancelLabel: "先留着",
+  });
   if (!confirmed) {
     return;
   }
@@ -3784,13 +3831,20 @@ function expandVault() {
   showToast(`仓库扩容到 ${upgrade.target} 件，−${upgrade.cost} 币。`, 3000);
 }
 
-function removeVaultItem(id) {
+async function removeVaultItem(id) {
   const product = findProduct(id);
   if (!product || !state.collection.includes(id)) {
     return;
   }
 
-  if (!window.confirm(`从仓库移除《${product.name}》？`)) {
+  const official = PRODUCT_MAP.has(product.id);
+  const confirmed = await askConfirm({
+    title: "移除这件好物？",
+    message: `《${product.name}》会从仓库消失${official ? "，图鉴进度也会少一件" : ""}。`,
+    acceptLabel: "移除",
+    cancelLabel: "先留着",
+  });
+  if (!confirmed) {
     return;
   }
 
@@ -3959,6 +4013,31 @@ function bindEvents() {
     if (event.target === el.copyDialog) {
       closeCopyDialog();
     }
+  });
+
+  el.confirmAccept.addEventListener("click", () => settleConfirm(true));
+  el.confirmCancel.addEventListener("click", () => settleConfirm(false));
+  el.closeConfirmDialog.addEventListener("click", () => settleConfirm(false));
+  el.confirmDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    settleConfirm(false);
+  });
+  el.confirmDialog.addEventListener("click", (event) => {
+    if (event.target === el.confirmDialog) {
+      settleConfirm(false);
+    }
+  });
+  el.confirmDialog.addEventListener("close", () => {
+    if (confirmResolver) {
+      const resolve = confirmResolver;
+      confirmResolver = null;
+      resolve(false);
+    }
+    syncDialogLock();
+    if (confirmReturnFocus && confirmReturnFocus.isConnected) {
+      confirmReturnFocus.focus({ preventScroll: true });
+    }
+    confirmReturnFocus = null;
   });
 
   el.checkinButton.addEventListener("click", claimDailyBonus);
