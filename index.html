@@ -7,7 +7,7 @@
   <meta name="description" content="黑洞便利店，一家开在宇宙尽头的便利店。88 件平行宇宙好物，抽签、赚宇宙币，还可以写一件离谱商品上架售卖。">
   <title>黑洞便利店 · 宇宙第 404 号分店</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1eadb'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23171717'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff4b2b'/%3E%3Cellipse cx='32' cy='32' rx='27' ry='10' fill='none' stroke='%232946f5' stroke-width='3' transform='rotate(-25 32 32)'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261026-12">
+  <link rel="stylesheet" href="styles.css?v=20261026-13">
 </head>
 <body>
   <div class="page-texture" aria-hidden="true"></div>
@@ -628,6 +628,20 @@
       </div>
       <p class="codex-hint">只记录名字。想看价格、功效和副作用，回仓库点开对应的小票。</p>
       <div class="codex-grid" id="codexGrid" role="list" aria-label="官方图鉴"></div>
+
+      <section class="drift-zone" aria-labelledby="driftTitle">
+        <div class="drift-head">
+          <div>
+            <p class="section-kicker">MESSAGE IN A BOTTLE</p>
+            <h3 id="driftTitle">玩家投稿漂流瓶</h3>
+          </div>
+          <span class="drift-count" id="driftCount">0 件已捞到</span>
+        </div>
+        <p class="drift-hint">抽中住客投稿并收进仓库，对应的小瓶子就会亮起；还没抽到的先留在灰瓶里。</p>
+        <div class="drift-grid" id="driftGrid" role="list" aria-label="玩家投稿漂流瓶"></div>
+        <p class="drift-overflow" id="driftOverflow" hidden></p>
+      </section>
+
       <p class="codex-footnote">删除仓库里的东西不会让图鉴熄灯；图鉴只记录你曾经拥有过。</p>
     </div>
   </dialog>
@@ -637,6 +651,6 @@
   <div class="heart-layer" id="heartLayer" aria-hidden="true"></div>
   <p class="sr-only" id="liveRegion" aria-live="polite"></p>
 
-  <script src="app.js?v=20261026-12" defer></script>
+  <script src="app.js?v=20261026-13" defer></script>
 </body>
 </html>

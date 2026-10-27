@@ -1530,6 +1530,7 @@ const state = {
   account: null,
   collection: [],
   codex: [],
+  communityCodex: [],
   capacity: BASE_CAPACITY,
   pendingId: null,
   soundOn: true,
@@ -1936,6 +1937,9 @@ function cacheElements() {
   el.codexGrid = $("codexGrid");
   el.codexProgressLabel = $("codexProgressLabel");
   el.codexProgressBar = $("codexProgressBar");
+  el.driftGrid = $("driftGrid");
+  el.driftCount = $("driftCount");
+  el.driftOverflow = $("driftOverflow");
   el.vault = document.querySelector(".vault");
   el.vaultGrid = $("vaultGrid");
   el.vaultEmpty = $("vaultEmpty");
@@ -2472,6 +2476,12 @@ function loadState() {
     ...state.collection.filter((id) => PRODUCT_MAP.has(id)),
   ])];
   const codexMigrated = state.codex.some((id) => !storedCodex.includes(id));
+  const storedCommunityCodex = Array.isArray(saved?.communityCodex) ? saved.communityCodex : [];
+  state.communityCodex = [...new Set([
+    ...storedCommunityCodex.filter((id) => Boolean(findProduct(id)?.community)),
+    ...state.collection.filter((id) => Boolean(findProduct(id)?.community)),
+  ])];
+  const communityMigrated = state.communityCodex.some((id) => !storedCommunityCodex.includes(id));
   state.capacity = normalizeCapacity(saved?.capacity);
   const storedPending = typeof saved?.pendingId === "string" ? findProduct(saved.pendingId) : null;
   state.pendingId =
@@ -2518,7 +2528,7 @@ function loadState() {
   if (migratedLegacy) {
     persistState();
     safeStorageRemove(LEGACY_STORAGE_KEY);
-  } else if (codexMigrated) {
+  } else if (codexMigrated || communityMigrated) {
     persistState();
   }
 }
@@ -2534,6 +2544,7 @@ function persistState() {
       JSON.stringify({
         collection: state.collection,
         codex: state.codex,
+        communityCodex: state.communityCodex,
         capacity: state.capacity,
         pendingId: state.pendingId,
         soundOn: state.soundOn,
@@ -2946,6 +2957,14 @@ function addToCodex(product) {
   return true;
 }
 
+function addToCommunityCodex(product) {
+  if (!product || !product.community || state.communityCodex.includes(product.id)) {
+    return false;
+  }
+  state.communityCodex.push(product.id);
+  return true;
+}
+
 function renderCodex() {
   if (!el.codexGrid) {
     return;
@@ -2989,6 +3008,64 @@ function renderCodex() {
     `图鉴进度 ${state.codex.length} / ${total}`,
   );
   el.codexButtonCount.textContent = `${state.codex.length} / ${total}`;
+  renderDriftBottles();
+}
+
+function renderDriftBottles() {
+  if (!el.driftGrid) {
+    return;
+  }
+
+  const visible = state.userProducts.slice(0, 8);
+  const litCount = state.userProducts.filter((product) =>
+    state.communityCodex.includes(product.id),
+  ).length;
+  const fragment = document.createDocumentFragment();
+
+  for (let index = 0; index < 8; index += 1) {
+    const product = visible[index];
+    const bottle = document.createElement("div");
+    bottle.className = "drift-bottle";
+    bottle.setAttribute("role", "listitem");
+
+    const shape = document.createElement("span");
+    shape.className = "bottle-shape";
+    shape.setAttribute("aria-hidden", "true");
+    const name = document.createElement("span");
+    name.className = "bottle-name";
+    const status = document.createElement("span");
+    status.className = "bottle-status";
+
+    if (!product) {
+      bottle.classList.add("is-empty");
+      name.textContent = "待漂流";
+      status.textContent = "空瓶";
+      bottle.setAttribute("aria-label", "空瓶");
+    } else if (state.communityCodex.includes(product.id)) {
+      bottle.classList.add("is-lit");
+      bottle.style.setProperty("--accent", product.color || "var(--yellow)");
+      name.textContent = product.name;
+      status.textContent = "已收进仓库";
+      bottle.title = product.name;
+      bottle.setAttribute("aria-label", `已捞到：${product.name}`);
+    } else {
+      bottle.classList.add("is-unlit");
+      name.textContent = "???";
+      status.textContent = "还没捞到";
+      bottle.setAttribute("aria-label", "还没捞到");
+    }
+
+    bottle.append(shape, name, status);
+    fragment.append(bottle);
+  }
+
+  el.driftGrid.replaceChildren(fragment);
+  el.driftCount.textContent = `${litCount} 件已捞到`;
+  const overflow = state.userProducts.length - visible.length;
+  el.driftOverflow.hidden = overflow <= 0;
+  el.driftOverflow.textContent = overflow > 0
+    ? `还有 ${overflow} 个漂流瓶在海上，先展示最近 8 个。`
+    : "";
 }
 
 function openCodexDialog() {
@@ -3763,6 +3840,7 @@ function claimPendingProduct() {
   state.pendingId = null;
   const isNew = collectProduct(product);
   addToCodex(product);
+  addToCommunityCodex(product);
   renderVault(isNew ? product.id : null);
   updateWalletUi();
   updateClaimUi();
