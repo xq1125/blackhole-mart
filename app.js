@@ -1529,6 +1529,7 @@ const state = {
   account: null,
   collection: [],
   capacity: BASE_CAPACITY,
+  pendingId: null,
   soundOn: true,
   day: "",
   todayCount: 0,
@@ -1904,6 +1905,7 @@ function cacheElements() {
   el.lever = $("lever");
   el.againButton = $("againButton");
   el.copyButton = $("copyButton");
+  el.copyButtonLabel = $("copyButtonLabel");
   el.copyDialog = $("copyDialog");
   el.copyDialogText = $("copyDialogText");
   el.copyDialogHint = $("copyDialogHint");
@@ -2450,6 +2452,9 @@ function loadState() {
   const storedCollection = Array.isArray(saved?.collection) ? saved.collection : [];
   state.collection = [...new Set(storedCollection)].filter((id) => Boolean(findProduct(id)));
   state.capacity = normalizeCapacity(saved?.capacity);
+  const storedPending = typeof saved?.pendingId === "string" ? findProduct(saved.pendingId) : null;
+  state.pendingId =
+    storedPending && !state.collection.includes(storedPending.id) ? storedPending.id : null;
   state.soundOn = saved?.soundOn !== false;
   state.catPets = Number.isFinite(saved?.catPets) ? saved.catPets : 0;
   state.wallet = Number.isFinite(saved?.wallet) ? Math.max(0, roundCoins(saved.wallet)) : STARTING_WALLET;
@@ -2474,7 +2479,12 @@ function loadState() {
   }
 
   const savedProduct = typeof saved?.currentId === "string" ? findProduct(saved.currentId) : null;
-  if (savedProduct) {
+  const pendingProduct = state.pendingId ? findProduct(state.pendingId) : null;
+  if (pendingProduct) {
+    state.current = pendingProduct;
+    state.isRare = Boolean(pendingProduct.rare);
+    state.mode = "draw";
+  } else if (savedProduct) {
     state.current = savedProduct;
     state.isRare = Boolean(savedProduct.rare);
     state.mode = "restore";
@@ -2501,6 +2511,7 @@ function persistState() {
       JSON.stringify({
         collection: state.collection,
         capacity: state.capacity,
+        pendingId: state.pendingId,
         soundOn: state.soundOn,
         day: state.day,
         todayCount: state.todayCount,
@@ -2692,6 +2703,9 @@ function renderProduct(product, options = {}) {
   el.receiptDate.textContent = formatTimestamp(now);
   el.receiptNo.textContent = `NO. 404-${shortDate}-${serial}${isRare ? "R" : ""}`;
   el.receiptSticker.textContent = stickerForMode(product, mode, fromVault, sticker);
+  if (state.pendingId && product.id === state.pendingId) {
+    el.receiptSticker.textContent = "待入库 · 复制小票";
+  }
   el.productEmoji.textContent = product.emoji;
   el.productTag.textContent = product.tag;
   el.productName.textContent = product.name;
@@ -2728,6 +2742,17 @@ function renderProduct(product, options = {}) {
   }
 
   el.liveRegion.textContent = `已展示 ${product.name}。${product.desc}`;
+  updateClaimUi();
+}
+
+function updateClaimUi() {
+  if (!el.copyButtonLabel) {
+    return;
+  }
+  const pending = Boolean(state.pendingId);
+  el.copyButtonLabel.textContent = pending ? "复制小票并入仓" : "复制这张小票";
+  el.copyButton.classList.toggle("is-claim", pending);
+  el.copyButton.title = pending ? "复制小票，把这件好物收进仓库" : "复制这张小票";
 }
 
 /* ---------- vault ---------- */
@@ -2912,15 +2937,23 @@ function updateWalletUi(pulse = "") {
   const claimed = state.lastCheckin === dayKey();
   const freeDraw = state.wallet + 0.001 < DRAW_COST;
   const vaultFull = state.collection.length >= state.capacity;
+  const pending = Boolean(state.pendingId);
 
   el.walletBalance.textContent = balance;
   el.walletPanelBalance.textContent = balance;
   el.todayEarnings.textContent = `今日进账 +${formatCoins(state.todayEarnings)}`;
   el.checkinButton.disabled = claimed;
   el.checkinLabel.textContent = claimed ? "今日已签到" : `今日签到 +${CHECKIN_BONUS}`;
-  el.drawCost.textContent = vaultFull ? "仓库已满" : freeDraw ? "店长请客" : `−${formatCoins(DRAW_COST)} 币`;
-  el.drawCost.classList.toggle("is-free", freeDraw && !vaultFull);
-  el.drawCost.classList.toggle("is-full", vaultFull);
+  el.drawCost.textContent = pending
+    ? "先复制小票"
+    : vaultFull
+      ? "仓库已满"
+      : freeDraw
+        ? "店长请客"
+        : `−${formatCoins(DRAW_COST)} 币`;
+  el.drawCost.classList.toggle("is-free", freeDraw && !vaultFull && !pending);
+  el.drawCost.classList.toggle("is-full", vaultFull && !pending);
+  el.drawCost.classList.toggle("is-pending", pending);
   updateCapacityUi();
   el.walletPill.setAttribute(
     "aria-label",
@@ -3184,6 +3217,11 @@ function showCommunityProduct(product) {
   if (!product) {
     return;
   }
+  if (state.pendingId) {
+    showToast("先把这张小票复制入库。", 3000);
+    el.receiptWrap.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
 
   renderProduct(product, { mode: "community", print: true });
   if (window.matchMedia("(max-width: 930px)").matches) {
@@ -3426,6 +3464,12 @@ function drawProduct() {
   ensureFreshDay();
   updateWalletUi();
 
+  if (state.pendingId) {
+    showToast("这张小票还没复制入库，先点「复制小票并入仓」。", 4200);
+    el.receiptWrap.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
   if (state.collection.length >= state.capacity) {
     const overflow = state.collection.length - state.capacity;
     showToast(
@@ -3463,16 +3507,17 @@ function drawProduct() {
       if (alreadyOwned) {
         duplicateCredit = sellDuplicate(product);
       } else {
-        isNew = collectProduct(product);
+        state.pendingId = product.id;
+        isNew = true;
       }
 
       renderProduct(product, {
         mode: "draw",
         print: true,
-        sticker: alreadyOwned ? "重复款 · 已寄售" : "",
+        sticker: alreadyOwned ? "重复款 · 已寄售" : "待入库 · 复制小票",
       });
       const sale = maybeRunCommunitySale();
-      renderVault(isNew ? product.id : null);
+      renderVault();
       updateWalletUi();
       persistState();
       burstConfetti(Boolean(product.rare));
@@ -3488,11 +3533,19 @@ function drawProduct() {
       if (sale) {
         messages.push(`你的《${sale.product.name}》被买走，分成 +${formatCoins(sale.revenue)} 币。`);
       }
-      if (messages.length === 0 && isNew && state.collection.length === 1 && !freeDraw) {
-        messages.push("第一件好物已入库，仓库有了一点生活痕迹。");
+      if (isNew) {
+        messages.push("新品已出票，复制小票后才会入库。");
       }
       if (messages.length > 0) {
         showToast(messages.join(" "), 3600);
+      }
+      if (isNew) {
+        window.setTimeout(() => {
+          el.copyButton.scrollIntoView({
+            behavior: reducedMotion ? "auto" : "smooth",
+            block: "center",
+          });
+        }, 220);
       }
     } finally {
       setDrawingUi(false);
@@ -3502,8 +3555,7 @@ function drawProduct() {
 
 /* ---------- actions ---------- */
 
-function buildReceiptText() {
-  const product = state.current;
+function buildReceiptText(product = state.current) {
   if (!product) {
     return "";
   }
@@ -3586,13 +3638,42 @@ function closeCopyDialog() {
   }
 }
 
+function claimPendingProduct() {
+  const product = state.pendingId ? findProduct(state.pendingId) : null;
+  if (!product) {
+    state.pendingId = null;
+    updateClaimUi();
+    return false;
+  }
+
+  if (state.collection.length >= state.capacity) {
+    showToast("仓库满了，先移除一件或扩容，再复制小票入库。", 3600);
+    return false;
+  }
+
+  state.pendingId = null;
+  const isNew = collectProduct(product);
+  renderVault(isNew ? product.id : null);
+  updateWalletUi();
+  updateClaimUi();
+  persistState();
+
+  if (state.current && state.current.id === product.id) {
+    el.receiptSticker.textContent = "已入库 · 欢迎回来";
+  }
+  showToast(`《${product.name}》已入库。`, 2800);
+  return true;
+}
+
 async function copyReceipt() {
-  const text = buildReceiptText();
+  const pendingProduct = state.pendingId ? findProduct(state.pendingId) : null;
+  const claimed = pendingProduct ? claimPendingProduct() : false;
+  const text = buildReceiptText(pendingProduct || state.current);
 
   try {
     if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(text);
-      showToast("小票已复制，记得贴在冰箱上。");
+      showToast(claimed ? "小票已复制，好物已入库。" : "小票已复制，记得贴在冰箱上。");
       return;
     }
   } catch (error) {
@@ -3600,7 +3681,7 @@ async function copyReceipt() {
   }
 
   if (fallbackCopy(text)) {
-    showToast("小票已复制，记得贴在冰箱上。");
+    showToast(claimed ? "小票已复制，好物已入库。" : "小票已复制，记得贴在冰箱上。");
   } else {
     openCopyDialog(text);
   }
@@ -3813,6 +3894,11 @@ function petCat() {
 
 function showCollectedProduct(product) {
   if (!product) {
+    return;
+  }
+  if (state.pendingId) {
+    showToast("先把这张小票复制入库。", 3000);
+    el.receiptWrap.scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
 

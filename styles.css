@@ -1817,6 +1817,11 @@ main {
   border-color: rgba(255, 75, 43, 0.8);
 }
 
+.draw-cost.is-pending {
+  color: var(--yellow);
+  border-color: rgba(255, 228, 92, 0.8);
+}
+
 .draw-arrow {
   display: grid;
   place-items: center;
@@ -2236,6 +2241,20 @@ main {
   background: var(--ink);
   color: var(--card);
   transform: translateY(-2px);
+}
+
+.ghost-button.is-claim {
+  background: var(--yellow);
+  color: var(--ink);
+  border-color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.ghost-button.is-claim:hover {
+  background: var(--yellow);
+  color: var(--ink);
+  transform: translate(-1px, -2px);
+  box-shadow: 4px 4px 0 var(--ink);
 }
 
 .ghost-button > span {
