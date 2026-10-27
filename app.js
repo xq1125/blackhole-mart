@@ -1530,7 +1530,7 @@ const VISITOR_NOTE_SEEDS = `
 周一续命贴|🩹|职场续命|贴在工牌背面，周一早上能多撑两小时。|夜班小陈
 已读不回橡皮|🧽|社交糊弄|擦掉聊天框里的“正在输入”，假装网络刚断。|已读不回
 下班逃跑鞋|👟|职场续命|五点五十九分穿上，电梯会自动为你开门。|下班第一名
-会议静音符|🔇|职场续命|贴在会议室门上，废话会自动变成白噪音。|会议室幽灵
+就业指导课消失喷雾|🚀|时间管理|喷一下，再也不用上就业指导课|椰脆仙贝|老师工资减少
 拖延倒计时|⏳|无用发明|把“马上做”量化成 47 分钟后，焦虑也有进度条。|最后一分钟
 情绪充电线|🔌|情绪补给|一头插自己，一头插猫，电量互相借。|充电宝借我
 社恐隐身贴|🫥|社交糊弄|人多时贴额头，别人会以为你只是背景板。|社恐小鹿
@@ -1595,7 +1595,7 @@ const VISITOR_NOTE_SEEDS = `
 周末赖床证|🛏️|情绪补给|凭此证，周末躺到中午也不会有负罪感。|周末计划家
 `.trim().split("\n").map((line) => line.split("|").map((field) => field.trim()));
 
-const VISITOR_NOTES = VISITOR_NOTE_SEEDS.map(([name, emoji, tag, desc, author], index) => {
+const VISITOR_NOTES = VISITOR_NOTE_SEEDS.map(([name, emoji, tag, desc, author, side], index) => {
   const price = [6.6, 9.9, 12.9, 3.3, 19.9][index % 5];
   const color = PRODUCT_COLORS[index % PRODUCT_COLORS.length];
   return {
@@ -1606,7 +1606,7 @@ const VISITOR_NOTES = VISITOR_NOTE_SEEDS.map(([name, emoji, tag, desc, author], 
     tag,
     desc,
     effect: `把「${name}」放在手边，${tag}的时候会稍微好过一点。`,
-    side: "用久了会开始相信，一张便签真的能挡住一点生活。",
+    side: side || "用久了会开始相信，一张便签真的能挡住一点生活。",
     crowd: `需要一点${tag}的住客，以及刚好路过本店的你。`,
     review: `“${desc}” —— @${author}，住客便签。`,
     price: price.toFixed(1),
