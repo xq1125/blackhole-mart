@@ -7,7 +7,7 @@
   <meta name="description" content="黑洞便利店，一家开在宇宙尽头的便利店。88 件平行宇宙好物，抽签、赚宇宙币，还可以写一件离谱商品上架售卖。">
   <title>黑洞便利店 · 宇宙第 404 号分店</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1eadb'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23171717'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff4b2b'/%3E%3Cellipse cx='32' cy='32' rx='27' ry='10' fill='none' stroke='%232946f5' stroke-width='3' transform='rotate(-25 32 32)'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261026-6">
+  <link rel="stylesheet" href="styles.css?v=20261026-7">
 </head>
 <body>
   <div class="page-texture" aria-hidden="true"></div>
@@ -343,7 +343,7 @@
       <header class="vault-head">
         <div>
           <p class="section-kicker">MY BLACK HOLE PANTRY</p>
-          <h2 id="vaultTitle">我的黑洞仓库 <sup id="vaultCount">00</sup></h2>
+          <h2 id="vaultTitle">我的黑洞仓库 <sup id="vaultCount">00/08</sup></h2>
         </div>
         <div class="vault-progress">
           <div class="progress-copy">
@@ -355,6 +355,17 @@
       </header>
 
       <div class="vault-body">
+        <div class="vault-capacity">
+          <div class="capacity-copy">
+            <span>仓库容量</span>
+            <strong id="vaultCapacityLabel">0 / 8</strong>
+          </div>
+          <div class="capacity-actions">
+            <span id="capacityHint">还能放 8 件</span>
+            <button class="capacity-button" id="expandVault" type="button">扩容至 10 · 88 币</button>
+          </div>
+        </div>
+
         <div class="vault-empty" id="vaultEmpty">
           <span class="empty-arrow" aria-hidden="true">↖</span>
           <div>
@@ -366,7 +377,7 @@
       </div>
 
       <footer class="vault-footer">
-        <span>只保存你亲手抽到的好物 · 本地存档</span>
+        <span>只保存你亲手抽到的好物 · 右上角 × 可移除 · 本地存档</span>
         <button class="text-button" id="clearVault" type="button" hidden>清空仓库</button>
       </footer>
     </section>
@@ -579,6 +590,6 @@
   <div class="heart-layer" id="heartLayer" aria-hidden="true"></div>
   <p class="sr-only" id="liveRegion" aria-live="polite"></p>
 
-  <script src="app.js?v=20261026-6" defer></script>
+  <script src="app.js?v=20261026-7" defer></script>
 </body>
 </html>

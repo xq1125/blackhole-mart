@@ -1812,6 +1812,11 @@ main {
   border-color: rgba(185, 231, 205, 0.8);
 }
 
+.draw-cost.is-full {
+  color: #ff9a86;
+  border-color: rgba(255, 75, 43, 0.8);
+}
+
 .draw-arrow {
   display: grid;
   place-items: center;
@@ -2948,6 +2953,75 @@ main {
   padding: 22px 27px 24px;
 }
 
+.vault-capacity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding: 9px 12px;
+  background: rgba(255, 228, 92, 0.32);
+  border: 1.5px solid var(--ink);
+  box-shadow: 2px 2px 0 rgba(23, 23, 23, 0.16);
+}
+
+.capacity-copy {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 7.5px;
+  letter-spacing: 0.06em;
+}
+
+.capacity-copy strong {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.capacity-copy strong.is-over {
+  color: var(--red);
+}
+
+.capacity-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#capacityHint {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.capacity-button {
+  padding: 6px 9px;
+  background: var(--yellow);
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  box-shadow: 2px 2px 0 var(--ink);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 7.5px;
+  font-weight: 800;
+  line-height: 1.4;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.capacity-button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.capacity-button.is-unaffordable {
+  opacity: 0.62;
+}
+
 .vault-empty {
   display: flex;
   align-items: center;
@@ -2984,8 +3058,67 @@ main {
 
 .vault-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 11px;
+}
+
+@media (max-width: 1300px) {
+  .vault-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.vault-cell {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+
+.vault-cell .vault-item {
+  width: 100%;
+  height: 100%;
+}
+
+.vault-remove {
+  position: absolute;
+  z-index: 3;
+  top: -6px;
+  right: -6px;
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  padding: 0;
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.42;
+  transform: scale(0.88);
+  transition: opacity 0.16s ease, transform 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+
+.vault-cell:hover .vault-remove,
+.vault-remove:focus-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.vault-remove:hover {
+  background: var(--red);
+  color: var(--card);
+}
+
+@media (max-width: 930px) {
+  .vault-remove {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .vault-item {
@@ -4959,6 +5092,38 @@ main {
     padding: 16px 18px 18px;
   }
 
+  .vault-capacity {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .capacity-actions {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  #capacityHint {
+    font-size: 6.5px;
+    text-align: left;
+  }
+
+  .capacity-button {
+    flex: 0 0 auto;
+    padding: 5px 8px;
+    font-size: 7px;
+  }
+
+  .vault-remove {
+    top: -7px;
+    right: -7px;
+    width: 24px;
+    height: 24px;
+    opacity: 1;
+    transform: none;
+  }
+
   .vault-empty {
     gap: 13px;
     padding: 14px 13px;
@@ -4969,7 +5134,7 @@ main {
   }
 
   .vault-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
   }
 

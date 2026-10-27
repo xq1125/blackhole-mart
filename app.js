@@ -1519,11 +1519,16 @@ const CHECKIN_BONUS = 30;
 const DUPLICATE_RATE = 0.5;
 const ROYALTY_RATE = 0.3;
 const STARTING_WALLET = 66;
+const BASE_CAPACITY = 8;
+const MAX_CAPACITY = 16;
+const CAPACITY_STEP = 2;
+const CAPACITY_UPGRADE_COSTS = { 8: 88, 10: 188, 12: 288, 14: 388 };
 const PRODUCT_COLORS = ["#ffe45c", "#c9d2ff", "#ffc5b2", "#bde3f2", "#f4bdde", "#ffd3a1", "#b9e7cd", "#d9d1ff"];
 
 const state = {
   account: null,
   collection: [],
+  capacity: BASE_CAPACITY,
   soundOn: true,
   day: "",
   todayCount: 0,
@@ -1593,6 +1598,25 @@ function formatCoins(value) {
 function priceOf(product) {
   const value = Number.parseFloat(String(product?.price ?? 0).replace(/[^\d.]/g, ""));
   return Number.isFinite(value) ? value : 0;
+}
+
+function normalizeCapacity(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) {
+    return BASE_CAPACITY;
+  }
+  const clamped = Math.min(MAX_CAPACITY, Math.max(BASE_CAPACITY, numeric));
+  return BASE_CAPACITY + Math.round((clamped - BASE_CAPACITY) / CAPACITY_STEP) * CAPACITY_STEP;
+}
+
+function nextCapacityUpgrade() {
+  if (state.capacity >= MAX_CAPACITY) {
+    return null;
+  }
+  return {
+    target: Math.min(MAX_CAPACITY, state.capacity + CAPACITY_STEP),
+    cost: CAPACITY_UPGRADE_COSTS[state.capacity] || 88,
+  };
 }
 
 function getCommunityProducts() {
@@ -1895,8 +1919,12 @@ function cacheElements() {
   el.vaultCount = $("vaultCount");
   el.progressLabel = $("progressLabel");
   el.progressBar = $("progressBar");
+  el.vault = document.querySelector(".vault");
   el.vaultGrid = $("vaultGrid");
   el.vaultEmpty = $("vaultEmpty");
+  el.vaultCapacityLabel = $("vaultCapacityLabel");
+  el.capacityHint = $("capacityHint");
+  el.expandVault = $("expandVault");
   el.clearVault = $("clearVault");
   el.receiptWrap = $("receiptWrap");
   el.receipt = $("receipt");
@@ -2420,6 +2448,7 @@ function loadState() {
 
   const storedCollection = Array.isArray(saved?.collection) ? saved.collection : [];
   state.collection = [...new Set(storedCollection)].filter((id) => Boolean(findProduct(id)));
+  state.capacity = normalizeCapacity(saved?.capacity);
   state.soundOn = saved?.soundOn !== false;
   state.catPets = Number.isFinite(saved?.catPets) ? saved.catPets : 0;
   state.wallet = Number.isFinite(saved?.wallet) ? Math.max(0, roundCoins(saved.wallet)) : STARTING_WALLET;
@@ -2470,6 +2499,7 @@ function persistState() {
       storageKey,
       JSON.stringify({
         collection: state.collection,
+        capacity: state.capacity,
         soundOn: state.soundOn,
         day: state.day,
         todayCount: state.todayCount,
@@ -2722,10 +2752,50 @@ function updateStats() {
   el.todayCount.textContent = String(state.todayCount);
   el.collectionStat.textContent = String(officialFound);
   el.collectionTotal.textContent = String(total);
-  el.vaultCount.textContent = String(state.collection.length).padStart(2, "0");
+  const vaultLength = state.collection.length;
+  el.vaultCount.textContent = `${String(vaultLength).padStart(2, "0")}/${String(state.capacity).padStart(2, "0")}`;
   el.progressLabel.textContent = `${officialFound} / ${total}`;
   el.progressBar.style.width = `${percent}%`;
   el.progressBar.parentElement.setAttribute("aria-label", `图鉴进度 ${officialFound} / ${total}`);
+  updateCapacityUi();
+}
+
+function updateCapacityUi() {
+  if (!el.vaultCapacityLabel || !el.expandVault) {
+    return;
+  }
+
+  const length = state.collection.length;
+  const capacity = state.capacity;
+  const upgrade = nextCapacityUpgrade();
+  el.vaultCapacityLabel.textContent = `${length} / ${capacity}`;
+  el.vaultCapacityLabel.classList.toggle("is-over", length > capacity);
+
+  if (upgrade) {
+    el.expandVault.hidden = false;
+    el.expandVault.textContent = `扩容至 ${upgrade.target} · ${upgrade.cost} 币`;
+    el.expandVault.setAttribute(
+      "aria-label",
+      `扩容仓库至 ${upgrade.target} 件，花费 ${upgrade.cost} 宇宙币`,
+    );
+    el.expandVault.classList.toggle("is-unaffordable", state.wallet + 0.001 < upgrade.cost);
+    if (length > capacity) {
+      el.capacityHint.textContent = `超出 ${length - capacity} 件，先移除`;
+    } else if (length === capacity) {
+      el.capacityHint.textContent = "仓库已满，先移除或扩容";
+    } else {
+      el.capacityHint.textContent = `还能放 ${capacity - length} 件`;
+    }
+  } else {
+    el.expandVault.hidden = true;
+    if (length > capacity) {
+      el.capacityHint.textContent = `超出 ${length - capacity} 件，请先移除`;
+    } else if (length === capacity) {
+      el.capacityHint.textContent = "容量已满级 16 件 · 仓库已满";
+    } else {
+      el.capacityHint.textContent = `容量已满级 16 件 · 还能放 ${capacity - length} 件`;
+    }
+  }
 }
 
 function makeVaultItem(product, index, newId) {
@@ -2771,7 +2841,18 @@ function makeVaultItem(product, index, newId) {
     : `${product.price} ${product.unit || "宇宙币"} · ★ ${Number(product.stars).toFixed(1)}`;
 
   button.append(indexLabel, emoji, name, meta);
-  return button;
+
+  const cell = document.createElement("div");
+  cell.className = "vault-cell";
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.className = "vault-remove";
+  remove.dataset.removeId = product.id;
+  remove.setAttribute("aria-label", `从仓库移除 ${product.name}`);
+  remove.title = `从仓库移除《${product.name}》`;
+  remove.textContent = "×";
+  cell.append(button, remove);
+  return cell;
 }
 
 function renderVault(newId = null) {
@@ -2829,14 +2910,17 @@ function updateWalletUi(pulse = "") {
   const balance = formatCoins(state.wallet);
   const claimed = state.lastCheckin === dayKey();
   const freeDraw = state.wallet + 0.001 < DRAW_COST;
+  const vaultFull = state.collection.length >= state.capacity;
 
   el.walletBalance.textContent = balance;
   el.walletPanelBalance.textContent = balance;
   el.todayEarnings.textContent = `今日进账 +${formatCoins(state.todayEarnings)}`;
   el.checkinButton.disabled = claimed;
   el.checkinLabel.textContent = claimed ? "今日已签到" : `今日签到 +${CHECKIN_BONUS}`;
-  el.drawCost.textContent = freeDraw ? "店长请客" : `−${formatCoins(DRAW_COST)} 币`;
-  el.drawCost.classList.toggle("is-free", freeDraw);
+  el.drawCost.textContent = vaultFull ? "仓库已满" : freeDraw ? "店长请客" : `−${formatCoins(DRAW_COST)} 币`;
+  el.drawCost.classList.toggle("is-free", freeDraw && !vaultFull);
+  el.drawCost.classList.toggle("is-full", vaultFull);
+  updateCapacityUi();
   el.walletPill.setAttribute(
     "aria-label",
     `我的宇宙币 ${balance}，前往共创货架赚币`,
@@ -3325,6 +3409,21 @@ function drawProduct() {
 
   ensureFreshDay();
   updateWalletUi();
+
+  if (state.collection.length >= state.capacity) {
+    const overflow = state.collection.length - state.capacity;
+    showToast(
+      overflow > 0
+        ? `仓库超出容量（${state.collection.length}/${state.capacity}），先移除 ${overflow} 件再补货。`
+        : `仓库满了（${state.collection.length}/${state.capacity}）。先移除一件，或点「扩容」加格子。`,
+      4200,
+    );
+    if (window.matchMedia("(max-width: 930px)").matches) {
+      el.vault.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    return;
+  }
+
   ensureAudio();
   playLeverSound();
   setDrawingUi(true);
@@ -3358,6 +3457,7 @@ function drawProduct() {
       });
       const sale = maybeRunCommunitySale();
       renderVault(isNew ? product.id : null);
+      updateWalletUi();
       persistState();
       burstConfetti(Boolean(product.rare));
       playRevealSound(Boolean(product.rare));
@@ -3543,8 +3643,58 @@ function clearVault() {
   state.mode = "daily";
   renderProduct(state.current, { mode: "daily" });
   renderVault();
+  updateWalletUi();
   persistState();
   showToast("仓库清空了，但黑洞记得你来过。");
+}
+
+function expandVault() {
+  const upgrade = nextCapacityUpgrade();
+  if (!upgrade) {
+    showToast("仓库已经扩到最大 16 件了。");
+    return;
+  }
+
+  if (state.wallet + 0.001 < upgrade.cost) {
+    showToast(
+      `还差 ${formatCoins(upgrade.cost - state.wallet)} 宇宙币。签到或投稿赚一点再来。`,
+      3500,
+    );
+    return;
+  }
+
+  spendCoins(upgrade.cost);
+  state.capacity = upgrade.target;
+  updateWalletUi();
+  renderVault();
+  persistState();
+  playCoinSound();
+  showToast(`仓库扩容到 ${upgrade.target} 件，−${upgrade.cost} 币。`, 3000);
+}
+
+function removeVaultItem(id) {
+  const product = findProduct(id);
+  if (!product || !state.collection.includes(id)) {
+    return;
+  }
+
+  if (!window.confirm(`从仓库移除《${product.name}》？`)) {
+    return;
+  }
+
+  state.collection = state.collection.filter((itemId) => itemId !== id);
+  if (state.current && state.current.id === id) {
+    const nextProduct = state.collection.length > 0 ? findProduct(state.collection[0]) : null;
+    state.current = nextProduct || dailyProduct();
+    state.isRare = Boolean(state.current.rare);
+    state.mode = nextProduct ? "restore" : "daily";
+    renderProduct(state.current, { mode: state.mode, print: false });
+  }
+
+  renderVault();
+  updateWalletUi();
+  persistState();
+  showToast(`《${product.name}》已从仓库移除。`, 3000);
 }
 
 function showToast(message, duration = 2500) {
@@ -3733,8 +3883,16 @@ function bindEvents() {
   el.soundToggle.addEventListener("click", toggleSound);
   el.shopCat.addEventListener("click", petCat);
   el.clearVault.addEventListener("click", clearVault);
+  el.expandVault.addEventListener("click", expandVault);
 
   el.vaultGrid.addEventListener("click", (event) => {
+    const remove = event.target.closest("[data-remove-id]");
+    if (remove) {
+      event.stopPropagation();
+      removeVaultItem(remove.dataset.removeId);
+      return;
+    }
+
     const item = event.target.closest(".vault-item");
     if (!item) {
       return;
