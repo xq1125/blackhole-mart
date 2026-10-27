@@ -3167,9 +3167,9 @@ function renderDriftBottles() {
       bottle.classList.add("is-lit");
       bottle.style.setProperty("--accent", product.color || "var(--yellow)");
       name.textContent = product.name;
-      status.textContent = "已捞到";
+      status.textContent = "已收";
       bottle.title = product.name;
-      bottle.setAttribute("aria-label", `已捞到：${product.name}`);
+      bottle.setAttribute("aria-label", `已收：${product.name}`);
     } else {
       bottle.classList.add("is-unlit");
       name.textContent = "???";
@@ -3182,11 +3182,11 @@ function renderDriftBottles() {
   }
 
   el.driftGrid.replaceChildren(fragment);
-  el.driftCount.textContent = `${litCount} 件已捞到`;
+  el.driftCount.textContent = `${litCount} 件已收`;
   const overflow = entries.length - visible.length;
   el.driftOverflow.hidden = overflow <= 0;
   el.driftOverflow.textContent = overflow > 0
-    ? `还有 ${overflow} 个漂流瓶在海上，先展示最近 8 个。`
+    ? `还有 ${overflow} 件玩家寄售，先展示最近 8 个。`
     : "";
 }
 
@@ -3538,7 +3538,7 @@ function renderVisitorWall() {
     desc.textContent = product.desc;
     const status = document.createElement("span");
     status.className = "visitor-note-status";
-    status.textContent = found ? "已抽到 · 漂流瓶" : "还没抽到";
+    status.textContent = found ? "已抽到 · 玩家寄售" : "还没抽到";
 
     note.append(author, name, desc, status);
     fragment.append(note);
