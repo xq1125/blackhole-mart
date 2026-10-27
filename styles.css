@@ -3727,6 +3727,44 @@ main {
   outline-offset: 1px;
 }
 
+.price-tiers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.price-tier {
+  flex: 1 1 0;
+  min-width: 42px;
+  padding: 8px 3px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.4;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.price-tier:hover {
+  transform: translateY(-1px);
+  box-shadow: 2px 2px 0 rgba(23, 23, 23, 0.18);
+}
+
+.price-tier.is-selected,
+.price-tier[aria-checked="true"] {
+  background: var(--yellow);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.price-tier:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+
 .emoji-picker {
   display: flex;
   flex-wrap: wrap;

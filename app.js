@@ -1976,6 +1976,7 @@ function cacheElements() {
   el.itemSide = $("itemSide");
   el.itemAuthor = $("itemAuthor");
   el.emojiPicker = $("emojiPicker");
+  el.priceTiers = $("priceTiers");
   el.formFee = $("formFee");
   el.formError = $("formError");
   el.submitButton = $("submitButton");
@@ -3192,6 +3193,8 @@ function showCommunityProduct(product) {
 
 /* ---------- submission form ---------- */
 
+const PRICE_TIERS = [3.3, 6.6, 9.9, 12.9, 19.9];
+
 function authorFeeFor(price) {
   return Math.max(60, roundCoins(30 + price * 0.6));
 }
@@ -3203,6 +3206,20 @@ function setSelectedEmoji(emoji) {
     button.classList.toggle("is-selected", selected);
     button.setAttribute("aria-pressed", String(selected));
   });
+}
+
+function setSelectedPrice(value) {
+  const normalized = roundCoins(value);
+  const price = PRICE_TIERS.includes(normalized) ? normalized : 9.9;
+  el.itemPrice.value = price.toFixed(1);
+  if (el.priceTiers) {
+    el.priceTiers.querySelectorAll("[data-price]").forEach((button) => {
+      const selected = roundCoins(button.dataset.price) === price;
+      button.classList.toggle("is-selected", selected);
+      button.setAttribute("aria-checked", String(selected));
+    });
+  }
+  updateFeePreview();
 }
 
 function updateFeePreview() {
@@ -3219,10 +3236,9 @@ function resetSubmitForm() {
   el.submitForm.reset();
   state.selectedEmoji = "🫧";
   setSelectedEmoji("🫧");
-  el.itemPrice.value = "9.9";
+  setSelectedPrice(9.9);
   el.itemAuthor.value = state.nickname || "";
   setSubmitError("");
-  updateFeePreview();
   el.submitFormView.hidden = false;
   el.submitSuccessView.hidden = true;
   state.isSubmitting = false;
@@ -3313,9 +3329,9 @@ function submitProduct(event) {
     el.itemDesc.focus();
     return;
   }
-  if (!Number.isFinite(price) || price < 1 || price > 99) {
-    setSubmitError("售价请填 1–99 宇宙币之间。");
-    el.itemPrice.focus();
+  if (!Number.isFinite(price) || !PRICE_TIERS.includes(roundCoins(price))) {
+    setSubmitError("售价请选一个固定档位。");
+    el.priceTiers?.querySelector("[aria-checked='true']")?.focus();
     return;
   }
   if (state.isSubmitting) {
@@ -3860,8 +3876,17 @@ function bindEvents() {
     }, 120);
   });
   el.submitForm.addEventListener("submit", submitProduct);
-  el.itemPrice.addEventListener("input", updateFeePreview);
-  [el.itemName, el.itemDesc, el.itemPrice].forEach((field) => {
+  if (el.priceTiers) {
+    el.priceTiers.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-price]");
+      if (!button) {
+        return;
+      }
+      setSelectedPrice(button.dataset.price);
+      setSubmitError("");
+    });
+  }
+  [el.itemName, el.itemDesc].forEach((field) => {
     field.addEventListener("input", () => setSubmitError(""));
   });
   el.emojiPicker.addEventListener("click", (event) => {

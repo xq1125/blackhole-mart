@@ -7,7 +7,7 @@
   <meta name="description" content="黑洞便利店，一家开在宇宙尽头的便利店。88 件平行宇宙好物，抽签、赚宇宙币，还可以写一件离谱商品上架售卖。">
   <title>黑洞便利店 · 宇宙第 404 号分店</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1eadb'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23171717'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff4b2b'/%3E%3Cellipse cx='32' cy='32' rx='27' ry='10' fill='none' stroke='%232946f5' stroke-width='3' transform='rotate(-25 32 32)'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261026-7">
+  <link rel="stylesheet" href="styles.css?v=20261026-8">
 </head>
 <body>
   <div class="page-texture" aria-hidden="true"></div>
@@ -420,10 +420,17 @@
             <span class="form-label">商品名 <small>2–14 字</small></span>
             <input id="itemName" name="itemName" type="text" maxlength="14" required placeholder="例：周一消失喷雾" autocomplete="off">
           </label>
-          <label class="form-field">
-            <span class="form-label">售价 <small>1–99 币</small></span>
-            <input id="itemPrice" name="itemPrice" type="number" min="1" max="99" step="0.1" value="9.9" required inputmode="decimal">
-          </label>
+          <div class="form-field">
+            <span class="form-label">售价 <small>固定档位</small></span>
+            <div class="price-tiers" id="priceTiers" role="radiogroup" aria-label="选择售价档位">
+              <button class="price-tier" type="button" data-price="3.3" role="radio" aria-checked="false">3.3</button>
+              <button class="price-tier" type="button" data-price="6.6" role="radio" aria-checked="false">6.6</button>
+              <button class="price-tier is-selected" type="button" data-price="9.9" role="radio" aria-checked="true">9.9</button>
+              <button class="price-tier" type="button" data-price="12.9" role="radio" aria-checked="false">12.9</button>
+              <button class="price-tier" type="button" data-price="19.9" role="radio" aria-checked="false">19.9</button>
+            </div>
+            <input id="itemPrice" name="itemPrice" type="hidden" value="9.9">
+          </div>
 
           <div class="form-field form-field-full">
             <span class="form-label">挑一个图标</span>
@@ -590,6 +597,6 @@
   <div class="heart-layer" id="heartLayer" aria-hidden="true"></div>
   <p class="sr-only" id="liveRegion" aria-live="polite"></p>
 
-  <script src="app.js?v=20261026-7" defer></script>
+  <script src="app.js?v=20261026-8" defer></script>
 </body>
 </html>
