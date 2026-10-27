@@ -1529,6 +1529,7 @@ const PRODUCT_COLORS = ["#ffe45c", "#c9d2ff", "#ffc5b2", "#bde3f2", "#f4bdde", "
 const state = {
   account: null,
   collection: [],
+  codex: [],
   capacity: BASE_CAPACITY,
   pendingId: null,
   soundOn: true,
@@ -1928,8 +1929,13 @@ function cacheElements() {
   el.collectionStat = $("collectionStat");
   el.collectionTotal = $("collectionTotal");
   el.vaultCount = $("vaultCount");
-  el.progressLabel = $("progressLabel");
-  el.progressBar = $("progressBar");
+  el.openCodex = $("openCodex");
+  el.codexButtonCount = $("codexButtonCount");
+  el.codexDialog = $("codexDialog");
+  el.closeCodex = $("closeCodex");
+  el.codexGrid = $("codexGrid");
+  el.codexProgressLabel = $("codexProgressLabel");
+  el.codexProgressBar = $("codexProgressBar");
   el.vault = document.querySelector(".vault");
   el.vaultGrid = $("vaultGrid");
   el.vaultEmpty = $("vaultEmpty");
@@ -2460,6 +2466,12 @@ function loadState() {
 
   const storedCollection = Array.isArray(saved?.collection) ? saved.collection : [];
   state.collection = [...new Set(storedCollection)].filter((id) => Boolean(findProduct(id)));
+  const storedCodex = Array.isArray(saved?.codex) ? saved.codex : [];
+  state.codex = [...new Set([
+    ...storedCodex.filter((id) => PRODUCT_MAP.has(id)),
+    ...state.collection.filter((id) => PRODUCT_MAP.has(id)),
+  ])];
+  const codexMigrated = state.codex.some((id) => !storedCodex.includes(id));
   state.capacity = normalizeCapacity(saved?.capacity);
   const storedPending = typeof saved?.pendingId === "string" ? findProduct(saved.pendingId) : null;
   state.pendingId =
@@ -2506,6 +2518,8 @@ function loadState() {
   if (migratedLegacy) {
     persistState();
     safeStorageRemove(LEGACY_STORAGE_KEY);
+  } else if (codexMigrated) {
+    persistState();
   }
 }
 
@@ -2519,6 +2533,7 @@ function persistState() {
       storageKey,
       JSON.stringify({
         collection: state.collection,
+        codex: state.codex,
         capacity: state.capacity,
         pendingId: state.pendingId,
         soundOn: state.soundOn,
@@ -2781,18 +2796,18 @@ function updateActiveVaultItem() {
 
 function updateStats() {
   const total = ALL_PRODUCTS.length;
-  const officialFound = state.collection.filter((id) => PRODUCT_MAP.has(id)).length;
-  const percent = total ? Math.round((officialFound / total) * 100) : 0;
+  const officialFound = state.codex.length;
 
   el.todayCount.textContent = `${state.todayCount} / ${DAILY_DRAW_LIMIT}`;
   el.collectionStat.textContent = String(officialFound);
   el.collectionTotal.textContent = String(total);
   const vaultLength = state.collection.length;
   el.vaultCount.textContent = `${String(vaultLength).padStart(2, "0")}/${String(state.capacity).padStart(2, "0")}`;
-  el.progressLabel.textContent = `${officialFound} / ${total}`;
-  el.progressBar.style.width = `${percent}%`;
-  el.progressBar.parentElement.setAttribute("aria-label", `图鉴进度 ${officialFound} / ${total}`);
+  el.codexButtonCount.textContent = `${officialFound} / ${total}`;
   updateCapacityUi();
+  if (el.codexDialog && el.codexDialog.open) {
+    renderCodex();
+  }
 }
 
 function updateCapacityUi() {
@@ -2921,6 +2936,77 @@ function collectProduct(product) {
   const isNew = !state.collection.includes(product.id);
   state.collection = [product.id, ...state.collection.filter((id) => id !== product.id)];
   return isNew;
+}
+
+function addToCodex(product) {
+  if (!product || !PRODUCT_MAP.has(product.id) || state.codex.includes(product.id)) {
+    return false;
+  }
+  state.codex.push(product.id);
+  return true;
+}
+
+function renderCodex() {
+  if (!el.codexGrid) {
+    return;
+  }
+
+  const total = ALL_PRODUCTS.length;
+  const fragment = document.createDocumentFragment();
+  ALL_PRODUCTS.forEach((product, index) => {
+    const found = state.codex.includes(product.id);
+    const cell = document.createElement("div");
+    cell.className = "codex-cell";
+    cell.setAttribute("role", "listitem");
+    cell.setAttribute("aria-label", found ? `已点亮：${product.name}` : "未点亮");
+    if (found) {
+      cell.classList.add("is-found");
+      cell.style.setProperty("--accent", product.color);
+      if (product.rare) {
+        cell.classList.add("is-rare");
+      }
+      cell.title = product.name;
+    } else {
+      cell.classList.add("is-locked");
+    }
+
+    const number = document.createElement("span");
+    number.className = "codex-index";
+    number.textContent = String(index + 1).padStart(2, "0");
+    const name = document.createElement("span");
+    name.className = "codex-name";
+    name.textContent = found ? product.name : "???";
+    cell.append(number, name);
+    fragment.append(cell);
+  });
+
+  el.codexGrid.replaceChildren(fragment);
+  const percent = total ? Math.round((state.codex.length / total) * 100) : 0;
+  el.codexProgressLabel.textContent = `${state.codex.length} / ${total}`;
+  el.codexProgressBar.style.width = `${percent}%`;
+  el.codexProgressBar.parentElement.setAttribute(
+    "aria-label",
+    `图鉴进度 ${state.codex.length} / ${total}`,
+  );
+  el.codexButtonCount.textContent = `${state.codex.length} / ${total}`;
+}
+
+function openCodexDialog() {
+  if (!el.codexDialog) {
+    return;
+  }
+  renderCodex();
+  document.body.classList.add("has-dialog");
+  if (!el.codexDialog.open) {
+    el.codexDialog.showModal();
+  }
+  window.requestAnimationFrame(() => el.closeCodex.focus({ preventScroll: true }));
+}
+
+function closeCodexDialog() {
+  if (el.codexDialog && el.codexDialog.open) {
+    el.codexDialog.close();
+  }
 }
 
 /* ---------- economy ---------- */
@@ -3584,7 +3670,7 @@ function buildReceiptText(product = state.current) {
   }
 
   const total = ALL_PRODUCTS.length;
-  const officialFound = state.collection.filter((id) => PRODUCT_MAP.has(id)).length;
+  const officialFound = state.codex.length;
   const byline = product.community
     ? `住客投稿 · @${product.author || "匿名住客"}`
     : product.en;
@@ -3676,6 +3762,7 @@ function claimPendingProduct() {
 
   state.pendingId = null;
   const isNew = collectProduct(product);
+  addToCodex(product);
   renderVault(isNew ? product.id : null);
   updateWalletUi();
   updateClaimUi();
@@ -4038,6 +4125,22 @@ function bindEvents() {
       confirmReturnFocus.focus({ preventScroll: true });
     }
     confirmReturnFocus = null;
+  });
+
+  el.openCodex.addEventListener("click", openCodexDialog);
+  el.closeCodex.addEventListener("click", closeCodexDialog);
+  el.codexDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeCodexDialog();
+  });
+  el.codexDialog.addEventListener("click", (event) => {
+    if (event.target === el.codexDialog) {
+      closeCodexDialog();
+    }
+  });
+  el.codexDialog.addEventListener("close", () => {
+    syncDialogLock();
+    el.openCodex.focus({ preventScroll: true });
   });
 
   el.checkinButton.addEventListener("click", claimDailyBonus);
