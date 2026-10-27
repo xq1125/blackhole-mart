@@ -1660,6 +1660,7 @@ let catBubbleTimer = null;
 let copyDialogHintMarkup = "";
 let confirmResolver = null;
 let confirmReturnFocus = null;
+let receiptReturnFocus = null;
 let authBusy = false;
 let passwordBusy = false;
 let authMode = "register";
@@ -2025,6 +2026,11 @@ function cacheElements() {
   el.confirmAccept = $("confirmAccept");
   el.confirmCancel = $("confirmCancel");
   el.closeConfirmDialog = $("closeConfirmDialog");
+  el.receiptDialog = $("receiptDialog");
+  el.receiptDialogContent = $("receiptDialogContent");
+  el.closeReceiptDialog = $("closeReceiptDialog");
+  el.receiptDialogCopy = $("receiptDialogCopy");
+  el.receiptDialogDone = $("receiptDialogDone");
   el.copyDialog = $("copyDialog");
   el.copyDialogText = $("copyDialogText");
   el.copyDialogHint = $("copyDialogHint");
@@ -4387,6 +4393,34 @@ function petCat() {
   showCatBubble(message);
 }
 
+function openReceiptDialog() {
+  if (!el.receiptDialog || typeof el.receiptDialog.showModal !== "function") {
+    return false;
+  }
+
+  const clone = el.receipt.cloneNode(true);
+  clone.removeAttribute("id");
+  clone.removeAttribute("aria-labelledby");
+  clone.setAttribute("aria-label", "完整小票");
+  clone.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+  clone.style.setProperty("--accent", state.current ? state.current.color : "#ffe45c");
+  el.receiptDialogContent.replaceChildren(clone);
+
+  receiptReturnFocus = document.activeElement;
+  document.body.classList.add("has-dialog");
+  if (!el.receiptDialog.open) {
+    el.receiptDialog.showModal();
+  }
+  window.requestAnimationFrame(() => el.closeReceiptDialog.focus({ preventScroll: true }));
+  return true;
+}
+
+function closeReceiptDialog() {
+  if (el.receiptDialog && el.receiptDialog.open) {
+    el.receiptDialog.close();
+  }
+}
+
 function showCollectedProduct(product) {
   if (!product) {
     return;
@@ -4398,9 +4432,11 @@ function showCollectedProduct(product) {
   }
 
   renderProduct(product, { mode: "restore", print: true, fromVault: true });
+  updateActiveVaultItem();
+  const opened = openReceiptDialog();
   persistState();
 
-  if (window.matchMedia("(max-width: 930px)").matches) {
+  if (!opened && window.matchMedia("(max-width: 930px)").matches) {
     el.receiptWrap.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 }
@@ -4480,6 +4516,29 @@ function bindEvents() {
   el.codexDialog.addEventListener("close", () => {
     syncDialogLock();
     el.openCodex.focus({ preventScroll: true });
+  });
+
+  el.closeReceiptDialog.addEventListener("click", closeReceiptDialog);
+  el.receiptDialogDone.addEventListener("click", closeReceiptDialog);
+  el.receiptDialogCopy.addEventListener("click", () => {
+    closeReceiptDialog();
+    void copyReceipt();
+  });
+  el.receiptDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeReceiptDialog();
+  });
+  el.receiptDialog.addEventListener("click", (event) => {
+    if (event.target === el.receiptDialog) {
+      closeReceiptDialog();
+    }
+  });
+  el.receiptDialog.addEventListener("close", () => {
+    syncDialogLock();
+    if (receiptReturnFocus && receiptReturnFocus.isConnected) {
+      receiptReturnFocus.focus({ preventScroll: true });
+    }
+    receiptReturnFocus = null;
   });
 
   el.checkinButton.addEventListener("click", claimDailyBonus);

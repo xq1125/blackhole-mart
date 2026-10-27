@@ -7,7 +7,7 @@
   <meta name="description" content="黑洞便利店，一家开在宇宙尽头的便利店。88 件平行宇宙好物，抽签、赚宇宙币，还可以写一件离谱商品上架售卖。">
   <title>黑洞便利店 · 宇宙第 404 号分店</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1eadb'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23171717'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff4b2b'/%3E%3Cellipse cx='32' cy='32' rx='27' ry='10' fill='none' stroke='%232946f5' stroke-width='3' transform='rotate(-25 32 32)'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261026-22">
+  <link rel="stylesheet" href="styles.css?v=20261026-23">
 </head>
 <body>
   <div class="page-texture" aria-hidden="true"></div>
@@ -656,11 +656,26 @@
     </div>
   </dialog>
 
+  <dialog class="copy-dialog receipt-dialog" id="receiptDialog" aria-labelledby="receiptDialogTitle">
+    <div class="copy-dialog-bar">
+      <span>BLACK HOLE MART / 完整小票</span>
+      <button class="copy-dialog-close" id="closeReceiptDialog" type="button" aria-label="关闭完整小票">×</button>
+    </div>
+    <div class="receipt-dialog-body">
+      <p class="receipt-dialog-hint" id="receiptDialogTitle">仓库翻出 · 完整便签</p>
+      <div class="receipt-dialog-content" id="receiptDialogContent"></div>
+      <div class="receipt-dialog-actions">
+        <button class="ghost-button" id="receiptDialogCopy" type="button">⧉ 复制小票</button>
+        <button class="ghost-button is-claim" id="receiptDialogDone" type="button">收好</button>
+      </div>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
   <div class="heart-layer" id="heartLayer" aria-hidden="true"></div>
   <p class="sr-only" id="liveRegion" aria-live="polite"></p>
 
-  <script src="app.js?v=20261026-22" defer></script>
+  <script src="app.js?v=20261026-23" defer></script>
 </body>
 </html>

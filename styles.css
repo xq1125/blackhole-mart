@@ -3678,6 +3678,57 @@ main {
   flex-wrap: wrap;
 }
 
+/* ---------- Full receipt dialog ---------- */
+
+.receipt-dialog {
+  width: min(780px, calc(100vw - 38px));
+}
+
+.receipt-dialog .copy-dialog-bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+.receipt-dialog-body {
+  padding: 18px 22px 21px;
+  background: var(--paper);
+}
+
+.receipt-dialog-hint {
+  margin: 0 0 13px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.receipt-dialog-content {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 10px;
+}
+
+.receipt-dialog .receipt {
+  width: 100%;
+  max-width: 620px;
+  transform: none;
+  box-shadow: 8px 8px 0 var(--ink);
+}
+
+.receipt-dialog .receipt.is-rare {
+  box-shadow: 8px 8px 0 var(--yellow);
+}
+
+.receipt-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
 /* ---------- Confirm dialog ---------- */
 
 .confirm-dialog {
@@ -5865,6 +5916,24 @@ main {
     width: calc(100vw - 28px);
     max-height: calc(100vh - 28px);
     box-shadow: 7px 7px 0 var(--ink);
+  }
+
+  .receipt-dialog {
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+  }
+
+  .receipt-dialog-body {
+    padding: 14px 12px 16px;
+  }
+
+  .receipt-dialog .receipt {
+    max-width: none;
+  }
+
+  .receipt-dialog-actions .ghost-button {
+    flex: 1;
+    justify-content: center;
   }
 
   .confirm-body {
