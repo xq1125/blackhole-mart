@@ -1817,7 +1817,8 @@ main {
   border-color: rgba(255, 75, 43, 0.8);
 }
 
-.draw-cost.is-pending {
+.draw-cost.is-pending,
+.draw-cost.is-limit {
   color: var(--yellow);
   border-color: rgba(255, 228, 92, 0.8);
 }
