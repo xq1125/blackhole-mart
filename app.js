@@ -2018,7 +2018,6 @@ function cacheElements() {
   el.againButton = $("againButton");
   el.copyButton = $("copyButton");
   el.copyButtonLabel = $("copyButtonLabel");
-  el.discardReceipt = $("discardReceipt");
   el.receiptChoiceNote = $("receiptChoiceNote");
   el.confirmDialog = $("confirmDialog");
   el.confirmTitle = $("confirmTitle");
@@ -2906,7 +2905,6 @@ function updateClaimUi() {
   el.copyButtonLabel.textContent = pending ? "复制小票并入仓" : "复制这张小票";
   el.copyButton.classList.toggle("is-claim", pending);
   el.copyButton.title = pending ? "复制小票，把这件好物收进仓库" : "复制这张小票";
-  el.discardReceipt.hidden = !pending;
   el.receiptChoiceNote.hidden = !pending;
 }
 
@@ -4428,7 +4426,6 @@ function bindEvents() {
   el.lever.addEventListener("click", drawProduct);
   el.againButton.addEventListener("click", drawProduct);
   el.copyButton.addEventListener("click", copyReceipt);
-  el.discardReceipt.addEventListener("click", () => discardPendingProduct());
   el.retryCopy.addEventListener("click", retryCopyFromDialog);
   el.closeCopyDialog.addEventListener("click", closeCopyDialog);
   el.dismissCopy.addEventListener("click", closeCopyDialog);
