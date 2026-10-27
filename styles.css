@@ -2262,6 +2262,27 @@ main {
   box-shadow: 4px 4px 0 var(--ink);
 }
 
+.receipt-discard {
+  color: var(--muted);
+  border-color: rgba(23, 23, 23, 0.34);
+}
+
+.receipt-discard:hover {
+  background: var(--red);
+  border-color: var(--ink);
+  color: var(--card);
+}
+
+.receipt-choice-note {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 6.5px;
+  letter-spacing: 0.02em;
+  line-height: 1.7;
+  text-align: right;
+}
+
 .ghost-button > span {
   font-family: Georgia, serif;
   font-size: 13px;
@@ -5587,6 +5608,10 @@ main {
   .receipt-actions {
     margin-top: 20px;
     gap: 8px;
+  }
+
+  .receipt-choice-note {
+    text-align: left;
   }
 
   .ghost-button {

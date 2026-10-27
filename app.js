@@ -2016,6 +2016,8 @@ function cacheElements() {
   el.againButton = $("againButton");
   el.copyButton = $("copyButton");
   el.copyButtonLabel = $("copyButtonLabel");
+  el.discardReceipt = $("discardReceipt");
+  el.receiptChoiceNote = $("receiptChoiceNote");
   el.confirmDialog = $("confirmDialog");
   el.confirmTitle = $("confirmTitle");
   el.confirmMessage = $("confirmMessage");
@@ -2900,6 +2902,8 @@ function updateClaimUi() {
   el.copyButtonLabel.textContent = pending ? "复制小票并入仓" : "复制这张小票";
   el.copyButton.classList.toggle("is-claim", pending);
   el.copyButton.title = pending ? "复制小票，把这件好物收进仓库" : "复制这张小票";
+  el.discardReceipt.hidden = !pending;
+  el.receiptChoiceNote.hidden = !pending;
 }
 
 /* ---------- vault ---------- */
@@ -3227,7 +3231,6 @@ function updateWalletUi(pulse = "") {
   const claimed = state.lastCheckin === dayKey();
   const freeDraw = state.wallet + 0.001 < DRAW_COST;
   const vaultFull = state.collection.length >= state.capacity;
-  const pending = Boolean(state.pendingId);
   const emptyStock = state.stock <= 0;
 
   el.walletBalance.textContent = balance;
@@ -3235,19 +3238,16 @@ function updateWalletUi(pulse = "") {
   el.todayEarnings.textContent = `今日进账 +${formatCoins(state.todayEarnings)}`;
   el.checkinButton.disabled = claimed;
   el.checkinLabel.textContent = claimed ? "今日已签到" : `今日签到 +${CHECKIN_BONUS}`;
-  el.drawCost.textContent = pending
-    ? "先复制小票"
-    : vaultFull
-      ? "仓库已满"
-      : emptyStock
-        ? `补货 ${formatCoins(RESTOCK_COST)} 币`
-        : freeDraw
-          ? "店长请客"
-          : `−${formatCoins(DRAW_COST)} 币`;
-  el.drawCost.classList.toggle("is-free", freeDraw && !vaultFull && !pending && !emptyStock);
-  el.drawCost.classList.toggle("is-full", vaultFull && !pending);
-  el.drawCost.classList.toggle("is-pending", pending);
-  el.drawCost.classList.toggle("is-restock", emptyStock && !pending && !vaultFull);
+  el.drawCost.textContent = vaultFull
+    ? "仓库已满"
+    : emptyStock
+      ? `补货 ${formatCoins(RESTOCK_COST)} 币`
+      : freeDraw
+        ? "店长请客"
+        : `−${formatCoins(DRAW_COST)} 币`;
+  el.drawCost.classList.toggle("is-free", freeDraw && !vaultFull && !emptyStock);
+  el.drawCost.classList.toggle("is-full", vaultFull);
+  el.drawCost.classList.toggle("is-restock", emptyStock && !vaultFull);
   updateCapacityUi();
   el.walletPill.setAttribute(
     "aria-label",
@@ -3796,18 +3796,15 @@ function setDrawingUi(isDrawing) {
   el.drawButton.classList.toggle("is-pulling", isDrawing);
   el.drawButton.setAttribute("aria-busy", String(isDrawing));
   const vaultFull = state.collection.length >= state.capacity;
-  const pending = Boolean(state.pendingId);
   el.drawLabel.textContent = isDrawing
     ? "正在补货…"
-    : pending
-      ? "先复制小票 · 入仓"
-      : vaultFull
-        ? "仓库已满 · 先腾位置"
-        : state.stock <= 0
-          ? `补货 8 件 · ${formatCoins(RESTOCK_COST)} 币`
-          : state.collection.length === 0
-            ? "拉一下 · 补货"
-            : "再拉一下 · 补货";
+    : vaultFull
+      ? "仓库已满 · 先腾位置"
+      : state.stock <= 0
+        ? `补货 8 件 · ${formatCoins(RESTOCK_COST)} 币`
+        : state.collection.length === 0
+          ? "拉一下 · 补货"
+          : "再拉一下 · 补货";
 }
 
 function restockMachine() {
@@ -3846,12 +3843,6 @@ function drawProduct() {
   ensureFreshDay();
   updateWalletUi();
 
-  if (state.pendingId) {
-    showToast("这张小票还没复制入库，先点「复制小票并入仓」。", 4200);
-    el.receiptWrap.scrollIntoView({ behavior: "smooth", block: "center" });
-    return;
-  }
-
   if (state.collection.length >= state.capacity) {
     const overflow = state.collection.length - state.capacity;
     showToast(
@@ -3869,6 +3860,12 @@ function drawProduct() {
   if (state.stock <= 0) {
     restockMachine();
     return;
+  }
+
+  let discardedProduct = null;
+  if (state.pendingId) {
+    discardedProduct = findProduct(state.pendingId);
+    discardPendingProduct({ silent: true });
   }
 
   ensureAudio();
@@ -3912,6 +3909,9 @@ function drawProduct() {
       playRevealSound(Boolean(product.rare));
 
       const messages = [];
+      if (discardedProduct) {
+        messages.push(`上一张《${discardedProduct.name}》没入仓，已丢回黑洞。`);
+      }
       if (product.rare) {
         messages.push(`隐藏款出现：${product.name}。店长睁开了一只眼。`);
       }
@@ -4024,6 +4024,28 @@ function closeCopyDialog() {
   if (el.copyDialog?.open) {
     el.copyDialog.close();
   }
+}
+
+function discardPendingProduct({ silent = false } = {}) {
+  if (!state.pendingId) {
+    return false;
+  }
+
+  const product = findProduct(state.pendingId);
+  state.pendingId = null;
+  state.current = dailyProduct();
+  state.isRare = Boolean(state.current.rare);
+  state.mode = "daily";
+  renderProduct(state.current, { mode: "daily", print: false });
+  updateActiveVaultItem();
+  updateClaimUi();
+  updateWalletUi();
+  setDrawingUi(false);
+  persistState();
+  if (!silent) {
+    showToast(product ? `《${product.name}》没入仓，已丢回黑洞。` : "这张小票已丢弃。", 3200);
+  }
+  return true;
 }
 
 function claimPendingProduct() {
@@ -4369,6 +4391,7 @@ function bindEvents() {
   el.lever.addEventListener("click", drawProduct);
   el.againButton.addEventListener("click", drawProduct);
   el.copyButton.addEventListener("click", copyReceipt);
+  el.discardReceipt.addEventListener("click", () => discardPendingProduct());
   el.retryCopy.addEventListener("click", retryCopyFromDialog);
   el.closeCopyDialog.addEventListener("click", closeCopyDialog);
   el.dismissCopy.addEventListener("click", closeCopyDialog);
@@ -4555,9 +4578,7 @@ function boot() {
   renderVault();
   updateStats();
 
-  if (state.pendingId) {
-    el.drawLabel.textContent = "先复制小票 · 入仓";
-  } else if (state.collection.length >= state.capacity) {
+  if (state.collection.length >= state.capacity) {
     el.drawLabel.textContent = "仓库已满 · 先腾位置";
   } else if (state.stock <= 0) {
     el.drawLabel.textContent = `补货 8 件 · ${formatCoins(RESTOCK_COST)} 币`;
