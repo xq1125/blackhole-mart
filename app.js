@@ -1514,7 +1514,6 @@ const AUTHOR_SEED = {
 const RESERVED_NAME_KEYS = new Set([AUTHOR_NAME_KEY, "xiaxiqing", "xq1125", "admin"]);
 const RARE_CHANCE = 0.075;
 const COMMUNITY_DRAW_CHANCE = 0.18;
-const DRAW_COST = 8.8;
 const MACHINE_STOCK = 8;
 const RESTOCK_COST = 8.8;
 const CHECKIN_BONUS = 30;
@@ -3237,7 +3236,7 @@ function updateWalletUi(pulse = "") {
 
   const balance = formatCoins(state.wallet);
   const claimed = state.lastCheckin === dayKey();
-  const lowFunds = state.wallet + 0.001 < DRAW_COST;
+  const lowFunds = state.wallet + 0.001 < RESTOCK_COST;
   const treatAvailable = state.freeTreatDay !== dayKey();
   const vaultFull = state.collection.length >= state.capacity;
   const emptyStock = state.stock <= 0;
@@ -3256,16 +3255,9 @@ function updateWalletUi(pulse = "") {
         : lowFunds
           ? "余额不足"
           : `补货 ${formatCoins(RESTOCK_COST)} 币`
-      : lowFunds
-        ? treatAvailable
-          ? "店长请客"
-          : "余额不足"
-        : `−${formatCoins(DRAW_COST)} 币`;
-  el.drawCost.classList.toggle(
-    "is-free",
-    (emptyStock && freeRestock) || (!emptyStock && lowFunds && treatAvailable),
-  );
-  el.drawCost.classList.toggle("is-full", vaultFull || (lowFunds && !treatAvailable));
+      : "免费";
+  el.drawCost.classList.toggle("is-free", !vaultFull && (!emptyStock || freeRestock));
+  el.drawCost.classList.toggle("is-full", vaultFull || (emptyStock && lowFunds && !treatAvailable));
   el.drawCost.classList.toggle("is-restock", emptyStock && !vaultFull && !freeRestock && !lowFunds);
   updateCapacityUi();
   el.walletPill.setAttribute(
@@ -3895,13 +3887,6 @@ function drawProduct() {
     return;
   }
 
-  const treatAvailable = state.freeTreatDay !== dayKey();
-  const freeDraw = state.wallet + 0.001 < DRAW_COST;
-  if (freeDraw && !treatAvailable) {
-    showToast("今天的店长请客已经用过了，签到或投稿赚点币再来。", 3600);
-    return;
-  }
-
   let discardedProduct = null;
   if (state.pendingId) {
     discardedProduct = findProduct(state.pendingId);
@@ -3911,12 +3896,6 @@ function drawProduct() {
   ensureAudio();
   playLeverSound();
   setDrawingUi(true);
-
-  if (freeDraw) {
-    state.freeTreatDay = dayKey();
-  } else {
-    spendCoins(DRAW_COST);
-  }
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const delay = reducedMotion ? 260 : 690;
