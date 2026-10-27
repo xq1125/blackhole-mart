@@ -1527,6 +1527,103 @@ const CAPACITY_STEP = 2;
 const CAPACITY_UPGRADE_COSTS = { 8: 88, 10: 188, 12: 288, 14: 388 };
 const PRODUCT_COLORS = ["#ffe45c", "#c9d2ff", "#ffc5b2", "#bde3f2", "#f4bdde", "#ffd3a1", "#b9e7cd", "#d9d1ff"];
 
+const VISITOR_NOTE_SEEDS = `
+周一续命贴|🩹|职场续命|贴在工牌背面，周一早上能多撑两小时。|夜班小陈
+已读不回橡皮|🧽|社交糊弄|擦掉聊天框里的“正在输入”，假装网络刚断。|已读不回
+下班逃跑鞋|👟|职场续命|五点五十九分穿上，电梯会自动为你开门。|下班第一名
+会议静音符|🔇|职场续命|贴在会议室门上，废话会自动变成白噪音。|会议室幽灵
+拖延倒计时|⏳|无用发明|把“马上做”量化成 47 分钟后，焦虑也有进度条。|最后一分钟
+情绪充电线|🔌|情绪补给|一头插自己，一头插猫，电量互相借。|充电宝借我
+社恐隐身贴|🫥|社交糊弄|人多时贴额头，别人会以为你只是背景板。|社恐小鹿
+摸鱼水位线|🌊|职场续命|贴在工位隔板，水位到脖子时自动提醒你收手。|摸鱼观察员
+甲方消音器|🎧|职场续命|戴上后“再改一版”会变成一段轻柔的爵士乐。|甲方克星
+工资到账香|🕯️|情绪补给|点燃三秒，银行卡短信会闻起来像自由。|房租冷静贴
+熬夜后悔药|💊|深夜脑洞|睡前服用，明早会忘记昨晚为什么非熬不可。|失眠冠军
+早八悬浮术|🪄|职场续命|让身体离地三厘米，至少鞋底不用接触早八。|早八游魂
+工位结界贴|🛡️|职场续命|贴上后，路过的人会自动降低音量。|工位绿萝
+朋友圈折叠器|📱|社交糊弄|把不想看的动态折进手机夹层，眼不见心不烦。|朋友圈观众
+亲戚提问盾|🪞|社交糊弄|把“工资多少”反弹成“您退休金多少”。|过年不回家
+周末延长线|🔁|情绪补给|周五下班插上，周末会多出半天。|周末失踪人口
+咖啡续命针|☕|职场续命|不用喝，闻一下就能把眼皮撑到下班。|咖啡因依赖
+消息免打扰|🔕|社交糊弄|开启后，群聊会以为你已经飞升。|群聊潜水员
+临时抱佛脚|🦶|无用发明|考试前抱一下，佛脚会替你记住重点。|临时抱佛脚
+假装很忙贴|⌨️|职场续命|贴在键盘上，敲空白也能敲出季度汇报的气势。|周报表演家
+情绪回收袋|🗑️|情绪补给|把崩溃装进去，扎紧，明天再分类。|情绪回收员
+电梯社交盾|🛗|社交糊弄|电梯门一关，自动屏蔽“吃了吗”。|电梯口小张
+外卖准时符|🥡|情绪补给|贴在手机上，骑手会在你饿死前按门铃。|外卖等很久
+快递不丢贴|📦|无用发明|贴在外包装，快递会自动躲开小区花坛。|快递代收点
+深夜嘴馋锁|🔒|深夜脑洞|夜里十一点自动锁住外卖软件，钥匙在冰箱。|夜宵搭子
+早起失败险|🛌|情绪补给|没起来会自动理赔一个“今天不怪你”。|起床困难户
+通勤瞬移卡|🚇|职场续命|刷卡后直接到工位，省略地铁换乘的人生。|通勤战士
+空调遥控器|❄️|职场续命|永远比同事快一步，调到人类适宜温度。|空调遥控器
+工牌隐身术|🪪|职场续命|忘带工牌时，门禁会假装没看见你。|工牌找不到
+老板视线偏移|👀|职场续命|让老板在你摸鱼时看向窗外那只鸟。|摸鱼阿北
+会议废话过滤器|🧹|职场续命|把“对齐一下”翻译成“可以散会了”。|会议纪要机
+同事夸夸贴|💬|情绪补给|贴上后，同事会突然夸你今天的头像。|茶水间情报员
+摸鱼进度尺|📊|职场续命|摸到 80% 会自动保存，明天接着摸。|摸鱼尺
+下班提醒器|⏰|职场续命|五点五十九分震动，提醒你把灵魂收进包里。|下班倒计时
+工资消失术|💸|无用发明|到账瞬间变透明，适合假装自己没花钱。|工资消失术
+房租冷静贴|🏠|情绪补给|贴在房东消息上，心跳会慢下来。|房租冷静贴
+购物车刹车|🛒|无用发明|零点前自动清空“好像需要”的东西。|购物车刹车
+熬夜许可证|🪪|深夜脑洞|凭此证可合法熬夜，但第二天不负责。|熬夜许可证
+起床气收纳袋|😤|情绪补给|早上把起床气装进去，出门只带人。|起床气收纳袋
+赖床五分钟|⏱️|情绪补给|按一下，闹钟会替你向世界请五分钟假。|被窝钉子户
+朋友圈装死贴|🪦|社交糊弄|贴上后，所有人都会以为你在闭关。|朋友圈装死
+群聊潜水证|🤿|社交糊弄|持证潜水，偶尔冒泡也不会被点名。|群聊潜水员
+已读不回券|🎫|社交糊弄|撕一张，欠下的回复可以晚点还。|已读不回
+社交电量表|🔋|社交糊弄|剩 1% 时自动替你结束尬聊。|社交电量1%
+尬聊终止符|🛑|社交糊弄|说“改天约”时自动生效，双方都松一口气。|尬聊终止符
+亲戚屏蔽贴|🧿|社交糊弄|过年贴门上，亲戚会自动聊起天气。|过年不回家
+同学会隐身衣|🥷|社交糊弄|穿上后，没人记得你当年考第几。|同学会隐身
+前任记忆橡皮|🩹|深夜脑洞|擦掉一段，只留下“当时年轻”。|前任记忆橡皮
+心动降温贴|🧊|情绪补给|贴在手腕，crush 回消息也不会升温。|心动降温
+恋爱脑冷却|❄️|情绪补给|恋爱脑过热时自动关机十分钟。|恋爱脑冷却
+分手快乐糖|🍬|情绪补给|含一颗，苦的部分会变成薄荷味。|分手快乐
+复合冷静期|⏳|深夜脑洞|想发小作文前，先强制冷静 24 小时。|复合冷静期
+暗恋信号增强|📶|情绪补给|让喜欢的人多看你一眼，但只一眼。|暗恋信号
+表白撤回键|⌫|社交糊弄|发出去三秒内可撤回，连心跳一起。|表白撤回
+猫毛收集器|🐈|无用发明|把沙发上的猫毛收成一颗小星球。|猫毛过敏
+猫主子翻译机|🐾|无用发明|把“喵”翻译成“罐头开晚了”。|猫主子翻译
+狗子快乐水|🐕|情绪补给|喝一口，尾巴会自己摇起来。|狗子快乐
+植物道歉信|🪴|情绪补给|替你跟养死的绿萝说一声对不起。|植物道歉
+冰箱剩菜提醒|🥡|无用发明|在剩菜变成考古现场前，提醒你吃。|冰箱守门员
+垃圾出门提醒|🗑️|无用发明|在你出门时念一遍“垃圾垃圾垃圾”。|垃圾出门
+洗衣机唱歌贴|🎵|无用发明|洗完会唱一首只有袜子听得见的歌。|洗衣机歌手
+外卖备注生成器|📝|无用发明|自动写“多放辣，不要香菜，谢谢”。|外卖品鉴师
+手机电量焦虑贴|🔋|情绪补给|贴在背面，20% 也能活出 100% 的底气。|电量焦虑
+充电线防丢扣|🔗|无用发明|把线扣在桌上，它就不会离家出走。|充电线借我
+周一早餐券|🥐|情绪补给|周一早上自动兑换一个热乎的牛角包。|周一早餐
+周末赖床证|🛏️|情绪补给|凭此证，周末躺到中午也不会有负罪感。|周末计划家
+`.trim().split("\n").map((line) => line.split("|").map((field) => field.trim()));
+
+const VISITOR_NOTES = VISITOR_NOTE_SEEDS.map(([name, emoji, tag, desc, author], index) => {
+  const price = [6.6, 9.9, 12.9, 3.3, 19.9][index % 5];
+  const color = PRODUCT_COLORS[index % PRODUCT_COLORS.length];
+  return {
+    id: `visitor-note-${String(index + 1).padStart(2, "0")}`,
+    emoji,
+    name,
+    en: "VISITOR NOTE",
+    tag,
+    desc,
+    effect: `把「${name}」放在手边，${tag}的时候会稍微好过一点。`,
+    side: "用久了会开始相信，一张便签真的能挡住一点生活。",
+    crowd: `需要一点${tag}的住客，以及刚好路过本店的你。`,
+    review: `“${desc}” —— @${author}，住客便签。`,
+    price: price.toFixed(1),
+    unit: "宇宙币",
+    color,
+    stars: Math.round((4.6 + (index % 5) * 0.1) * 10) / 10,
+    rare: false,
+    community: true,
+    author,
+    sales: 0,
+    earnings: 0,
+    createdAt: Date.now() + index,
+  };
+});
+const VISITOR_NOTE_MAP = new Map(VISITOR_NOTES.map((product) => [product.id, product]));
+
 const state = {
   account: null,
   collection: [],
@@ -1631,11 +1728,16 @@ function getCommunityProducts() {
   return [...state.userProducts];
 }
 
+function getDrawableCommunityProducts() {
+  return [...getCommunityProducts(), ...VISITOR_NOTES];
+}
+
 function findProduct(id) {
   return (
     PRODUCT_MAP.get(id) ||
     state.userProducts.find((product) => product.id === id) ||
     COMMUNITY_SEED_MAP.get(id) ||
+    VISITOR_NOTE_MAP.get(id) ||
     null
   );
 }
@@ -1987,6 +2089,7 @@ function cacheElements() {
   el.communityGrid = $("communityGrid");
   el.communityCount = $("communityCount");
   el.communityFeed = $("communityFeed");
+  el.visitorNoteGrid = $("visitorNoteGrid");
   el.openSubmit = $("openSubmit");
   el.submitDialog = $("submitDialog");
   el.closeSubmitDialog = $("closeSubmitDialog");
@@ -3027,10 +3130,14 @@ function renderDriftBottles() {
     return;
   }
 
-  const visible = state.userProducts.slice(0, 8);
-  const litCount = state.userProducts.filter((product) =>
-    state.communityCodex.includes(product.id),
-  ).length;
+  const claimedVisitorNotes = state.communityCodex
+    .map((id) => VISITOR_NOTE_MAP.get(id))
+    .filter(Boolean);
+  const entries = [...state.userProducts, ...claimedVisitorNotes];
+  const visible = entries.slice(0, 8);
+  const litCount =
+    state.userProducts.filter((product) => state.communityCodex.includes(product.id)).length +
+    claimedVisitorNotes.length;
   const fragment = document.createDocumentFragment();
 
   for (let index = 0; index < 8; index += 1) {
@@ -3072,7 +3179,7 @@ function renderDriftBottles() {
 
   el.driftGrid.replaceChildren(fragment);
   el.driftCount.textContent = `${litCount} 件已捞到`;
-  const overflow = state.userProducts.length - visible.length;
+  const overflow = entries.length - visible.length;
   el.driftOverflow.hidden = overflow <= 0;
   el.driftOverflow.textContent = overflow > 0
     ? `还有 ${overflow} 个漂流瓶在海上，先展示最近 8 个。`
@@ -3400,6 +3507,45 @@ function renderCommunity(newId = null) {
   }
 }
 
+function renderVisitorWall() {
+  if (!el.visitorNoteGrid) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  VISITOR_NOTES.forEach((product) => {
+    const found = state.communityCodex.includes(product.id);
+    const note = document.createElement("article");
+    note.className = "visitor-note";
+    note.dataset.id = product.id;
+    note.style.setProperty("--accent", product.color);
+    note.setAttribute(
+      "aria-label",
+      `${found ? "已抽到" : "未抽到"}：@${product.author} 的《${product.name}》`,
+    );
+    if (found) {
+      note.classList.add("is-found");
+    }
+
+    const author = document.createElement("span");
+    author.className = "visitor-note-author";
+    author.textContent = `@${product.author}`;
+    const name = document.createElement("strong");
+    name.className = "visitor-note-name";
+    name.textContent = product.name;
+    const desc = document.createElement("p");
+    desc.className = "visitor-note-desc";
+    desc.textContent = product.desc;
+    const status = document.createElement("span");
+    status.className = "visitor-note-status";
+    status.textContent = found ? "已抽到 · 漂流瓶" : "还没抽到";
+
+    note.append(author, name, desc, status);
+    fragment.append(note);
+  });
+  el.visitorNoteGrid.replaceChildren(fragment);
+}
+
 function showCommunityProduct(product) {
   if (!product) {
     return;
@@ -3629,7 +3775,7 @@ function pickProduct() {
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
-  const community = getCommunityProducts();
+  const community = getDrawableCommunityProducts();
   if (community.length > 0 && Math.random() < COMMUNITY_DRAW_CHANCE) {
     const filtered = community.filter((product) => !state.current || product.id !== state.current.id);
     const pool = filtered.length > 0 ? filtered : community;
@@ -3897,6 +4043,7 @@ function claimPendingProduct() {
   const isNew = collectProduct(product);
   addToCodex(product);
   addToCommunityCodex(product);
+  renderVisitorWall();
   renderVault(isNew ? product.id : null);
   updateWalletUi();
   updateClaimUi();
@@ -4403,6 +4550,7 @@ function boot() {
   resetSubmitForm();
   updateWalletUi();
   renderCommunity();
+  renderVisitorWall();
   renderProduct(state.current, { mode: state.mode });
   renderVault();
   updateStats();
