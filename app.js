@@ -3562,8 +3562,7 @@ function showCommunityProduct(product) {
     return;
   }
   if (state.pendingId) {
-    showToast("先把这张小票复制入库。", 3000);
-    el.receiptWrap.scrollIntoView({ behavior: "smooth", block: "center" });
+    previewProductWhilePending(product, { mode: "community" });
     return;
   }
 
@@ -4384,6 +4383,7 @@ function openReceiptDialog() {
   clone.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
   clone.style.setProperty("--accent", state.current ? state.current.color : "#ffe45c");
   el.receiptDialogContent.replaceChildren(clone);
+  el.receiptDialogCopy.hidden = Boolean(state.pendingId);
 
   receiptReturnFocus = document.activeElement;
   document.body.classList.add("has-dialog");
@@ -4392,6 +4392,18 @@ function openReceiptDialog() {
   }
   window.requestAnimationFrame(() => el.closeReceiptDialog.focus({ preventScroll: true }));
   return true;
+}
+
+function previewProductWhilePending(product, options) {
+  const pendingProduct = state.pendingId ? findProduct(state.pendingId) : null;
+  if (!pendingProduct) {
+    return false;
+  }
+
+  renderProduct(product, { ...options, print: false });
+  const opened = openReceiptDialog();
+  renderProduct(pendingProduct, { mode: "draw", print: false });
+  return opened;
 }
 
 function closeReceiptDialog() {
@@ -4405,8 +4417,7 @@ function showCollectedProduct(product) {
     return;
   }
   if (state.pendingId) {
-    showToast("先把这张小票复制入库。", 3000);
-    el.receiptWrap.scrollIntoView({ behavior: "smooth", block: "center" });
+    previewProductWhilePending(product, { mode: "restore", fromVault: true });
     return;
   }
 
