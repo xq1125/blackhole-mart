@@ -1726,11 +1726,11 @@ function nextCapacityUpgrade() {
 }
 
 function getCommunityProducts() {
-  return [...state.userProducts, ...VISITOR_NOTES];
+  return [...state.userProducts];
 }
 
 function getDrawableCommunityProducts() {
-  return getCommunityProducts();
+  return [...getCommunityProducts(), ...VISITOR_NOTES];
 }
 
 function findProduct(id) {
@@ -4085,6 +4085,7 @@ function claimPendingProduct() {
   addToCodex(product);
   addToCommunityCodex(product);
   renderVisitorWall();
+  renderDriftBottles();
   renderVault(isNew ? product.id : null);
   updateWalletUi();
   updateClaimUi();
