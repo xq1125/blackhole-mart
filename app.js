@@ -3473,7 +3473,7 @@ function makeCommunitySamples() {
   const fragment = document.createDocumentFragment();
   const note = document.createElement("p");
   note.className = "community-sample-note";
-  note.textContent = "货架还空着。先放 4 件打码样品；写下第一件，就会替换它们。";
+  note.textContent = "你的货架还空着。先放 4 件打码样品；写下第一件，就会替换它们。66 件住客投稿在便签墙和抽签池里，抽到并入仓后才会点亮玩家寄售。";
   fragment.append(note);
   ["#ffe45c", "#c9d2ff", "#ffc5b2", "#b9e7cd"].forEach((color) => {
     fragment.append(makeMaskedCommunitySample(color));
@@ -3492,7 +3492,7 @@ function renderCommunity(newId = null) {
     el.communityGrid.classList.add("is-samples");
     el.communityGrid.replaceChildren(makeCommunitySamples());
     el.communityGrid.scrollLeft = 0;
-    el.communityCount.textContent = "0";
+    el.communityCount.textContent = String(VISITOR_NOTES.length);
     updateCommunityFeed();
     return;
   }
@@ -3507,7 +3507,7 @@ function renderCommunity(newId = null) {
 
   el.communityGrid.replaceChildren(fragment);
   el.communityGrid.scrollLeft = newId ? 0 : previousScroll;
-  el.communityCount.textContent = String(items.length);
+  el.communityCount.textContent = String(VISITOR_NOTES.length);
   updateCommunityFeed();
 
   if (newId) {
