@@ -1726,11 +1726,11 @@ function nextCapacityUpgrade() {
 }
 
 function getCommunityProducts() {
-  return [...state.userProducts];
+  return [...state.userProducts, ...VISITOR_NOTES];
 }
 
 function getDrawableCommunityProducts() {
-  return [...getCommunityProducts(), ...VISITOR_NOTES];
+  return getCommunityProducts();
 }
 
 function findProduct(id) {
