@@ -2159,6 +2159,7 @@ function cacheElements() {
   el.loginPassword = $("loginPassword");
   el.loginError = $("loginError");
   el.loginButton = $("loginButton");
+  el.guestLogin = $("guestLogin");
 }
 
 /* ---------- resident gate ---------- */
@@ -2172,7 +2173,7 @@ function setAuthError(scope, message) {
 
 function setAuthBusy(busy) {
   authBusy = busy;
-  [el.registerButton, el.loginButton, el.registerTab, el.loginTab].forEach((node) => {
+  [el.registerButton, el.loginButton, el.registerTab, el.loginTab, el.guestLogin].forEach((node) => {
     if (node) {
       node.disabled = busy;
     }
@@ -2254,6 +2255,75 @@ function hideAuthGate() {
   el.authGate.hidden = true;
   document.body.classList.remove("auth-locked");
   lockAppShell(false);
+}
+
+function makeGuestName(store) {
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    const suffix = String(Math.floor(Math.random() * 9000) + 1000);
+    const name = `访客${suffix}`;
+    if (!store.users.some((user) => nameKeyOf(user.username) === nameKeyOf(name))) {
+      return name;
+    }
+  }
+  return `访客${Date.now().toString().slice(-6)}`;
+}
+
+function randomGuestPassword() {
+  const bytes = new Uint8Array(24);
+  window.crypto.getRandomValues(bytes);
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function handleGuestLogin() {
+  if (authBusy) {
+    return;
+  }
+  setAuthError(authMode, "");
+  setAuthBusy(true);
+
+  try {
+    const store = ensureAuthorAccount();
+    const existingGuest = store.users.find((user) => user.role === "guest");
+    if (existingGuest) {
+      if (!setSession(existingGuest.id)) {
+        setAuthError(authMode, "访客状态保存失败，请检查站点存储权限。");
+        return;
+      }
+      window.location.reload();
+      return;
+    }
+
+    const name = makeGuestName(store);
+    const salt = randomSalt();
+    const hash = await hashPassword(randomGuestPassword(), salt, AUTH_ITERATIONS);
+    const guest = {
+      id: makeAccountId(),
+      username: name,
+      nameKey: nameKeyOf(name),
+      role: "guest",
+      guest: true,
+      salt,
+      hash,
+      iterations: AUTH_ITERATIONS,
+      createdAt: new Date().toISOString(),
+      passwordUpdatedAt: Date.now(),
+    };
+
+    store.users.push(guest);
+    if (!writeAccountStore(store)) {
+      setAuthError(authMode, "浏览器不允许保存访客账号，请检查隐私模式或站点存储权限。");
+      return;
+    }
+    if (!setSession(guest.id)) {
+      setAuthError(authMode, "访客账号建好了，但登录状态保存失败，请重试。");
+      return;
+    }
+    window.location.reload();
+  } catch (error) {
+    setAuthError(authMode, error?.message || "访客登录失败，请再试一次。");
+  } finally {
+    setAuthBusy(false);
+  }
 }
 
 async function handleRegister(event) {
@@ -2384,6 +2454,7 @@ function bindAuthEvents() {
   el.loginTab.addEventListener("click", () => setAuthMode("login"));
   el.registerForm.addEventListener("submit", handleRegister);
   el.loginForm.addEventListener("submit", handleLogin);
+  el.guestLogin.addEventListener("click", handleGuestLogin);
 
   [
     [el.registerName, "register"],
@@ -2407,12 +2478,18 @@ function updateAccountDialog() {
     return;
   }
   const name = state.account.username;
+  const isGuest = state.account.role === "guest";
 
   el.accountBigAvatar.textContent = accountInitial(name);
   el.accountDialogTitle.textContent = name;
-  el.accountRole.textContent = "住客 · 本机账号";
-  el.accountMeta.textContent = `本机账号 · 注册于 ${formatAccountDate(state.account.createdAt)}`;
-  el.accountNote.textContent = "这个名字已经注册。同一台设备上的其他住客不能重复使用它。";
+  el.accountRole.textContent = isGuest ? "访客 · 本机仓库" : "住客 · 本机账号";
+  el.accountMeta.textContent = isGuest
+    ? `访客账号 · 创建于 ${formatAccountDate(state.account.createdAt)}`
+    : `本机账号 · 注册于 ${formatAccountDate(state.account.createdAt)}`;
+  el.accountNote.textContent = isGuest
+    ? "访客账号不需要密码。退出后再点「访客登录」，会回到这间仓库；想换一个独立名字可以重新注册。"
+    : "这个名字已经注册。同一台设备上的其他住客不能重复使用它。";
+  el.passwordForm.hidden = isGuest;
   el.passwordError.textContent = "";
   el.passwordSuccess.textContent = "";
   el.currentPassword.value = "";

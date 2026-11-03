@@ -7,7 +7,7 @@
   <meta name="description" content="黑洞便利店，一家开在宇宙尽头的便利店。88 件平行宇宙好物，抽签、赚宇宙币，还可以写一件离谱商品上架售卖。">
   <title>黑洞便利店 · 宇宙第 404 号分店</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1eadb'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23171717'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff4b2b'/%3E%3Cellipse cx='32' cy='32' rx='27' ry='10' fill='none' stroke='%232946f5' stroke-width='3' transform='rotate(-25 32 32)'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261026-29">
+  <link rel="stylesheet" href="styles.css?v=20261026-30">
 </head>
 <body>
   <div class="page-texture" aria-hidden="true"></div>
@@ -78,6 +78,18 @@
           <p class="auth-error" id="loginError" role="alert"></p>
           <button class="auth-submit" id="loginButton" type="submit">进店 <span aria-hidden="true">↗</span></button>
         </form>
+
+        <div class="auth-guest">
+          <p class="auth-guest-or"><span>或者</span></p>
+          <button class="auth-guest-button" id="guestLogin" type="button">
+            <span class="auth-guest-label">
+              <strong>访客登录</strong>
+              <small>不注册，先用自己的本机仓库进店</small>
+            </span>
+            <span class="auth-guest-arrow" aria-hidden="true">↗</span>
+          </button>
+          <p class="auth-guest-note">访客也有一间本机仓库；下次点「访客登录」会回到它。</p>
+        </div>
 
         <p class="auth-legal">本地账号 · 密码只以哈希形式保存在此浏览器 · 请勿使用真实密码 · 换设备不同步</p>
       </div>
@@ -676,6 +688,6 @@
   <div class="heart-layer" id="heartLayer" aria-hidden="true"></div>
   <p class="sr-only" id="liveRegion" aria-live="polite"></p>
 
-  <script src="app.js?v=20261026-29" defer></script>
+  <script src="app.js?v=20261026-30" defer></script>
 </body>
 </html>
